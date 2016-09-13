@@ -1,0 +1,453 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Source Files\coreutils-deps">
+      <UniqueIdentifier>{483bf19f-9f26-4cce-b4b3-a306cca1b8bf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\coreutils-deps\lib">
+      <UniqueIdentifier>{ce218eb9-e42d-4791-8b09-86e66239882b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\coreutils-deps\lib\unmodified">
+      <UniqueIdentifier>{b7cdeae0-4313-453b-a66d-fb9483b5701c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\coreutils-deps\lib\templates">
+      <UniqueIdentifier>{59763845-da17-4736-ae02-0068e8865c57}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\coreutils-deps\lib\unused">
+      <UniqueIdentifier>{7d582bdc-cdcb-4950-b7b6-598c2c04fc7b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\coreutils-deps\src">
+      <UniqueIdentifier>{e3e1de6e-ba08-4a50-95f2-05d848fd4f04}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\coreutils-deps\src\unmodified">
+      <UniqueIdentifier>{15761bd5-b10f-49cd-9cf5-0cecd13340db}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\compat">
+      <UniqueIdentifier>{90e7d0df-f40e-4226-86a4-22f3486a008f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\compat\win32">
+      <UniqueIdentifier>{4e0db98d-9867-44fd-b0ca-1ae44e42b26b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\compat\win32\diskmgmt">
+      <UniqueIdentifier>{f9abe9a0-693b-4647-a7d3-1c0431330ce4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\compat\posix">
+      <UniqueIdentifier>{4880896d-0b75-4b17-936c-9d8906b28127}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Header Files\coreutils-deps">
+      <UniqueIdentifier>{6b5f477f-b4a6-46a9-afa5-2f15246d1091}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\coreutils-deps\lib">
+      <UniqueIdentifier>{88bf551b-7ba5-4025-9a6b-1aa2c9972e90}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\coreutils-deps\lib\unmodified">
+      <UniqueIdentifier>{664b8080-afd7-4cb9-a174-9ebf5a863922}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\coreutils-deps\lib\unused">
+      <UniqueIdentifier>{714addfa-282a-4c7a-b17a-04ddbb74824a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\coreutils-deps\src">
+      <UniqueIdentifier>{962cd603-2778-4b3b-a94b-c9aee3cb295f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\coreutils-deps\src\unmodified">
+      <UniqueIdentifier>{a9e3332f-fed2-4728-8ce4-7c2c592a7abe}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\compat">
+      <UniqueIdentifier>{69c6b1ca-ed14-4783-b815-09f1fa77d088}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\compat\win32">
+      <UniqueIdentifier>{eb232998-54f1-4ab6-8648-c3559a642112}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\compat\win32\diskmgmt">
+      <UniqueIdentifier>{10d32df6-f20d-4190-a378-992b7f819e18}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\compat\posix">
+      <UniqueIdentifier>{bbe7270c-dd96-4bac-b995-2176769413b8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\compat\posix\msvc">
+      <UniqueIdentifier>{553ca804-57f1-4d43-9527-0715e05c5b67}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\compat\usr_include">
+      <UniqueIdentifier>{d6f69484-871b-48be-92dc-25253c82b205}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\compat\usr_include\unused">
+      <UniqueIdentifier>{a21c65b5-1488-4dc5-a91d-5db9e968693f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav</Extensions>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\src\dd.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\coreutils\lib\basename-lgpl.c">
+      <Filter>Source Files\coreutils-deps\lib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\coreutils\lib\closeout.c">
+      <Filter>Source Files\coreutils-deps\lib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\coreutils\lib\error.c">
+      <Filter>Source Files\coreutils-deps\lib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\coreutils\lib\fd-reopen.c">
+      <Filter>Source Files\coreutils-deps\lib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\coreutils\lib\gethrxtime.c">
+      <Filter>Source Files\coreutils-deps\lib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\coreutils\lib\human.c">
+      <Filter>Source Files\coreutils-deps\lib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\coreutils\lib\progname.c">
+      <Filter>Source Files\coreutils-deps\lib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\coreutils\lib\quotearg.c">
+      <Filter>Source Files\coreutils-deps\lib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\coreutils\lib\verror.c">
+      <Filter>Source Files\coreutils-deps\lib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\coreutils\lib\version-etc.c">
+      <Filter>Source Files\coreutils-deps\lib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\coreutils\lib\xalloc-die.c">
+      <Filter>Source Files\coreutils-deps\lib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\coreutils\lib\xmalloc.c">
+      <Filter>Source Files\coreutils-deps\lib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\coreutils\lib\xsize.c">
+      <Filter>Source Files\coreutils-deps\lib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\coreutils\lib\xvasprintf.c">
+      <Filter>Source Files\coreutils-deps\lib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\coreutils\lib\close-stream.c">
+      <Filter>Source Files\coreutils-deps\lib\unmodified</Filter>
+    </ClCompile>
+    <ClCompile Include="..\coreutils\lib\exitfail.c">
+      <Filter>Source Files\coreutils-deps\lib\unmodified</Filter>
+    </ClCompile>
+    <ClCompile Include="..\coreutils\lib\fpending.c">
+      <Filter>Source Files\coreutils-deps\lib\unmodified</Filter>
+    </ClCompile>
+    <ClCompile Include="..\coreutils\lib\localcharset.c">
+      <Filter>Source Files\coreutils-deps\lib\unmodified</Filter>
+    </ClCompile>
+    <ClCompile Include="..\coreutils\lib\long-options.c">
+      <Filter>Source Files\coreutils-deps\lib\unmodified</Filter>
+    </ClCompile>
+    <ClCompile Include="..\coreutils\lib\version-etc-fsf.c">
+      <Filter>Source Files\coreutils-deps\lib\unmodified</Filter>
+    </ClCompile>
+    <ClCompile Include="..\coreutils\lib\xstrtol.c">
+      <Filter>Source Files\coreutils-deps\lib\templates</Filter>
+    </ClCompile>
+    <ClCompile Include="..\coreutils\lib\xstrtoumax.c">
+      <Filter>Source Files\coreutils-deps\lib\templates</Filter>
+    </ClCompile>
+    <ClCompile Include="..\coreutils\lib\unused\argmatch.c">
+      <Filter>Source Files\coreutils-deps\lib\unused</Filter>
+    </ClCompile>
+    <ClCompile Include="..\coreutils\src\version.c">
+      <Filter>Source Files\coreutils-deps\src\unmodified</Filter>
+    </ClCompile>
+    <ClCompile Include="..\compat\safe_malloc.c">
+      <Filter>Source Files\compat</Filter>
+    </ClCompile>
+    <ClCompile Include="..\compat\unistr.c">
+      <Filter>Source Files\compat</Filter>
+    </ClCompile>
+    <ClCompile Include="..\compat\winmain.c">
+      <Filter>Source Files\compat</Filter>
+    </ClCompile>
+    <ClCompile Include="..\compat\win32\com_supp.c">
+      <Filter>Source Files\compat\win32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\compat\win32\console_win32.c">
+      <Filter>Source Files\compat\win32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\compat\win32\devfiles_win32.c">
+      <Filter>Source Files\compat\win32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\compat\win32\error_win32.c">
+      <Filter>Source Files\compat\win32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\compat\win32\handles_win32.c">
+      <Filter>Source Files\compat\win32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\compat\win32\msvcr_fileops.c">
+      <Filter>Source Files\compat\win32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\compat\win32\objmgr_win32.c">
+      <Filter>Source Files\compat\win32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\compat\win32\path_win32.c">
+      <Filter>Source Files\compat\win32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\compat\win32\raw_win32.c">
+      <Filter>Source Files\compat\win32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\compat\win32\suppart_win32.c">
+      <Filter>Source Files\compat\win32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\compat\win32\wmi_supp.c">
+      <Filter>Source Files\compat\win32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\compat\win32\diskmgmt\diskmgmt_win32.c">
+      <Filter>Source Files\compat\win32\diskmgmt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\compat\win32\diskmgmt\logical_volumes.c">
+      <Filter>Source Files\compat\win32\diskmgmt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\compat\win32\diskmgmt\physical_disks.c">
+      <Filter>Source Files\compat\win32\diskmgmt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\compat\win32\diskmgmt\wdx_identifer.c">
+      <Filter>Source Files\compat\win32\diskmgmt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\compat\posix\msvc\clock_gettime.c">
+      <Filter>Source Files\compat\posix</Filter>
+    </ClCompile>
+    <ClCompile Include="..\compat\posix\msvc\fcntl_win32.c">
+      <Filter>Source Files\compat\posix</Filter>
+    </ClCompile>
+    <ClCompile Include="..\compat\posix\fdreopen_win32.c">
+      <Filter>Source Files\compat\posix</Filter>
+    </ClCompile>
+    <ClCompile Include="..\compat\posix\posix_win32.c">
+      <Filter>Source Files\compat\posix</Filter>
+    </ClCompile>
+    <ClCompile Include="..\compat\posix\asprintf\msvc\vasprintf-msvc.c">
+      <Filter>Source Files\compat\posix</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\coreutils\lib\include\closeout.h">
+      <Filter>Header Files\coreutils-deps\lib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\coreutils\lib\include\dirname.h">
+      <Filter>Header Files\coreutils-deps\lib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\coreutils\lib\include\dosname.h">
+      <Filter>Header Files\coreutils-deps\lib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\coreutils\lib\include\error.h">
+      <Filter>Header Files\coreutils-deps\lib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\coreutils\lib\include\fd-reopen.h">
+      <Filter>Header Files\coreutils-deps\lib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\coreutils\lib\include\human.h">
+      <Filter>Header Files\coreutils-deps\lib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\coreutils\lib\include\intprops.h">
+      <Filter>Header Files\coreutils-deps\lib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\coreutils\lib\include\msvc-nothrow.h">
+      <Filter>Header Files\coreutils-deps\lib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\coreutils\lib\include\progname.h">
+      <Filter>Header Files\coreutils-deps\lib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\coreutils\lib\include\quote.h">
+      <Filter>Header Files\coreutils-deps\lib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\coreutils\lib\include\quotearg.h">
+      <Filter>Header Files\coreutils-deps\lib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\coreutils\lib\include\verror.h">
+      <Filter>Header Files\coreutils-deps\lib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\coreutils\lib\include\version-etc.h">
+      <Filter>Header Files\coreutils-deps\lib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\coreutils\lib\include\xalloc.h">
+      <Filter>Header Files\coreutils-deps\lib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\coreutils\lib\include\xsize.h">
+      <Filter>Header Files\coreutils-deps\lib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\coreutils\lib\include\xstrtol.h">
+      <Filter>Header Files\coreutils-deps\lib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\coreutils\lib\include\xtime.h">
+      <Filter>Header Files\coreutils-deps\lib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\coreutils\lib\include\xvasprintf.h">
+      <Filter>Header Files\coreutils-deps\lib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\coreutils\lib\include\assure.h">
+      <Filter>Header Files\coreutils-deps\lib\unmodified</Filter>
+    </ClInclude>
+    <ClInclude Include="..\coreutils\lib\include\c-strcaseeq.h">
+      <Filter>Header Files\coreutils-deps\lib\unmodified</Filter>
+    </ClInclude>
+    <ClInclude Include="..\coreutils\lib\include\close-stream.h">
+      <Filter>Header Files\coreutils-deps\lib\unmodified</Filter>
+    </ClInclude>
+    <ClInclude Include="..\coreutils\lib\include\exitfail.h">
+      <Filter>Header Files\coreutils-deps\lib\unmodified</Filter>
+    </ClInclude>
+    <ClInclude Include="..\coreutils\lib\include\fpending.h">
+      <Filter>Header Files\coreutils-deps\lib\unmodified</Filter>
+    </ClInclude>
+    <ClInclude Include="..\coreutils\lib\include\gethrxtime.h">
+      <Filter>Header Files\coreutils-deps\lib\unmodified</Filter>
+    </ClInclude>
+    <ClInclude Include="..\coreutils\lib\include\localcharset.h">
+      <Filter>Header Files\coreutils-deps\lib\unmodified</Filter>
+    </ClInclude>
+    <ClInclude Include="..\coreutils\lib\include\long-options.h">
+      <Filter>Header Files\coreutils-deps\lib\unmodified</Filter>
+    </ClInclude>
+    <ClInclude Include="..\coreutils\lib\include\verify.h">
+      <Filter>Header Files\coreutils-deps\lib\unmodified</Filter>
+    </ClInclude>
+    <ClInclude Include="..\coreutils\lib\include\xalloc-oversized.h">
+      <Filter>Header Files\coreutils-deps\lib\unmodified</Filter>
+    </ClInclude>
+    <ClInclude Include="..\coreutils\lib\include\unused\argmatch.h">
+      <Filter>Header Files\coreutils-deps\lib\unused</Filter>
+    </ClInclude>
+    <ClInclude Include="..\coreutils\lib\include\unused\c-ctype.h">
+      <Filter>Header Files\coreutils-deps\lib\unused</Filter>
+    </ClInclude>
+    <ClInclude Include="..\coreutils\lib\include\unused\c-strcase.h">
+      <Filter>Header Files\coreutils-deps\lib\unused</Filter>
+    </ClInclude>
+    <ClInclude Include="..\coreutils\lib\include\unused\closein.h">
+      <Filter>Header Files\coreutils-deps\lib\unused</Filter>
+    </ClInclude>
+    <ClInclude Include="..\coreutils\lib\include\unused\configmake.h">
+      <Filter>Header Files\coreutils-deps\lib\unused</Filter>
+    </ClInclude>
+    <ClInclude Include="..\coreutils\lib\include\unused\gettext.h">
+      <Filter>Header Files\coreutils-deps\lib\unused</Filter>
+    </ClInclude>
+    <ClInclude Include="..\coreutils\lib\include\unused\inttostr.h">
+      <Filter>Header Files\coreutils-deps\lib\unused</Filter>
+    </ClInclude>
+    <ClInclude Include="..\coreutils\lib\include\unused\openat.h">
+      <Filter>Header Files\coreutils-deps\lib\unused</Filter>
+    </ClInclude>
+    <ClInclude Include="..\coreutils\lib\include\unused\pathmax.h">
+      <Filter>Header Files\coreutils-deps\lib\unused</Filter>
+    </ClInclude>
+    <ClInclude Include="..\coreutils\lib\include\unused\propername.h">
+      <Filter>Header Files\coreutils-deps\lib\unused</Filter>
+    </ClInclude>
+    <ClInclude Include="..\coreutils\lib\include\unused\same-inode.h">
+      <Filter>Header Files\coreutils-deps\lib\unused</Filter>
+    </ClInclude>
+    <ClInclude Include="..\coreutils\lib\include\unused\stat-macros.h">
+      <Filter>Header Files\coreutils-deps\lib\unused</Filter>
+    </ClInclude>
+    <ClInclude Include="..\coreutils\lib\include\unused\timespec.h">
+      <Filter>Header Files\coreutils-deps\lib\unused</Filter>
+    </ClInclude>
+    <ClInclude Include="..\coreutils\lib\include\unused\unlocked-io.h">
+      <Filter>Header Files\coreutils-deps\lib\unused</Filter>
+    </ClInclude>
+    <ClInclude Include="..\coreutils\src\include\system.h">
+      <Filter>Header Files\coreutils-deps\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\coreutils\src\include\version.h">
+      <Filter>Header Files\coreutils-deps\src\unmodified</Filter>
+    </ClInclude>
+    <ClInclude Include="..\compat\compat_post.h">
+      <Filter>Header Files\compat</Filter>
+    </ClInclude>
+    <ClInclude Include="..\compat\compat_pre.h">
+      <Filter>Header Files\compat</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\config.h">
+      <Filter>Header Files\compat</Filter>
+    </ClInclude>
+    <ClInclude Include="..\compat\safe_malloc.h">
+      <Filter>Header Files\compat</Filter>
+    </ClInclude>
+    <ClInclude Include="..\compat\unistr.h">
+      <Filter>Header Files\compat</Filter>
+    </ClInclude>
+    <ClInclude Include="..\compat\win32utf16.h">
+      <Filter>Header Files\compat</Filter>
+    </ClInclude>
+    <ClInclude Include="..\compat\win32\com_supp.h">
+      <Filter>Header Files\compat\win32</Filter>
+    </ClInclude>
+    <ClInclude Include="..\compat\win32\console_win32.h">
+      <Filter>Header Files\compat\win32</Filter>
+    </ClInclude>
+    <ClInclude Include="..\compat\win32\devfiles_win32.h">
+      <Filter>Header Files\compat\win32</Filter>
+    </ClInclude>
+    <ClInclude Include="..\compat\win32\error_win32.h">
+      <Filter>Header Files\compat\win32</Filter>
+    </ClInclude>
+    <ClInclude Include="..\compat\win32\handles_win32.h">
+      <Filter>Header Files\compat\win32</Filter>
+    </ClInclude>
+    <ClInclude Include="..\compat\win32\msvcr_fileops.h">
+      <Filter>Header Files\compat\win32</Filter>
+    </ClInclude>
+    <ClInclude Include="..\compat\win32\objmgr_win32.h">
+      <Filter>Header Files\compat\win32</Filter>
+    </ClInclude>
+    <ClInclude Include="..\compat\win32\path_win32.h">
+      <Filter>Header Files\compat\win32</Filter>
+    </ClInclude>
+    <ClInclude Include="..\compat\win32\raw_win32.h">
+      <Filter>Header Files\compat\win32</Filter>
+    </ClInclude>
+    <ClInclude Include="..\compat\win32\suppart_win32.h">
+      <Filter>Header Files\compat\win32</Filter>
+    </ClInclude>
+    <ClInclude Include="..\compat\win32\windows_api.h">
+      <Filter>Header Files\compat\win32</Filter>
+    </ClInclude>
+    <ClInclude Include="..\compat\win32\wmi_supp.h">
+      <Filter>Header Files\compat\win32</Filter>
+    </ClInclude>
+    <ClInclude Include="..\compat\win32\diskmgmt\diskmgmt_win32.h">
+      <Filter>Header Files\compat\win32\diskmgmt</Filter>
+    </ClInclude>
+    <ClInclude Include="..\compat\win32\diskmgmt\logical_volumes.h">
+      <Filter>Header Files\compat\win32\diskmgmt</Filter>
+    </ClInclude>
+    <ClInclude Include="..\compat\win32\diskmgmt\physical_disks.h">
+      <Filter>Header Files\compat\win32\diskmgmt</Filter>
+    </ClInclude>
+    <ClInclude Include="..\compat\win32\diskmgmt\wdx_identifer.h">
+      <Filter>Header Files\compat\win32\diskmgmt</Filter>
+    </ClInclude>
+    <ClInclude Include="..\compat\posix\asprintf\asprintf.h">
+      <Filter>Header Files\compat\posix</Filter>
+    </ClInclude>
+    <ClInclude Include="..\compat\posix\posix_win32.h">
+      <Filter>Header Files\compat\posix</Filter>
+    </ClInclude>
+    <ClInclude Include="..\compat\posix\msvc\clock_gettime.h">
+      <Filter>Header Files\compat\posix\msvc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\compat\posix\msvc\fcntl_win32.h">
+      <Filter>Header Files\compat\posix\msvc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\compat\usr_include\time_compat.h">
+      <Filter>Header Files\compat\usr_include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\compat\usr_include\ctype_compat.h">
+      <Filter>Header Files\compat\usr_include\unused</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

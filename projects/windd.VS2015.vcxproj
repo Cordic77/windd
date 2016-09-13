@@ -1,0 +1,600 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="dll-ansi-debug|Win32">
+      <Configuration>dll-ansi-debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="dll-ansi-debug|x64">
+      <Configuration>dll-ansi-debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="dll-ansi-release|Win32">
+      <Configuration>dll-ansi-release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="dll-ansi-release|x64">
+      <Configuration>dll-ansi-release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="lib-ansi-debug|Win32">
+      <Configuration>lib-ansi-debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="lib-ansi-debug|x64">
+      <Configuration>lib-ansi-debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="lib-ansi-release|Win32">
+      <Configuration>lib-ansi-release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="lib-ansi-release|x64">
+      <Configuration>lib-ansi-release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectName>windd</ProjectName>
+    <ProjectGuid>{B4F61778-C45D-45C6-9E87-06F03F50519F}</ProjectGuid>
+    <RootNamespace>windd</RootNamespace>
+    <Keyword>Win32Proj</Keyword>
+    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='dll-ansi-debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <PlatformToolset>v140</PlatformToolset>
+    <CharacterSet>NotSet</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='dll-ansi-release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <PlatformToolset>v140</PlatformToolset>
+    <CharacterSet>NotSet</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='lib-ansi-debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <PlatformToolset>v140</PlatformToolset>
+    <CharacterSet>NotSet</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='lib-ansi-release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <PlatformToolset>v140</PlatformToolset>
+    <CharacterSet>NotSet</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='dll-ansi-debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <PlatformToolset>v140</PlatformToolset>
+    <CharacterSet>NotSet</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='dll-ansi-release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <PlatformToolset>v140</PlatformToolset>
+    <CharacterSet>NotSet</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='lib-ansi-debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <PlatformToolset>v140</PlatformToolset>
+    <CharacterSet>NotSet</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='lib-ansi-release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <PlatformToolset>v140</PlatformToolset>
+    <CharacterSet>NotSet</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='dll-ansi-debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='dll-ansi-release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='lib-ansi-debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='lib-ansi-release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='dll-ansi-debug|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='dll-ansi-release|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='lib-ansi-debug|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='lib-ansi-release|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>14.0.25420.1</_ProjectFileVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='lib-ansi-release|Win32'">
+    <OutDir>$(SolutionDir)..\bin\lib-ansi-x86-release\</OutDir>
+    <IntDir>$(SolutionDir)..\bin\lib-ansi-x86-release\VS2015\</IntDir>
+    <LinkIncremental>false</LinkIncremental>
+    <TargetName>$(ProjectName)_vs2015</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='lib-ansi-release|x64'">
+    <OutDir>$(SolutionDir)..\bin\lib-ansi-x64-release\</OutDir>
+    <IntDir>$(SolutionDir)..\bin\lib-ansi-x64-release\VS2015\</IntDir>
+    <LinkIncremental>false</LinkIncremental>
+    <TargetName>$(ProjectName)_vs2015</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='lib-ansi-debug|Win32'">
+    <OutDir>$(SolutionDir)..\bin\lib-ansi-x86-debug\</OutDir>
+    <IntDir>$(SolutionDir)..\bin\lib-ansi-x86-debug\VS2015\</IntDir>
+    <TargetName>$(ProjectName)d_vs2015</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='lib-ansi-debug|x64'">
+    <OutDir>$(SolutionDir)..\bin\lib-ansi-x64-debug\</OutDir>
+    <IntDir>$(SolutionDir)..\bin\lib-ansi-x64-debug\VS2015\</IntDir>
+    <TargetName>$(ProjectName)d_vs2015</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='dll-ansi-release|Win32'">
+    <OutDir>$(SolutionDir)..\bin\dll-ansi-x86-release\</OutDir>
+    <IntDir>$(SolutionDir)..\bin\dll-ansi-x86-release\VS2015\</IntDir>
+    <LinkIncremental>false</LinkIncremental>
+    <TargetName>$(ProjectName)_vs2015</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='dll-ansi-release|x64'">
+    <OutDir>$(SolutionDir)..\bin\dll-ansi-x64-release\</OutDir>
+    <IntDir>$(SolutionDir)..\bin\dll-ansi-x64-release\VS2015\</IntDir>
+    <LinkIncremental>false</LinkIncremental>
+    <TargetName>$(ProjectName)_vs2015</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='dll-ansi-debug|Win32'">
+    <OutDir>$(SolutionDir)..\bin\dll-ansi-x86-debug\</OutDir>
+    <IntDir>$(SolutionDir)..\bin\dll-ansi-x86-debug\VS2015\</IntDir>
+    <TargetName>$(ProjectName)d_vs2015</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='dll-ansi-debug|x64'">
+    <OutDir>$(SolutionDir)..\bin\dll-ansi-x64-debug\</OutDir>
+    <IntDir>$(SolutionDir)..\bin\dll-ansi-x64-debug\VS2015\</IntDir>
+    <TargetName>$(ProjectName)d_vs2015</TargetName>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='lib-ansi-release|Win32'">
+    <ClCompile>
+      <AdditionalOptions>/wd4116 %(AdditionalOptions)</AdditionalOptions>
+      <Optimization>Full</Optimization>
+      <IntrinsicFunctions>false</IntrinsicFunctions>
+      <EnableFiberSafeOptimizations>true</EnableFiberSafeOptimizations>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\compat\stdc99;$(ProjectDir)..\compat\usr_include;$(ProjectDir)..\compat;$(ProjectDir)..\compat\posix;$(ProjectDir)..\compat\posix\asprintf;$(ProjectDir)..\compat\posix\getopt\include;$(ProjectDir)..\compat\libb64\include;$(ProjectDir)..\coreutils\lib\include;$(ProjectDir)..\coreutils\lib\include\unused;$(ProjectDir)..\coreutils\src\include;$(ProjectDir)..\coreutils\src\include\unused;$(ProjectDir)..\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_WIN32;NDEBUG;_WINDOWS;_CONSOLE;_CRT_NONSTDC_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <PrecompiledHeader />
+      <ProgramDataBaseFileName>$(IntDir)$(TargetName).pdb</ProgramDataBaseFileName>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <CompileAs>CompileAsC</CompileAs>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>libcmt.lib;libvcruntime.lib;libucrt.lib;AdvAPI32.lib;ShLwApi.lib;WbemUuid.lib;getopt_vs2015.lib;libb64_vs2015.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)$(ProjectName)_vs2015.exe</OutputFile>
+      <AdditionalLibraryDirectories>$(TargetDir);$(ProjectDir)..\compat\posix\getopt\lib\lib-ansi-x86-release;$(ProjectDir)..\compat\libb64\lib\lib-ansi-x86-release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <IgnoreAllDefaultLibraries>true</IgnoreAllDefaultLibraries>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <SubSystem>Console</SubSystem>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='lib-ansi-release|x64'">
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <AdditionalOptions>/wd4116 %(AdditionalOptions)</AdditionalOptions>
+      <Optimization>Full</Optimization>
+      <IntrinsicFunctions>false</IntrinsicFunctions>
+      <EnableFiberSafeOptimizations>true</EnableFiberSafeOptimizations>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\compat\stdc99;$(ProjectDir)..\compat\usr_include;$(ProjectDir)..\compat;$(ProjectDir)..\compat\posix;$(ProjectDir)..\compat\posix\asprintf;$(ProjectDir)..\compat\posix\getopt\include;$(ProjectDir)..\compat\libb64\include;$(ProjectDir)..\coreutils\lib\include;$(ProjectDir)..\coreutils\lib\include\unused;$(ProjectDir)..\coreutils\src\include;$(ProjectDir)..\coreutils\src\include\unused;$(ProjectDir)..\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_WIN32;_WIN64;NDEBUG;_WINDOWS;_CONSOLE;_CRT_NONSTDC_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <PrecompiledHeader />
+      <ProgramDataBaseFileName>$(IntDir)$(TargetName).pdb</ProgramDataBaseFileName>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <CompileAs>CompileAsC</CompileAs>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>libcmt.lib;libvcruntime.lib;libucrt.lib;AdvAPI32.lib;ShLwApi.lib;WbemUuid.lib;getopt_vs2015.lib;libb64_vs2015.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)$(ProjectName)_vs2015.exe</OutputFile>
+      <AdditionalLibraryDirectories>$(TargetDir);$(ProjectDir)..\compat\posix\getopt\lib\lib-ansi-x64-release;$(ProjectDir)..\compat\libb64\lib\lib-ansi-x64-release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <IgnoreAllDefaultLibraries>true</IgnoreAllDefaultLibraries>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <SubSystem>Console</SubSystem>
+      <TargetMachine>MachineX64</TargetMachine>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='lib-ansi-debug|Win32'">
+    <ClCompile>
+      <AdditionalOptions>/wd4116 %(AdditionalOptions)</AdditionalOptions>
+      <Optimization>Disabled</Optimization>
+      <WholeProgramOptimization>false</WholeProgramOptimization>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\compat\stdc99;$(ProjectDir)..\compat\usr_include;$(ProjectDir)..\compat;$(ProjectDir)..\compat\posix;$(ProjectDir)..\compat\posix\asprintf;$(ProjectDir)..\compat\posix\getopt\include;$(ProjectDir)..\compat\libb64\include;$(ProjectDir)..\coreutils\lib\include;$(ProjectDir)..\coreutils\lib\include\unused;$(ProjectDir)..\coreutils\src\include;$(ProjectDir)..\coreutils\src\include\unused;$(ProjectDir)..\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_WIN32;_DEBUG;_WINDOWS;_CONSOLE;_CRT_NONSTDC_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <PrecompiledHeader />
+      <ProgramDataBaseFileName>$(IntDir)$(TargetName).pdb</ProgramDataBaseFileName>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <CompileAs>CompileAsC</CompileAs>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>libcmtd.lib;libvcruntimed.lib;libucrtd.lib;AdvAPI32.lib;ShLwApi.lib;WbemUuid.lib;getoptd_vs2015.lib;libb64d_vs2015.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)$(ProjectName)d_vs2015.exe</OutputFile>
+      <AdditionalLibraryDirectories>$(TargetDir);$(ProjectDir)..\compat\posix\getopt\lib\lib-ansi-x86-debug;$(ProjectDir)..\compat\libb64\lib\lib-ansi-x86-debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <IgnoreAllDefaultLibraries>true</IgnoreAllDefaultLibraries>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Console</SubSystem>
+      <LinkTimeCodeGeneration />
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='lib-ansi-debug|x64'">
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <AdditionalOptions>/wd4116 %(AdditionalOptions)</AdditionalOptions>
+      <Optimization>Disabled</Optimization>
+      <WholeProgramOptimization>false</WholeProgramOptimization>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\compat\stdc99;$(ProjectDir)..\compat\usr_include;$(ProjectDir)..\compat;$(ProjectDir)..\compat\posix;$(ProjectDir)..\compat\posix\asprintf;$(ProjectDir)..\compat\posix\getopt\include;$(ProjectDir)..\compat\libb64\include;$(ProjectDir)..\coreutils\lib\include;$(ProjectDir)..\coreutils\lib\include\unused;$(ProjectDir)..\coreutils\src\include;$(ProjectDir)..\coreutils\src\include\unused;$(ProjectDir)..\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_WIN32;_WIN64;_DEBUG;_WINDOWS;_CONSOLE;_CRT_NONSTDC_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <PrecompiledHeader />
+      <ProgramDataBaseFileName>$(IntDir)$(TargetName).pdb</ProgramDataBaseFileName>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <CompileAs>CompileAsC</CompileAs>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>libcmtd.lib;libvcruntimed.lib;libucrtd.lib;AdvAPI32.lib;ShLwApi.lib;WbemUuid.lib;getoptd_vs2015.lib;libb64d_vs2015.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)$(ProjectName)d_vs2015.exe</OutputFile>
+      <AdditionalLibraryDirectories>$(TargetDir);$(ProjectDir)..\compat\posix\getopt\lib\lib-ansi-x64-debug;$(ProjectDir)..\compat\libb64\lib\lib-ansi-x64-debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <IgnoreAllDefaultLibraries>true</IgnoreAllDefaultLibraries>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Console</SubSystem>
+      <LinkTimeCodeGeneration />
+      <TargetMachine>MachineX64</TargetMachine>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='dll-ansi-release|Win32'">
+    <ClCompile>
+      <AdditionalOptions>/wd4116 %(AdditionalOptions)</AdditionalOptions>
+      <Optimization>Full</Optimization>
+      <IntrinsicFunctions>false</IntrinsicFunctions>
+      <EnableFiberSafeOptimizations>true</EnableFiberSafeOptimizations>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\compat\stdc99;$(ProjectDir)..\compat\usr_include;$(ProjectDir)..\compat;$(ProjectDir)..\compat\posix;$(ProjectDir)..\compat\posix\asprintf;$(ProjectDir)..\compat\posix\getopt\include;$(ProjectDir)..\compat\libb64\include;$(ProjectDir)..\coreutils\lib\include;$(ProjectDir)..\coreutils\lib\include\unused;$(ProjectDir)..\coreutils\src\include;$(ProjectDir)..\coreutils\src\include\unused;$(ProjectDir)..\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_WIN32;NDEBUG;_WINDOWS;_CONSOLE;_CRT_NONSTDC_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <PrecompiledHeader />
+      <ProgramDataBaseFileName>$(IntDir)$(TargetName).pdb</ProgramDataBaseFileName>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <CompileAs>CompileAsC</CompileAs>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>msvcrt.lib;vcruntime.lib;ucrt.lib;AdvAPI32.lib;ShLwApi.lib;WbemUuid.lib;getopt_vs2015.lib;libb64_vs2015.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)$(ProjectName)_vs2015.exe</OutputFile>
+      <AdditionalLibraryDirectories>$(TargetDir);$(ProjectDir)..\compat\posix\getopt\lib\dll-ansi-x86-release;$(ProjectDir)..\compat\libb64\lib\dll-ansi-x86-release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <IgnoreAllDefaultLibraries>true</IgnoreAllDefaultLibraries>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <SubSystem>Console</SubSystem>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='dll-ansi-release|x64'">
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <AdditionalOptions>/wd4116 %(AdditionalOptions)</AdditionalOptions>
+      <Optimization>Full</Optimization>
+      <IntrinsicFunctions>false</IntrinsicFunctions>
+      <EnableFiberSafeOptimizations>true</EnableFiberSafeOptimizations>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\compat\stdc99;$(ProjectDir)..\compat\usr_include;$(ProjectDir)..\compat;$(ProjectDir)..\compat\posix;$(ProjectDir)..\compat\posix\asprintf;$(ProjectDir)..\compat\posix\getopt\include;$(ProjectDir)..\compat\libb64\include;$(ProjectDir)..\coreutils\lib\include;$(ProjectDir)..\coreutils\lib\include\unused;$(ProjectDir)..\coreutils\src\include;$(ProjectDir)..\coreutils\src\include\unused;$(ProjectDir)..\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_WIN32;_WIN64;NDEBUG;_WINDOWS;_CONSOLE;_CRT_NONSTDC_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <PrecompiledHeader />
+      <ProgramDataBaseFileName>$(IntDir)$(TargetName).pdb</ProgramDataBaseFileName>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <CompileAs>CompileAsC</CompileAs>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>msvcrt.lib;vcruntime.lib;ucrt.lib;AdvAPI32.lib;ShLwApi.lib;WbemUuid.lib;getopt_vs2015.lib;libb64_vs2015.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)$(ProjectName)_vs2015.exe</OutputFile>
+      <AdditionalLibraryDirectories>$(TargetDir);$(ProjectDir)..\compat\posix\getopt\lib\dll-ansi-x64-release;$(ProjectDir)..\compat\libb64\lib\dll-ansi-x64-release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <IgnoreAllDefaultLibraries>true</IgnoreAllDefaultLibraries>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Console</SubSystem>
+      <TargetMachine>MachineX64</TargetMachine>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='dll-ansi-debug|Win32'">
+    <ClCompile>
+      <AdditionalOptions>/wd4116 %(AdditionalOptions)</AdditionalOptions>
+      <Optimization>Disabled</Optimization>
+      <WholeProgramOptimization>false</WholeProgramOptimization>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\compat\stdc99;$(ProjectDir)..\compat\usr_include;$(ProjectDir)..\compat;$(ProjectDir)..\compat\posix;$(ProjectDir)..\compat\posix\asprintf;$(ProjectDir)..\compat\posix\getopt\include;$(ProjectDir)..\compat\libb64\include;$(ProjectDir)..\coreutils\lib\include;$(ProjectDir)..\coreutils\lib\include\unused;$(ProjectDir)..\coreutils\src\include;$(ProjectDir)..\coreutils\src\include\unused;$(ProjectDir)..\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_WIN32;_DEBUG;_WINDOWS;_CONSOLE;_CRT_NONSTDC_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <PrecompiledHeader />
+      <ProgramDataBaseFileName>$(IntDir)$(TargetName).pdb</ProgramDataBaseFileName>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <CompileAs>CompileAsC</CompileAs>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>msvcrtd.lib;vcruntimed.lib;ucrtd.lib;AdvAPI32.lib;ShLwApi.lib;WbemUuid.lib;getoptd_vs2015.lib;libb64d_vs2015.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)$(ProjectName)d_vs2015.exe</OutputFile>
+      <AdditionalLibraryDirectories>$(TargetDir);$(ProjectDir)..\compat\posix\getopt\lib\dll-ansi-x86-debug;$(ProjectDir)..\compat\libb64\lib\dll-ansi-x86-debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <IgnoreAllDefaultLibraries>true</IgnoreAllDefaultLibraries>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Console</SubSystem>
+      <LinkTimeCodeGeneration />
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='dll-ansi-debug|x64'">
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <AdditionalOptions>/wd4116 %(AdditionalOptions)</AdditionalOptions>
+      <Optimization>Disabled</Optimization>
+      <WholeProgramOptimization>false</WholeProgramOptimization>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\compat\stdc99;$(ProjectDir)..\compat\usr_include;$(ProjectDir)..\compat;$(ProjectDir)..\compat\posix;$(ProjectDir)..\compat\posix\asprintf;$(ProjectDir)..\compat\posix\getopt\include;$(ProjectDir)..\compat\libb64\include;$(ProjectDir)..\coreutils\lib\include;$(ProjectDir)..\coreutils\lib\include\unused;$(ProjectDir)..\coreutils\src\include;$(ProjectDir)..\coreutils\src\include\unused;$(ProjectDir)..\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_WIN32;_WIN64;_DEBUG;_WINDOWS;_CONSOLE;_CRT_NONSTDC_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <PrecompiledHeader />
+      <ProgramDataBaseFileName>$(IntDir)$(TargetName).pdb</ProgramDataBaseFileName>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <CompileAs>CompileAsC</CompileAs>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>msvcrtd.lib;vcruntimed.lib;ucrtd.lib;AdvAPI32.lib;ShLwApi.lib;WbemUuid.lib;getoptd_vs2015.lib;libb64d_vs2015.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)$(ProjectName)d_vs2015.exe</OutputFile>
+      <AdditionalLibraryDirectories>$(TargetDir);$(ProjectDir)..\compat\posix\getopt\lib\dll-ansi-x64-debug;$(ProjectDir)..\compat\libb64\lib\dll-ansi-x64-debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <IgnoreAllDefaultLibraries>true</IgnoreAllDefaultLibraries>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Console</SubSystem>
+      <LinkTimeCodeGeneration />
+      <TargetMachine>MachineX64</TargetMachine>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="..\compat\posix\asprintf\msvc\vasprintf-msvc.c" />
+    <ClCompile Include="..\compat\posix\fdreopen_win32.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='dll-ansi-debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='dll-ansi-debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='dll-ansi-release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='dll-ansi-release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='lib-ansi-debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='lib-ansi-debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='lib-ansi-release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='lib-ansi-release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\compat\posix\msvc\clock_gettime.c" />
+    <ClCompile Include="..\compat\posix\msvc\fcntl_win32.c" />
+    <ClCompile Include="..\compat\posix\posix_win32.c" />
+    <ClCompile Include="..\compat\safe_malloc.c" />
+    <ClCompile Include="..\compat\unistr.c" />
+    <ClCompile Include="..\compat\win32\com_supp.c" />
+    <ClCompile Include="..\compat\win32\console_win32.c" />
+    <ClCompile Include="..\compat\win32\devfiles_win32.c" />
+    <ClCompile Include="..\compat\win32\diskmgmt\logical_volumes.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='dll-ansi-debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='lib-ansi-release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='dll-ansi-release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='lib-ansi-debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='dll-ansi-debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='lib-ansi-release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='dll-ansi-release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='lib-ansi-debug|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\compat\win32\diskmgmt\wdx_identifer.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='dll-ansi-debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='lib-ansi-release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='dll-ansi-release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='lib-ansi-debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='dll-ansi-debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='lib-ansi-release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='dll-ansi-release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='lib-ansi-debug|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\compat\win32\diskmgmt\diskmgmt_win32.c" />
+    <ClCompile Include="..\compat\win32\diskmgmt\physical_disks.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='dll-ansi-debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='lib-ansi-release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='dll-ansi-release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='lib-ansi-debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='dll-ansi-debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='lib-ansi-release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='dll-ansi-release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='lib-ansi-debug|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\compat\win32\error_win32.c" />
+    <ClCompile Include="..\compat\win32\handles_win32.c" />
+    <ClCompile Include="..\compat\win32\msvcr_fileops.c" />
+    <ClCompile Include="..\compat\win32\objmgr_win32.c" />
+    <ClCompile Include="..\compat\win32\path_win32.c" />
+    <ClCompile Include="..\compat\win32\raw_win32.c" />
+    <ClCompile Include="..\compat\win32\suppart_win32.c" />
+    <ClCompile Include="..\compat\win32\wmi_supp.c" />
+    <ClCompile Include="..\compat\winmain.c" />
+    <ClCompile Include="..\coreutils\lib\basename-lgpl.c" />
+    <ClCompile Include="..\coreutils\lib\close-stream.c" />
+    <ClCompile Include="..\coreutils\lib\closeout.c" />
+    <ClCompile Include="..\coreutils\lib\error.c" />
+    <ClCompile Include="..\coreutils\lib\exitfail.c" />
+    <ClCompile Include="..\coreutils\lib\fd-reopen.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='dll-ansi-debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='dll-ansi-debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='dll-ansi-release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='dll-ansi-release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='lib-ansi-debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='lib-ansi-debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='lib-ansi-release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='lib-ansi-release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\coreutils\lib\fpending.c" />
+    <ClCompile Include="..\coreutils\lib\gethrxtime.c" />
+    <ClCompile Include="..\coreutils\lib\human.c">
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='dll-ansi-debug|Win32'">4244;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='dll-ansi-debug|x64'">4244;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='dll-ansi-release|Win32'">4244;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='dll-ansi-release|x64'">4244;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='lib-ansi-debug|Win32'">4244;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='lib-ansi-debug|x64'">4244;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='lib-ansi-release|Win32'">4244;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='lib-ansi-release|x64'">4244;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Include="..\coreutils\lib\localcharset.c" />
+    <ClCompile Include="..\coreutils\lib\long-options.c" />
+    <ClCompile Include="..\coreutils\lib\progname.c" />
+    <ClCompile Include="..\coreutils\lib\quotearg.c" />
+    <ClCompile Include="..\coreutils\lib\unused\argmatch.c" />
+    <ClCompile Include="..\coreutils\lib\verror.c" />
+    <ClCompile Include="..\coreutils\lib\version-etc-fsf.c" />
+    <ClCompile Include="..\coreutils\lib\version-etc.c" />
+    <ClCompile Include="..\coreutils\lib\xalloc-die.c" />
+    <ClCompile Include="..\coreutils\lib\xmalloc.c">
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='dll-ansi-debug|Win32'">4005;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='dll-ansi-debug|x64'">4005;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='dll-ansi-release|Win32'">4005;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='dll-ansi-release|x64'">4005;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='lib-ansi-debug|Win32'">4005;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='lib-ansi-debug|x64'">4005;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='lib-ansi-release|Win32'">4005;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='lib-ansi-release|x64'">4005;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Include="..\coreutils\lib\xsize.c" />
+    <ClCompile Include="..\coreutils\lib\xstrtol.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='dll-ansi-debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='dll-ansi-debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='dll-ansi-release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='dll-ansi-release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='lib-ansi-debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='lib-ansi-debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='lib-ansi-release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='lib-ansi-release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\coreutils\lib\xstrtoumax.c" />
+    <ClCompile Include="..\coreutils\lib\xvasprintf.c" />
+    <ClCompile Include="..\coreutils\src\version.c" />
+    <ClCompile Include="..\src\dd.c">
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='dll-ansi-debug|Win32'">4018;4244;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='dll-ansi-debug|x64'">4018;4244;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='dll-ansi-release|Win32'">4018;4244;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='dll-ansi-release|x64'">4018;4244;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='lib-ansi-debug|Win32'">4018;4244;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='lib-ansi-debug|x64'">4018;4244;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='lib-ansi-release|Win32'">4018;4244;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='lib-ansi-release|x64'">4018;4244;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\compat\compat_post.h" />
+    <ClInclude Include="..\compat\compat_pre.h" />
+    <ClInclude Include="..\compat\posix\asprintf\asprintf.h" />
+    <ClInclude Include="..\compat\posix\msvc\clock_gettime.h" />
+    <ClInclude Include="..\compat\posix\msvc\fcntl_win32.h" />
+    <ClInclude Include="..\compat\posix\posix_win32.h" />
+    <ClInclude Include="..\compat\safe_malloc.h" />
+    <ClInclude Include="..\compat\unistr.h" />
+    <ClInclude Include="..\compat\usr_include\ctype_compat.h" />
+    <ClInclude Include="..\compat\usr_include\time_compat.h" />
+    <ClInclude Include="..\compat\win32utf16.h" />
+    <ClInclude Include="..\compat\win32\com_supp.h" />
+    <ClInclude Include="..\compat\win32\console_win32.h" />
+    <ClInclude Include="..\compat\win32\devfiles_win32.h" />
+    <ClInclude Include="..\compat\win32\diskmgmt\diskmgmt_win32.h" />
+    <ClInclude Include="..\compat\win32\diskmgmt\logical_volumes.h" />
+    <ClInclude Include="..\compat\win32\diskmgmt\physical_disks.h" />
+    <ClInclude Include="..\compat\win32\diskmgmt\wdx_identifer.h" />
+    <ClInclude Include="..\compat\win32\error_win32.h" />
+    <ClInclude Include="..\compat\win32\handles_win32.h" />
+    <ClInclude Include="..\compat\win32\msvcr_fileops.h" />
+    <ClInclude Include="..\compat\win32\objmgr_win32.h" />
+    <ClInclude Include="..\compat\win32\path_win32.h" />
+    <ClInclude Include="..\compat\win32\raw_win32.h" />
+    <ClInclude Include="..\compat\win32\suppart_win32.h" />
+    <ClInclude Include="..\compat\win32\windows_api.h" />
+    <ClInclude Include="..\compat\win32\wmi_supp.h" />
+    <ClInclude Include="..\coreutils\lib\include\assure.h" />
+    <ClInclude Include="..\coreutils\lib\include\c-strcaseeq.h" />
+    <ClInclude Include="..\coreutils\lib\include\close-stream.h" />
+    <ClInclude Include="..\coreutils\lib\include\closeout.h" />
+    <ClInclude Include="..\coreutils\lib\include\dirname.h" />
+    <ClInclude Include="..\coreutils\lib\include\dosname.h" />
+    <ClInclude Include="..\coreutils\lib\include\error.h" />
+    <ClInclude Include="..\coreutils\lib\include\exitfail.h" />
+    <ClInclude Include="..\coreutils\lib\include\fd-reopen.h" />
+    <ClInclude Include="..\coreutils\lib\include\fpending.h" />
+    <ClInclude Include="..\coreutils\lib\include\gethrxtime.h" />
+    <ClInclude Include="..\coreutils\lib\include\human.h" />
+    <ClInclude Include="..\coreutils\lib\include\intprops.h" />
+    <ClInclude Include="..\coreutils\lib\include\localcharset.h" />
+    <ClInclude Include="..\coreutils\lib\include\long-options.h" />
+    <ClInclude Include="..\coreutils\lib\include\msvc-nothrow.h" />
+    <ClInclude Include="..\coreutils\lib\include\progname.h" />
+    <ClInclude Include="..\coreutils\lib\include\quote.h" />
+    <ClInclude Include="..\coreutils\lib\include\quotearg.h" />
+    <ClInclude Include="..\coreutils\lib\include\unused\argmatch.h" />
+    <ClInclude Include="..\coreutils\lib\include\unused\c-ctype.h" />
+    <ClInclude Include="..\coreutils\lib\include\unused\c-strcase.h" />
+    <ClInclude Include="..\coreutils\lib\include\unused\closein.h" />
+    <ClInclude Include="..\coreutils\lib\include\unused\configmake.h" />
+    <ClInclude Include="..\coreutils\lib\include\unused\gettext.h" />
+    <ClInclude Include="..\coreutils\lib\include\unused\inttostr.h" />
+    <ClInclude Include="..\coreutils\lib\include\unused\openat.h" />
+    <ClInclude Include="..\coreutils\lib\include\unused\pathmax.h" />
+    <ClInclude Include="..\coreutils\lib\include\unused\propername.h" />
+    <ClInclude Include="..\coreutils\lib\include\unused\same-inode.h" />
+    <ClInclude Include="..\coreutils\lib\include\unused\stat-macros.h" />
+    <ClInclude Include="..\coreutils\lib\include\unused\timespec.h" />
+    <ClInclude Include="..\coreutils\lib\include\unused\unlocked-io.h" />
+    <ClInclude Include="..\coreutils\lib\include\verify.h" />
+    <ClInclude Include="..\coreutils\lib\include\verror.h" />
+    <ClInclude Include="..\coreutils\lib\include\version-etc.h" />
+    <ClInclude Include="..\coreutils\lib\include\xalloc-oversized.h" />
+    <ClInclude Include="..\coreutils\lib\include\xalloc.h" />
+    <ClInclude Include="..\coreutils\lib\include\xsize.h" />
+    <ClInclude Include="..\coreutils\lib\include\xstrtol.h" />
+    <ClInclude Include="..\coreutils\lib\include\xtime.h" />
+    <ClInclude Include="..\coreutils\lib\include\xvasprintf.h" />
+    <ClInclude Include="..\coreutils\src\include\system.h" />
+    <ClInclude Include="..\coreutils\src\include\version.h" />
+    <ClInclude Include="..\include\config.h" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

@@ -1,0 +1,38 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="src">
+      <UniqueIdentifier>{4d90f13e-5b52-48da-8951-bd76d4eff34c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include">
+      <UniqueIdentifier>{75ebd31b-c30b-4681-b073-6c5d64e91395}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="resource">
+      <UniqueIdentifier>{64dfb2a5-66bb-4014-83ee-0f2a799644cf}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\src\cdecode.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\cencode.c">
+      <Filter>src</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\include\b64\cdecode.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\b64\cencode.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="config.h">
+      <Filter>resource</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="libb64.def">
+      <Filter>resource</Filter>
+    </None>
+  </ItemGroup>
+</Project>

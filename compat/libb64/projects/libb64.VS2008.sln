@@ -1,0 +1,37 @@
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libb64", "libb64.VS2008.vcproj", "{96591647-704C-44D2-8B60-4D25DA58C93B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		dll-ansi-debug|Win32 = dll-ansi-debug|Win32
+		dll-ansi-debug|x64 = dll-ansi-debug|x64
+		dll-ansi-release|Win32 = dll-ansi-release|Win32
+		dll-ansi-release|x64 = dll-ansi-release|x64
+		lib-ansi-debug|Win32 = lib-ansi-debug|Win32
+		lib-ansi-debug|x64 = lib-ansi-debug|x64
+		lib-ansi-release|Win32 = lib-ansi-release|Win32
+		lib-ansi-release|x64 = lib-ansi-release|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{96591647-704C-44D2-8B60-4D25DA58C93B}.dll-ansi-debug|Win32.ActiveCfg = dll-ansi-debug|Win32
+		{96591647-704C-44D2-8B60-4D25DA58C93B}.dll-ansi-debug|Win32.Build.0 = dll-ansi-debug|Win32
+		{96591647-704C-44D2-8B60-4D25DA58C93B}.dll-ansi-debug|x64.ActiveCfg = dll-ansi-debug|x64
+		{96591647-704C-44D2-8B60-4D25DA58C93B}.dll-ansi-debug|x64.Build.0 = dll-ansi-debug|x64
+		{96591647-704C-44D2-8B60-4D25DA58C93B}.dll-ansi-release|Win32.ActiveCfg = dll-ansi-release|Win32
+		{96591647-704C-44D2-8B60-4D25DA58C93B}.dll-ansi-release|Win32.Build.0 = dll-ansi-release|Win32
+		{96591647-704C-44D2-8B60-4D25DA58C93B}.dll-ansi-release|x64.ActiveCfg = dll-ansi-release|x64
+		{96591647-704C-44D2-8B60-4D25DA58C93B}.dll-ansi-release|x64.Build.0 = dll-ansi-release|x64
+		{96591647-704C-44D2-8B60-4D25DA58C93B}.lib-ansi-debug|Win32.ActiveCfg = lib-ansi-debug|Win32
+		{96591647-704C-44D2-8B60-4D25DA58C93B}.lib-ansi-debug|Win32.Build.0 = lib-ansi-debug|Win32
+		{96591647-704C-44D2-8B60-4D25DA58C93B}.lib-ansi-debug|x64.ActiveCfg = lib-ansi-debug|x64
+		{96591647-704C-44D2-8B60-4D25DA58C93B}.lib-ansi-debug|x64.Build.0 = lib-ansi-debug|x64
+		{96591647-704C-44D2-8B60-4D25DA58C93B}.lib-ansi-release|Win32.ActiveCfg = lib-ansi-release|Win32
+		{96591647-704C-44D2-8B60-4D25DA58C93B}.lib-ansi-release|Win32.Build.0 = lib-ansi-release|Win32
+		{96591647-704C-44D2-8B60-4D25DA58C93B}.lib-ansi-release|x64.ActiveCfg = lib-ansi-release|x64
+		{96591647-704C-44D2-8B60-4D25DA58C93B}.lib-ansi-release|x64.Build.0 = lib-ansi-release|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

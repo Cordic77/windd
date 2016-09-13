@@ -1,0 +1,35 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='lib-ansi-release|Win32'">
+    <LocalDebuggerCommandArguments>if=!/dev/wda6 of=con: bs=512 count=1</LocalDebuggerCommandArguments>
+    <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='lib-ansi-release|x64'">
+    <LocalDebuggerCommandArguments>if=!/dev/wda6 of=con: bs=512 count=1</LocalDebuggerCommandArguments>
+    <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='lib-ansi-debug|x64'">
+    <LocalDebuggerCommandArguments>if=!/dev/wda6 of=con: bs=512 count=1</LocalDebuggerCommandArguments>
+    <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='dll-ansi-release|x64'">
+    <LocalDebuggerCommandArguments>if=!/dev/wda6 of=con: bs=512 count=1</LocalDebuggerCommandArguments>
+    <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='lib-ansi-debug|Win32'">
+    <LocalDebuggerCommandArguments>if=!/dev/wda6 of=con: bs=512 count=1</LocalDebuggerCommandArguments>
+    <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='dll-ansi-debug|Win32'">
+    <LocalDebuggerCommandArguments>if=!/dev/wda6 of=con: bs=512 count=1</LocalDebuggerCommandArguments>
+    <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='dll-ansi-release|Win32'">
+    <LocalDebuggerCommandArguments>if=!/dev/wda6 of=con: bs=512 count=1</LocalDebuggerCommandArguments>
+    <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='dll-ansi-debug|x64'">
+    <LocalDebuggerCommandArguments>if=!/dev/wda6 of=con: bs=512 count=1</LocalDebuggerCommandArguments>
+    <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
+  </PropertyGroup>
+</Project>

@@ -1,0 +1,12 @@
+; libb64: A Parser Combinator library for C
+EXPORTS
+  ; cencode.c
+  base64_init_encodestate
+  base64_encode_value
+  base64_encode_block
+  base64_encode_blockend
+
+  ; cdecode.c
+  base64_init_decodestate
+  base64_decode_value
+  base64_decode_block
