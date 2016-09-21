@@ -408,15 +408,15 @@ static bool RetrieveMountPoints (struct VolumeInfo *volume)
 
       length = (DWORD)_tcslen (mount_point);
 
-      /* Drive letter? */
+      /* Drive letter/directory mount point: adding 1 to (length+1) allows us
+         to later (temporariliy) add a trailing backslash, when required: */
       volume->mount_point = (TCHAR **)MemRealloc (volume->mount_point, index + 2, sizeof(*volume->mount_point));
-      volume->mount_point [index] = (TCHAR *)MemAlloc (length + 1, sizeof(**volume->mount_point));
+      volume->mount_point [index] = (TCHAR *)MemAlloc (length + 1 + 1, sizeof(**volume->mount_point));
 
       _tcscpy (volume->mount_point [index], mount_point);
 
-      /* Trailing backslash? */
-      if (volume->mount_point [index][length-1] == TEXT('\\'))
-        volume->mount_point [index][length-1] = TEXT('\0');
+      /* Remove any trailing backslashes, for now: */
+      RemoveTrailingBackslash (volume->mount_point [index]);
 
       /* Even in a multiboot configuration, the partition we booted from will
          always have `C:' as a drive letter: */

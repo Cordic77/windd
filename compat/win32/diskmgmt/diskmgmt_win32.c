@@ -1234,7 +1234,12 @@ extern void DumpDrivesAndPartitions (void)
     drive_color = LIGHTGREEN,
     part_color = YELLOW,
     cdrom_color = YELLOW,
-    ssd_color = WHITE;
+    ssd_color = WHITE,
+    mount_color = LIGHTCYAN,
+    part_type_color = WHITE,
+    part_label_color = WHITE;
+  TCHAR
+    volume_name [MAX_PATH+1];
   wchar_t
     offstr [31+1],
     lenstr [31+1];
@@ -1338,7 +1343,9 @@ extern void DumpDrivesAndPartitions (void)
               truncated = (_sntprintf_s (trunc_mount_point, _countof(trunc_mount_point), _TRUNCATE,
                                           TEXT("%s"), logical_volume[v].mount_point[i]) == -1);
 
+            textcolor (mount_color);
             _ftprintf (stdout, TEXT("\n                     %s"), trunc_mount_point);
+            textcolor (DEFAULT_COLOR);
             if (truncated)
               fprintf (stdout, " ...");
           }
@@ -1416,14 +1423,16 @@ extern void DumpDrivesAndPartitions (void)
             FormatInt64 (physical_disk[d].part[p].PartitionEntry.StartingOffset.QuadPart, offstr, _countof(offstr));
             FormatInt64 (physical_disk[d].part[p].PartitionEntry.PartitionLength.QuadPart, lenstr, _countof(lenstr));
           /*_ftprintf (stdout, TEXT(" %c%c %-3.3s %25") TEXT(PRIdMAX) TEXT(" %25") TEXT(PRIdMAX) TEXT("\n"),*/
-            _ftprintf (stdout, TEXT(" %c%c %-3.3s %25s %25s\n"),
-                               _totupper(*cur_mount_point|('A'^'a')), (*cur_mount_point? L':' : L' '),
+            textcolor (mount_color);
+            _ftprintf (stdout, TEXT(" %c%c "), _totupper(*cur_mount_point | ('A'^'a')), (*cur_mount_point ? L':' : L' '));
+            textcolor (DEFAULT_COLOR);
+            _ftprintf (stdout, TEXT("%-3.3s %25s %25s\n"),
                                (IsExtendedPartitionIndex (d, p)? TEXT("EXT") : TEXT("")),
                              /*(intmax_t)local_storage[d].part[p].start_offset,*/offstr,
                              /*(intmax_t)local_storage[d].part[p].part_size);*/lenstr);
 
             if (physical_disk[d].part[p].harddisk_partition != NULL)
-              _ftprintf (stdout, TEXT("    %s  -->  "), physical_disk[d].part[p].harddisk_partition);
+              _ftprintf (stdout, TEXT("    %s --> "), physical_disk[d].part[p].harddisk_partition);
             else
             if (physical_disk[d].part[p].harddisk_volume != NULL)
               _ftprintf (stdout, TEXT("    "));
@@ -1433,8 +1442,72 @@ extern void DumpDrivesAndPartitions (void)
               _ftprintf (stdout, TEXT("%s"), physical_disk[d].part[p].harddisk_volume);
               /* Somewhat redundant; display volume id if not executed with elevated privileges! */
               if (not elevated_process && physical_disk[d].part[p].volume->volume_guid != NULL)
-                _ftprintf (stdout, TEXT(":  %s"), physical_disk[d].part[p].volume->volume_guid);
+              {
+                if (_tcslen(physical_disk[d].part[p].harddisk_volume) > 23)
+                  fprintf (stdout, ": ");
+                else
+                  fprintf (stdout, ":  ");
+                _ftprintf (stdout, TEXT("%s"), physical_disk[d].part[p].volume->volume_guid);
+              }
               _ftprintf (stdout, TEXT("\n"));
+            }
+
+            if (physical_disk[d].PartitionStyle == PARTITION_STYLE_MBR
+             || physical_disk[d].PartitionStyle == PARTITION_STYLE_GPT)
+            {
+              /* Print "volume label" <or> "partition label" */
+              volume_name[0] = TEXT('\0');
+
+              if (physical_disk[d].part[p].volume->mount_point[0][0] != TEXT('\0'))
+              {
+                AddTrailingBackslash (physical_disk[d].part[p].volume->mount_point[0]);
+                GetVolumeInformation (physical_disk[d].part[p].volume->mount_point[0],
+                                      volume_name, _countof(volume_name), NULL, NULL, NULL, NULL, 0);
+                RemoveTrailingBackslash (physical_disk[d].part[p].volume->mount_point[0]);
+              }
+
+              if (volume_name[0] == TEXT('\0'))
+              {
+                if (wcslen(physical_disk[d].part[p].PartitionEntry.Gpt.Name) > 0)
+                  wcscpy(volume_name, physical_disk[d].part[p].PartitionEntry.Gpt.Name);
+              }
+
+              textcolor (part_label_color);
+              fwprintf (stdout, L"        %-22.22s", volume_name);
+              textcolor (DEFAULT_COLOR);
+              /*fprintf (stdout, " %c ", ((_tcslen(volume_name) > 0)? '=' : ' '));*/
+              fprintf (stdout, " = ");
+
+              /* Print partition type: */
+              if (physical_disk[d].PartitionStyle == PARTITION_STYLE_MBR)
+              { char const *
+                  part_type_desc = mbr_lookup_parttype (physical_disk[d].part[p].PartitionEntry.Mbr.PartitionType);
+
+                fprintf (stdout, "0x%02" PRIX8, physical_disk[d].part[p].PartitionEntry.Mbr.PartitionType);
+                textcolor (part_type_color);
+                if (part_type_desc == NULL)
+                  part_type_desc = "Unrecognized partition type code";
+                fprintf (stdout, " %-41.41s\n", part_type_desc);
+                textcolor (DEFAULT_COLOR);
+              }
+              else /*if (physical_disk[d].PartitionStyle == PARTITION_STYLE_GPT)*/
+              { GUID const *
+                  parttype_guid = &physical_disk[d].part[p].PartitionEntry.Gpt.PartitionType;
+                char const *
+                  part_type_desc = gpt_lookup_partguid (parttype_guid);
+
+                /* Well-known GPT GUID? */
+                textcolor (part_type_color);
+                if (part_type_desc != NULL)
+                  fprintf (stdout, "%-46.46s\n", part_type_desc);
+                else
+                { TCHAR *
+                    guid_str = GUID2TCHAR (parttype_guid);
+                  fwprintf (stdout, L"%s\n", guid_str);
+                  Free (guid_str);
+                }
+                textcolor (DEFAULT_COLOR);
+              }
             }
           }
 
@@ -1455,11 +1528,13 @@ extern void DumpDrivesAndPartitions (void)
         /*_sntprintf (buffer, _countof(buffer), TEXT("/dev/wr%") TEXT(PRId32) TEXT("), local_storage[d].disk_index);*/
           cdrom2wdx (physical_disk[d].DiskNumber, wdx_id);
           fprintf (stdout, "/dev/%-10s", wdx_id);
-          textcolor (DEFAULT_COLOR);
-          _ftprintf (stdout, TEXT("      %c%c  %-33.33s  FW rev: %s\n"),
-                           /*local_storage[d].device_path,*/
+          textcolor (mount_color);
+          _ftprintf (stdout, TEXT("      %c%c  "),
                              _totupper(physical_disk[d].part[0].volume->mount_point[0][0]|('A'^'a')),
-                             (physical_disk[d].part[0].volume->mount_point[0][0]? L':' : L' '),
+                             (physical_disk[d].part[0].volume->mount_point[0][0]? L':' : L' '));
+          textcolor (DEFAULT_COLOR);
+          _ftprintf (stdout, TEXT("%-33.33s  FW rev: %s\n"),
+                           /*local_storage[d].device_path,*/
                              physical_disk[d].caption,
                              physical_disk[d].firmware_rev);
 

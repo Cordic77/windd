@@ -9,7 +9,7 @@
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='lib-ansi-debug|x64'">
-    <LocalDebuggerCommandArguments>if=!/dev/wda6 of=con: bs=512 count=1</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>-l</LocalDebuggerCommandArguments>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='dll-ansi-release|x64'">

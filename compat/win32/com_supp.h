@@ -100,6 +100,8 @@ extern TCHAR *
   BSTR2TCHAR (BSTR bstr);
 extern TCHAR *
   VAR2TCHAR (VARIANT const *var);
+extern TCHAR *
+  GUID2TCHAR (GUID const *guid);
 extern void
   UninitializeCOM (void);
 

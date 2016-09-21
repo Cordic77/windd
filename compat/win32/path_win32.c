@@ -117,6 +117,38 @@ extern void RemoveTrailingBackslashW (wchar_t path [])
 }
 
 
+extern void AddTrailingBackslashA (char path [])
+{ size_t
+    length;
+
+  if (path == NULL)
+    return;
+
+  length = strlen (path);
+  if (length > 0 && path [length-1] != '\\')
+  {
+    path [length]   = '\\';
+    path [length+1] = '\0';
+  }
+}
+
+
+extern void AddTrailingBackslashW (wchar_t path [])
+{ size_t
+    length;
+
+  if (path == NULL)
+    return;
+
+  length = wcslen (path);
+  if (length > 0 && path [length-1] != L'\\')
+  {
+    path [length]   = L'\\';
+    path [length+1] = L'\0';
+  }
+}
+
+
 extern bool PathEqualsA (char const path1 [], char const path2 [])
 { size_t
     length1, length2;

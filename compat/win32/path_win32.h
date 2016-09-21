@@ -121,6 +121,17 @@ extern void
 #define RemoveTrailingBackslash RemoveTrailingBackslashA
 #endif
 
+extern void
+  AddTrailingBackslashA (char path []);
+extern void
+  AddTrailingBackslashW (wchar_t path []);
+
+#ifdef UNICODE
+#define AddTrailingBackslash AddTrailingBackslashW
+#else
+#define AddTrailingBackslash AddTrailingBackslashA
+#endif
+
 extern bool
   PathEqualsA (char const path1 [], char const path2 []);
 extern bool

@@ -46,7 +46,8 @@ extern bool COMAvailable (void)
 
 
 extern TCHAR *BSTR2TCHAR (BSTR bstr)
-{ TCHAR *str;
+{ TCHAR *
+    str;
 
   size_t len = wcslen (bstr);
   str = (TCHAR *)MemAlloc (len + 1, sizeof(TCHAR));
@@ -64,7 +65,8 @@ extern TCHAR *BSTR2TCHAR (BSTR bstr)
 
 
 extern TCHAR *VAR2TCHAR (VARIANT const *var)
-{ TCHAR *str;
+{ TCHAR *
+    str;
 
   if ((var->vt & VT_NULL) == VT_NULL)
   {
@@ -74,6 +76,21 @@ extern TCHAR *VAR2TCHAR (VARIANT const *var)
   }
 
   return (BSTR2TCHAR (var->bstrVal));
+}
+
+
+extern TCHAR *GUID2TCHAR (GUID const *guid)
+{ OLECHAR *
+    guid_str;
+  TCHAR *
+    str;
+
+  StringFromCLSID (guid, &guid_str);
+  str = (TCHAR *)MemAlloc(_tcslen(guid_str) + 1, sizeof(TCHAR));
+  _tcscpy (str, guid_str);
+  CoTaskMemFree (guid_str);
+
+  return (str);
 }
 
 
