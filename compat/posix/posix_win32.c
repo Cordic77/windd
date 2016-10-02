@@ -2,10 +2,11 @@
 
 #include <config.h>
 
-#include "assure.h"               /* assure() */
+#include "win32\path_win32.h"     /* DEV_NONE, EMULATED_WDX*/
+#include "win32\raw_win32.h"      /* OpenVolume(), GetVolumeHandle(), IsValidHandle() */
 
 /* Additional _WIN32 headers: */
-#include <shlwapi.h>              // PathIsUNC()
+#include <shlwapi.h>              /* PathIsUNC() */
 
 
 /* `dd.c' global variables: */
@@ -259,7 +260,7 @@ extern bool is_volume_access (int fd)
 }
 
 
-extern uint32_t is_pipe_handle (int fd)
+extern uint32_t get_pipe_buffsize (int fd)
 {
   if (GetFileType (fdhandle [fd]) == FILE_TYPE_PIPE)
   { DWORD
@@ -318,7 +319,7 @@ extern int set_direct_io (int fd, bool direct)
   fildes = get_file_desc (real_fd);
   fildes->direct_io = direct;
 
-  // In current `windd' versions, Windows HANDLEs are used for everything!
+  /* In current `windd' versions, Windows HANDLEs are used for everything. */
   /*
   if (real_fd <= STDERR_FILENO)  // fd != real_fd? Only change flags!
   { FILE *stream;
@@ -345,7 +346,7 @@ extern int set_direct_io (int fd, bool direct)
       {
       case STDIN_FILENO:  fdhandle [real_fd] = GetStdHandle (STD_INPUT_HANDLE); break;
       case STDOUT_FILENO: fdhandle [real_fd] = GetStdHandle (STD_OUTPUT_HANDLE); break;
-//    case STDERR_FILENO: fdhandle [real_fd] = GetStdHandle (STD_ERROR_HANDLE); break;
+    /*case STDERR_FILENO: fdhandle [real_fd] = GetStdHandle (STD_ERROR_HANDLE); break;*/
       }
 
     if (not IsValidHandle (fdhandle [real_fd]))
@@ -355,7 +356,7 @@ extern int set_direct_io (int fd, bool direct)
       exit (248);
     }
 
-    fildes->pipe_buffer_size = is_pipe_handle (real_fd);
+    fildes->pipe_buffer_size = get_pipe_buffsize (real_fd);
   }
 
   /* Disable caching? */

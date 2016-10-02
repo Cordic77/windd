@@ -1,4 +1,7 @@
-#include <errno.h>                /* EACCES */
+#include "win32\devfiles_win32.h" /* read_dev_xxx(), lseek_dev_xxx() */
+#include "win32\objmgr_win32.h"   /* NormalizeNTDevicePath() */
+#include "win32\diskmgmt\diskmgmt_win32.h"  /* DTYPE_XXX, drives_reset_selection(), select_drive_by_letter() */
+                                            /*"logical_volumes.h" Get/IsDriveLetter(), SearchDriveLetterMountPoint() */
 
 /* */
 enum EReopenHandler
@@ -193,9 +196,9 @@ DetermineReopenHandler:
         if (reopen_fd->disk_index == (uint32_t)-1)
         {
           /* Force FDREOPEN_WINNT_DEVFILE by setting a (non-existent)
-		     Windows device file name; the actual value doesn't matter
-			 as `select_drive_by_devicename()' relies on `reopen_fd->file',
-			 which is set correctly: */
+         Windows device file name; the actual value doesn't matter
+       as `select_drive_by_devicename()' relies on `reopen_fd->file',
+       which is set correctly: */
           file = "\\Device\\Xxx";
           if (get_volume_path (reopen_fd->file))
             goto DetermineReopenHandler;
@@ -669,7 +672,7 @@ TEXT("nonetheless? (Y/N) "));
   //     memory that are integer multiples of the volume's physical sector
   //     size.
   //
-  //     =>
+  //     => Satisified, as long as sector size <= page size holds, see i.
   */
   #pragma region UnbufferedIOPrerequisites
   { bool
@@ -929,7 +932,7 @@ TEXT("nonetheless? (Y/N) "));
       fd = desired_fd;
     }
 
-    reopen_fd->pipe_buffer_size = is_pipe_handle (fd);
+    reopen_fd->pipe_buffer_size = get_pipe_buffsize (fd);
 
     /* Source equal to destination (if==of)? */
     if (src_eq_dst)

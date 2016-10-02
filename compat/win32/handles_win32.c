@@ -4,10 +4,12 @@
 
 #pragma warning (push)
 #pragma warning (disable : 4013)  /* warning C4013: 'getc_unlocked' undefined; assuming extern returning int */
-#include <strsafe.h>              /* StringCchCopyNW */
+#include <strsafe.h>              /* StringCchCopyNW() */
 #pragma warning (pop)
 
-#include <Winternl.h>             /* NTSTATUS, NtQuerySystemInformation() */
+#include "win32\handles_win32.h"
+
+#include <winternl.h>             /* NTSTATUS, NtQuerySystemInformation() */
 
 
 #define GET_FINAL_PATHNAME_BY_HANDLE

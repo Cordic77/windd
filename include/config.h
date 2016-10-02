@@ -3325,11 +3325,7 @@
 /* Define to `__inline__' or `__inline' if that's what the C compiler
    calls it, or to nothing if 'inline' is not supported under any name.  */
 #ifndef __cplusplus
-#if ! defined _WIN32
 /* #undef inline */
-#else
-#define inline __inline
-#endif /* defined _WIN32 */
 #endif
 
 /* Define to `unsigned long int' if <sys/types.h> does not define. */

@@ -8,8 +8,8 @@
 
 /* */
 #ifndef _CLOCKID_T
-#define	_CLOCKID_T
-typedef	int	clockid_t;            /* clock identifier type */
+#define _CLOCKID_T
+typedef int clockid_t;            /* clock identifier type */
 #endif
 
 /* http://pubs.opengroup.org/onlinepubs/9699919799/functions/clock_getres.html */

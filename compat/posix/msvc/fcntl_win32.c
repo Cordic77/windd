@@ -53,7 +53,7 @@ extern int fcntl (int fd, int cmd, ...)
       arg = va_arg (argptr, int);
       va_end (argptr);
 
-      /* Set O_BINARY only for those streams we'll actually be accessing: */
+      /* Set O_BINARY only for streams we'll actually be accessing: */
       if ((arg & O_BINARY) == O_BINARY)
       {
         if (IsDescriptorRedirected (real_fd))
@@ -67,13 +67,13 @@ extern int fcntl (int fd, int cmd, ...)
       /*O_DIRECT {*/
       if ((arg & O_DIRECT) != 0)
       {
-        /* disable buffering: */
+        /* Disable buffering: */
         if (set_direct_io (fd, true) < 0)
           return (-1);
       }
       else
       {
-        /* enable buffering: */
+        /* Enable buffering: */
         if (set_direct_io (fd, false) < 0)
           return (-1);
       }

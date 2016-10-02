@@ -2,19 +2,23 @@
 
 #include <config.h>
 
-#include "assure.h"               /* assure() */
+#include "path_win32.h"
+#include "objmgr_win32.h"         /* IsPhysicalDriveA(), IsLogicalVolumeGuid() */
+#include "diskmgmt\diskmgmt_win32.h"  /* select_drive_by_letter(), select_drive_by_mountpoint() */
+                                      /*"wdx_identifer.h" is_wdx_id() */
+                                      /*"logical_volumes.h" IsDriveLetter() */
 
-// Additional _WIN32 headers:
+/* Additional _WIN32 headers: */
 #include <shlwapi.h>              /* PathIsUNC(), PathIsNetworkPath() */
 
 
-//===  _WIN32 Long Path functions  ===
+/*===  _WIN32 Long Path functions  ===*/
 
-// Naming Files, Paths, and Namespaces
+/* Naming Files, Paths, and Namespaces
 // https://msdn.microsoft.com/en-us/library/windows/desktop/aa365247(v=vs.85).aspx
 //
 // A UNC name of any format, which always start with two backslash characters ("\\")
-//
+*/
 extern int NetSharePrefixA (char const file [])
 {
   if (file != NULL && file[0]=='\\' && file[1]=='\\')
@@ -32,18 +36,18 @@ extern int NetSharePrefixW (wchar_t const file [])
 }
 
 
-extern inline int UNCPrefixA (char const file [])
+extern int UNCPrefixA (char const file [])
 {
-  if (file != NULL && file[0]=='\\' && file[1]=='\\' // && (file[2]=='?' || file[2]=='.')
+  if (file != NULL && file[0]=='\\' && file[1]=='\\' /* && (file[2]=='?' || file[2]=='.') */
    && file[3]=='\\')
     return (4);
 
   return (0);
 }
 
-extern inline int UNCPrefixW (wchar_t const file [])
+extern int UNCPrefixW (wchar_t const file [])
 {
-  if (file != NULL && file[0]==L'\\' && file[1]==L'\\' // && (file[2]==L'?' || file[2]==L'.')
+  if (file != NULL && file[0]==L'\\' && file[1]==L'\\' /* && (file[2]==L'?' || file[2]==L'.') */
    && file[3]==L'\\')
     return (4);
 
@@ -265,7 +269,7 @@ bool NTDeviceNameW (wchar_t const file [])
 }
 
 
-// https://support.microsoft.com/en-us/kb/74496#mt1
+/* https://support.microsoft.com/en-us/kb/74496#mt1
 //
 //    Name    Function
 //    ----    --------
@@ -282,7 +286,7 @@ bool NTDeviceNameW (wchar_t const file [])
 //    COM2    Second serial communications port
 //    COM3    Third serial communications port
 //    COM4    Fourth serial communications port
-//
+*/
 wchar_t const *MSDOSDeviceName (char const file [], enum EDeviceFile *device_file)
 { enum EDeviceFile
     det_device = DEV_NONE;
@@ -304,7 +308,7 @@ wchar_t const *MSDOSDeviceName (char const file [], enum EDeviceFile *device_fil
 
       if (chr1 == '\0' || (chr1 == ':' && chr2 == '\0'))
       {
-        /*// Doesn't exist according to `WinObj': NT and older only */
+        /* Doesn't exist according to `WinObj': NT and older only! */
         /*
         det_device = MSDOS_CLOCK;
         wcscpy (dev_file, L"\\\\.\\CLOCK$");
@@ -394,7 +398,7 @@ extern enum EDeviceFile LinuxDeviceName (char const file [])
 {
   if (file != NULL)
   {
-    /* Special case: forced `/dev/wdx' access? (E.g. "!/dev/wda1") */
+    /* Special case: forced `/dev/wdx' access (e.g. "!/dev/wda1")? */
     if (file [0] == '!')
       ++file;
 
@@ -514,17 +518,17 @@ extern enum EVolumePath IsVolumePath (TCHAR const fullpath [], TCHAR volpath [])
 
 extern bool GetVolumePath (TCHAR const fullpath [], TCHAR volpath [], size_t buflen)
 {
-  // Try to determine drive letter:
+  /* Try to determine drive letter: */
   TCHAR *colon;
 
   if ((colon=_tcschr (fullpath, L':')) != NULL)
   {
-    if (colon == fullpath || not _IS_DRIVE_LETTER((char)*(colon-1))  // "[^A-Z]:"
-     || colon > fullpath+1 && _IS_DRIVE_LETTER((char)*(colon-2)))    // "[A-Z]{2,}:"
+    if (colon == fullpath || not _IS_DRIVE_LETTER((char)*(colon-1))  /* "[^A-Z]:" */
+     || colon > fullpath+1 && _IS_DRIVE_LETTER((char)*(colon-2)))    /* "[A-Z]{2,}:" */
       ErrnoReturn (EINVAL, false);
   }
 
-  // Drive letter specified?
+  /* Drive letter specified? */
   if (colon != NULL)
   {
     _sntprintf (volpath, 7, TEXT("\\\\.\\%c:"), *(colon-1));
@@ -532,7 +536,7 @@ extern bool GetVolumePath (TCHAR const fullpath [], TCHAR volpath [], size_t buf
   }
   else
   {
-    // Retrieve the volume mount point where the specified path is mounted:
+    /* Retrieve the volume mount point where the specified path is mounted: */
     if (GetVolumePathName (fullpath, volpath, (DWORD)buflen))
       return (true);
 

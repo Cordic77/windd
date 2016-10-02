@@ -18,6 +18,7 @@ static LARGE_INTEGER GetFileTimeOffset (void)
   s.wYear = 1970;  s.wMonth  = 1;  s.wDay    = 1;
   s.wHour = 0;     s.wMinute = 0;  s.wSecond = 0;  s.wMilliseconds = 0;
 
+  /* Contains a 64-bit value representing the number of 100-nanosecond intervals since January 1, 1601 (UTC): */
   { FILETIME f;
 
     SystemTimeToFileTime (&s, &f);
@@ -57,7 +58,7 @@ extern int clock_gettime (clockid_t clock_id, struct timespec *tp)
     else
     {
       offset = GetFileTimeOffset ();
-      frequencyToMicroseconds = 10.;
+      frequencyToMicroseconds = 10.;  /* 100-nanosecond intervals to microsecond intervals */
     }
   }
 

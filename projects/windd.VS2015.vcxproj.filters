@@ -416,9 +416,6 @@
     <ClInclude Include="..\compat\win32\wmi_supp.h">
       <Filter>Header Files\compat\win32</Filter>
     </ClInclude>
-    <ClInclude Include="..\compat\posix\asprintf\asprintf.h">
-      <Filter>Header Files\compat\posix</Filter>
-    </ClInclude>
     <ClInclude Include="..\compat\posix\posix_win32.h">
       <Filter>Header Files\compat\posix</Filter>
     </ClInclude>
@@ -449,5 +446,19 @@
     <ClInclude Include="..\compat\win32\objmgr_win32.h">
       <Filter>Header Files\compat\win32</Filter>
     </ClInclude>
+    <ClInclude Include="..\compat\posix\asprintf\msvc\asprintf.h">
+      <Filter>Header Files\compat\posix\msvc</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>Resource Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\compat\win32\targetver.h">
+      <Filter>Header Files\compat\win32</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="version.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
   </ItemGroup>
 </Project>

@@ -63,6 +63,8 @@
 			/>
 			<Tool
 				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="NDEBUG"
+				AdditionalIncludeDirectories="&quot;$(ProjectDir)..\compat\win32&quot;"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
@@ -145,6 +147,8 @@
 			/>
 			<Tool
 				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="NDEBUG"
+				AdditionalIncludeDirectories="&quot;$(ProjectDir)..\compat\win32&quot;"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
@@ -226,6 +230,8 @@
 			/>
 			<Tool
 				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="_DEBUG"
+				AdditionalIncludeDirectories="&quot;$(ProjectDir)..\compat\win32&quot;"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
@@ -308,6 +314,8 @@
 			/>
 			<Tool
 				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="_DEBUG"
+				AdditionalIncludeDirectories="&quot;$(ProjectDir)..\compat\win32&quot;"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
@@ -389,6 +397,8 @@
 			/>
 			<Tool
 				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="NDEBUG"
+				AdditionalIncludeDirectories="&quot;$(ProjectDir)..\compat\win32&quot;"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
@@ -471,6 +481,8 @@
 			/>
 			<Tool
 				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="NDEBUG"
+				AdditionalIncludeDirectories="&quot;$(ProjectDir)..\compat\win32&quot;"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
@@ -552,6 +564,8 @@
 			/>
 			<Tool
 				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="_DEBUG"
+				AdditionalIncludeDirectories="&quot;$(ProjectDir)..\compat\win32&quot;"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
@@ -634,6 +648,8 @@
 			/>
 			<Tool
 				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="_DEBUG"
+				AdditionalIncludeDirectories="&quot;$(ProjectDir)..\compat\win32&quot;"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
@@ -1769,6 +1785,10 @@
 						>
 					</File>
 					<File
+						RelativePath="..\compat\win32\targetver.h"
+						>
+					</File>
+					<File
 						RelativePath="..\compat\win32\windows_api.h"
 						>
 					</File>
@@ -1801,16 +1821,16 @@
 					Name="posix"
 					>
 					<File
-						RelativePath="..\compat\posix\asprintf\asprintf.h"
-						>
-					</File>
-					<File
 						RelativePath="..\compat\posix\posix_win32.h"
 						>
 					</File>
 					<Filter
 						Name="msvc"
 						>
+						<File
+							RelativePath="..\compat\posix\asprintf\msvc\asprintf.h"
+							>
+						</File>
 						<File
 							RelativePath="..\compat\posix\msvc\clock_gettime.h"
 							>
@@ -1844,6 +1864,14 @@
 			Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav"
 			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}"
 			>
+			<File
+				RelativePath=".\resource.h"
+				>
+			</File>
+			<File
+				RelativePath=".\version.rc"
+				>
+			</File>
 		</Filter>
 	</Files>
 	<Globals>

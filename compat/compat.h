@@ -1,5 +1,7 @@
 /* Compatibility headers: */
+#if defined _DEBUG
 #define ENABLE_EXPERIMENTAL_FEATURES
+#endif
 
 #if defined ENABLE_EXPERIMENTAL_FEATURES
 #define DETECT_OPEN_HANDLES               /* Try to detect if there are open file handles? */
@@ -15,15 +17,42 @@
   #define C_CTYPE_H                       /* c-strcaseeq.h: prevent `#include "c-ctype.h"' */
   #define TIMESPEC_H                      /* system.h, gethrxtime.c: prevent `#include "timespec.h"' */
 
-  /* C++ needs to know that types and declarations are C, not C++.
-     /usr/include/x86_64-linux-gnu/sys/cdefs.h: required by several
-     files in `compat\usr_include' */
+  /* C++ compiler? Export declarationss using `extern "C"'!
+     /usr/include/x86_64-linux-gnu/sys/cdefs.h:
+     required by several files in `compat\usr_include' */
   #ifdef  __cplusplus
   # define __BEGIN_DECLS  extern "C" {
   # define __END_DECLS  }
   #else
   # define __BEGIN_DECLS
   # define __END_DECLS
+  #endif
+
+  /*===  C99 keywords  ===*/
+  #ifndef __cplusplus
+    #if __STDC_VERSION__ == 199901L /* C99 */
+    #elif _MSC_VER >= 1500 /* MSVC 9 or newer */
+      #define inline __inline
+    #elif __GNUC__ >= 3 /* GCC 3 or newer */
+      #define inline __inline
+    #else /* Unknown or ancient */
+      #define inline
+    #endif
+  #endif
+
+  /* restrict is standard in C99, but not in all C++ compilers. */
+  #if __STDC_VERSION__ == 199901L /* C99 */
+    #define RESTRICT restrict
+  #elif _MSC_VER >= 1500 /* MSVC 9 or newer */
+    #ifdef _CRTRESTRICT
+    #define RESTRICT _CRTRESTRICT
+    #else
+    #define RESTRICT __declspec(restrict)
+    #endif
+  #elif __GNUC__ >= 3 /* GCC 3 or newer */
+    #define RESTRICT __restrict
+  #else /* Unknown or ancient */
+    #define RESTRICT
   #endif
 
   /*===  POSIX types  ===*/
@@ -57,15 +86,15 @@
 
   /*===  C89 headers  ===*/
   #include <stdio.h>                      /* printf(), snprintf() */
-  #if _MSC_VER < 1900  /* snprintf (introduced with VS2015) */
+  #if _MSC_VER < 1900  /* snprintf() [introduced with VS2015] */
   #define snprintf _snprintf
   #endif
 
   #include <stdlib.h>                     /* _CRTRESTRICT, _CRT_STRINGIZE, _exit(), EXIT_SUCCESS, EXIT_FAILURE */
 
-  #include <stdarg.h>                     /* va_list, va_start(), va_arg(), va_end() */
-  #ifndef va_copy                         /* va_copy (introduced with VS2013) */
-  #define va_copy(destination, source) ((destination) = (source))
+  #include <stdarg.h>                     /* Variadic functions support: va_list, va_start(), va_arg(), va_end() */
+  #ifndef va_copy                         /* va_copy() [introduced with VS2013] */
+  #define va_copy gl_va_copy
   #endif
 
   #include <locale.h>                     /* N.B.: also included in `system.h' */
@@ -78,23 +107,27 @@
   #define c_strcasecmp(s1,s2) _stricmp(s1,s2)
   #define C_STRCASE_H                     /* c-strcaseeq.h: prevent `#include "c-strcase.h"' */
 
+  #include "assure.h"                     /* assert(), assure() */
+
   #include <errno.h>
   #include <math.h>                       /* OVERFLOW */
   #ifndef EOVERFLOW
   #define EOVERFLOW  OVERFLOW             /* dd.c: `lseek_errno = EOVERFLOW;' */
   #endif
 
-  /*===  C99 headers  ===*/
+  /*===  C95/NA1 headers  ===*/
   #include <iso646.h>                     /* not, and, or, xor */
+
+  /*===  C99 headers  ===*/
 /*#if _MSC_VER >= 1600  // VS2010 */
-  #include <stdint.h>                     /* uintmax_t (introduced with VS2010) */
+  #include <stdint.h>                     /* uintmax_t [introduced with VS2010] */
 /*#endif*/
 /*#if _MSC_VER >= 1800  // VS2013 */
   #include <inttypes.h>                   /* PRIuMAX */
-  #include <stdbool.h>                    /* bool (introduced with VS2013) */
+  #include <stdbool.h>                    /* bool [introduced with VS2013] */
 //#endif
 
-  /*=== Windows types ===*/
+  /*===  Windows types  ===*/
   #ifndef _SSIZE_T_DEFINED
     #include <BaseTsd.h>                  /* SSIZE_T */
     #undef ssize_t
@@ -102,19 +135,26 @@
     #define _SSIZE_T_DEFINED
   #endif
 
-  #define inline __inline                 /* redefine to VC++ __inline keyword */
-
-  /*=== Text console ===*/
-  #include "win32\msvcr_fileops.h"
-  #include "win32\console_win32.h"
-
-  /*=== Global externs ===*/
+  /*===  Global externs  ===*/
   #define PACKVERSION(major,minor)    MAKELONG(minor,major)
   #define MAJOR_VERSION(packvers)     HIWORD(packvers)
   #define MINOR_VERSION(packvers)     LOWORD(packvers)
 
   extern LONG os_version;
   extern bool elevated_process;
+
+  /*===  Text console  ===*/
+  #include "win32\console_win32.h"
+
+  #ifndef STDIN_FILENO
+  # define STDIN_FILENO 0
+  #endif
+  #ifndef STDOUT_FILENO
+  # define STDOUT_FILENO 1
+  #endif
+  #ifndef STDERR_FILENO
+  # define STDERR_FILENO 2
+  #endif
 #endif
 
 /* POSIX compatibility: */
@@ -131,16 +171,14 @@
   #define UTF8_T_DEFINED
 
   /*===  print to allocated string  ===*/
-  #include "msvc/asprintf.h"             /* xvasprintf.c: vasprintf() */
+  #include "msvc/asprintf.h"              /* xvasprintf.c: vasprintf() */
 
   /*===  clock and timer functions  ===*/
   #include "msvc/clock_gettime.h"
   void microuptime (struct timeval *tv);
   #define microuptime(tv) (tv)->tv_sec = 0, (tv)->tv_usec = 0  /*_WIN32: unused!*/
 
-/*TODO*/
-
-  /*===  fake support for signals  ===*/
+  /*===  fake support for signal()s  ===*/
   #include <signal.h>
 
   #ifndef _SIG_ATOMIC_T_DEFINED
@@ -150,7 +188,7 @@
 
   #ifndef SIGUSR1
   /*#define SIGUSR1 30  // user defined signal 1 */
-  #define SIGUSR1   SIGBREAK              /* Ctrl-Break causes `dd' to print I/O statistics to standard error */
+  #define SIGUSR1   SIGBREAK              /* As install_signal_handlers() is no longer called, this value is irrelevant. */
 
   #  define SIG_BLOCK   0  /* blocked_set = blocked_set | *set; */
   #  define SIG_SETMASK 1  /* blocked_set = *set; */
@@ -175,12 +213,12 @@
   extern int fstatat (int dirfd, const char *pathname, struct /*stat*/_stat64 *buf, int flags);
 
   /*===  error.c:is_open(), compat.c:ftruncate()  ===*/
-/*#include <io.h>*/     /* "warning C4985: 'close': attributes not present on previous declaration." (see `raw_win32.h') */
+/*#include <io.h>*/     /* "warning C4985: 'close': attributes not present on previous declaration." [in `raw_win32.h'] */
 /*
   _CRTIMP intptr_t __cdecl _get_osfhandle (_In_ int _FileHandle);
   _Check_return_opt_ _CRTIMP int __cdecl _commit (_In_ int _FileHandle);
 */
-  /* These CRT routines are made accessible via wrappers in `fileop_win32.c'! */
+  #include "win32\msvcr_fileops.h"        /* crt_get_osfhandle(), crt_xxx() */
 
   /*===  compat.c:  ===*/
   extern int getpagesize (void);
@@ -215,22 +253,11 @@
   #define S_TYPEISTMO(stat) 0
   #endif
 
-  /* VC++ lacks these macros: */
-  #ifndef STDIN_FILENO
-  # define STDIN_FILENO 0
-  #endif
-  #ifndef STDOUT_FILENO
-  # define STDOUT_FILENO 1
-  #endif
-  #ifndef STDERR_FILENO
-  # define STDERR_FILENO 2
-  #endif
+  // http://pubs.opengroup.org/onlinepubs/9699919799/functions/open.html
+  #include <fcntl.h>                      /* O_ constants supported under Windows */
 
   #define CHGFLAGS_ONLY_FILENO  0x10000   /* Only change file flags, don't open any files. */
   #define CHGFLAGS_FILDES_MASK  0x0FFFF
-
-  // http://pubs.opengroup.org/onlinepubs/9699919799/functions/open.html
-  #include <fcntl.h>                      /* O_ constants (+ dummy defines for missing values) */
 
   #ifndef O_DIRECT
   #define O_DIRECT       0x00400000ul     /* Try to minimize cache effects of I/O */
@@ -266,7 +293,6 @@
   #include "msvc\fcntl_win32.h"
 
   /* _WIN32 wrappers for various POSIX functions: */
-  #include "win32\devfiles_win32.h"
   #include "posix\posix_win32.h"
 
   off_t lseek (int fd, off_t offset, int whence);
@@ -277,18 +303,9 @@
 
   ssize_t write (int fd, const void *buf, size_t count);
   #define write(fd, buf, count) (of_fop.write_func (fd, buf, count))
-#endif
 
-/* Win32 helper functions: */
-#if POST_COMPAT_SETTINGS == 1
-  #include "win32\error_win32.h"          /* simplify error handling */
-  #include "win32\com_supp.h"             /* C/C++ compatiblity macros for COM */
-  #include "win32\handles_win32.h"        /* Enumerate open file HANDLE's */
-  #include "win32\objmgr_win32.h"         /* Device objects of the Windows Object Manager */
-  #include "win32\suppart_win32.h"        /* Partition types supported by Windows */
-  #include "win32\diskmgmt\diskmgmt_win32.h"/* crude compatiblity layer for libata */
-  #include "win32\path_win32.h"           /* path normalization functions */
-  #include "win32\raw_win32.h"            /* raw disk access under Win32 */
+  /* Helper functions to simplify POSIX/COM/WIN32 error handling: */
+  #include "win32\error_win32.h"
 #endif
 
 /* Coreutils header files: */
@@ -297,9 +314,6 @@
   # define _GL_ARG_NONNULL(a)
 
   #include <system.h>                     /* _() macro */
-  #include <verify.h>                     /* verify macro() */
-  #include <close-stream.h>               /* close_stream() */
-  #include <closeout.h>                   /* close_stdout() */
 
   #define PROGRAM_NAME "windd"
 
@@ -322,11 +336,37 @@
   #define CONFIRM_OPTION_DESCRIPTION \
     _("  -c, --confirm  always ask back, before doing anything critical\n")
 
+  /* See `dd.c': let's make these flags globally visible: */
+  enum
+  {
+    C_ASCII = 01,
+
+    C_EBCDIC = 02,
+    C_IBM = 04,
+    C_BLOCK = 010,
+    C_UNBLOCK = 020,
+    C_LCASE = 040,
+    C_UCASE = 0100,
+    C_SWAB = 0200,
+    C_NOERROR = 0400,
+    C_NOTRUNC = 01000,
+    C_SYNC = 02000,
+
+    /* Use separate input and output buffers, and combine partial
+    input blocks. */
+    C_TWOBUFS = 04000,
+
+    C_NOCREAT = 010000,
+    C_EXCL = 020000,
+    C_FDATASYNC = 040000,
+    C_FSYNC = 0100000,
+
+    C_SPARSE = 0200000
+  };
+
   /* Call dd's main() from our (Windows) main() function: */
   extern bool
     disable_optimizations;
-
-  #define IO_STATISTICS_HIDDEN_MESSAGE_ONLY_WINDOW 1
 
   extern int linux_main (int argc, char **argv);
   #  define initialize_main(ac, av)

@@ -20,6 +20,8 @@
 
 #include <config.h>
 
+#include "win32\diskmgmt\diskmgmt_win32.h"  /* DumpDrivesAndPartitions(), DEVFILE_*, force_operations/always_confirm */
+
 /* Specification.  */
 #include "long-options.h"
 

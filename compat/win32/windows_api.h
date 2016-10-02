@@ -1,6 +1,8 @@
 #ifndef WINDD_WINAPI_H_
 #define WINDD_WINAPI_H_
 
+#include "targetver.h"
+
 /* Windows headers: */
 #define WIN32_LEAN_AND_MEAN       /* Exclude APIs such as Cryptography, DDE, RPC, Shell, and Windows Sockets */
 #define NOSERVICE                 /* Additional NOservice definitions: NOMCX, NOIME, NOSOUND, NOCOMM, NOKANJI, NORPC, ... */
@@ -24,7 +26,7 @@
 
 /* Like \\.\, but disables all string parsing; the string is sent straight to the file system: */
 #define UNC_DISPARSE_PREFIX       TEXT("\\\\?\\")  /* ... thus allows one to specify "extended-length path" */
-#define UNC_DISPARSE_LENGTH       4                /* with a total path length of up to 32.767 characters.
+#define UNC_DISPARSE_LENGTH       4                /* with a total path length of up to 32.767 characters. */
 
 /* "\\?\UNC\server\share", where "server" is the name of the computer and "share" is the name of the shared folder: */
 #define UNC_NETSHARE_PREFIX       TEXT("\\\\?\\UNC\\")

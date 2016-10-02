@@ -11,7 +11,7 @@
   typedef long _off_t;
 /*#if     !__STDC__
   // Non-ANSI name for compatibility */
-  typedef __int64 off_t;                  /* file offset value */
+  typedef __int64 off_t;                /* file offset value */
 /*#endif*/
   #define OFF_T_MAX       INT64_MAX
   #define _OFF_T_DEFINED
@@ -20,13 +20,13 @@
 #include "msvcr_fileops.h"
 
 
-//
+/* */
 struct FileOperations
   if_fop,  /* = {&lseek_if,&read_if,&write_if};  // input file */
   of_fop;  /* = {&lseek_of,&read_of,&write_of};  // output file */
 
 
-//
+/* */
 static off_t crt_lseek (int fd, off_t offset, int whence)
 {
   return (_lseeki64 (fd, offset, whence));

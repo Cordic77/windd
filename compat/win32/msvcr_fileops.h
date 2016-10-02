@@ -1,7 +1,7 @@
 #ifndef WINDD_MSVCR_FILEOPS_H_
 #define WINDD_FILEOP_H_
 
-//
+/* */
 struct FileOperations
 {
   off_t   (*lseek_func) (int fd, off_t offset, int whence);
@@ -9,16 +9,16 @@ struct FileOperations
   ssize_t (*write_func) (int fd, const void *buf, size_t count);
 };
 
-//
+/* */
 extern struct FileOperations
   if_fop,
   of_fop;
 
-//
+/* */
 extern int
   init_msvcr_fileops (void);
 
-/* int crt_open_osfhandle (intptr_t osfhandle, int flags); */
+/* int _open_osfhandle (intptr_t osfhandle, int flags); */
 int
   crt_open_osfhandle (intptr_t osfhandle, int flags);
 /* intptr_t _get_osfhandle (int fd); */

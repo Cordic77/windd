@@ -1,7 +1,7 @@
 #include <config.h>
 
 
-//
+/* */
 void *(MemAlloc) (size_t elements, size_t size, char const *file, int line)
 {
   void *ptr = malloc (elements * size);

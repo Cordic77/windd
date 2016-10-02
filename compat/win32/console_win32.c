@@ -8,8 +8,8 @@
 /* See `corecrt_internal_stdio.h': */
 enum
 {
-  // If the stream is open in update (read/write) mode, then the _IOUPDATE bit
-  // will be set.
+  /* If the stream is open in update (read/write) mode, then the _IOUPDATE bit
+     will be set. */
   _IOREAD = 0x0001,
   _IOWRITE = 0x0002,
   _IOUPDATE = 0x0004,
@@ -33,7 +33,7 @@ struct __crt_stdio_stream_data
   CRITICAL_SECTION _lock;
 };
 #define FILE_WRITABLE(stream)  ((((struct __crt_stdio_stream_data *)(stream))->_flags & (_IOWRITE|_IOUPDATE)) != 0)
-#else  /* up to VS2013 */
+#else  /* Up to VS2013: */
 #define FILE_WRITABLE(stream)  (((stream)->_flag & (_IOWRT|_IORW)) != 0)
 #endif
 
@@ -529,7 +529,7 @@ _Check_return_opt_ int (scrvfprintf) (_Inout_ FILE * const stream, _In_z_ _Print
 
   if ((console=GetConsoleFile (stream, &print_twice)) != NULL)
   {
-    gl_va_copy (argptr2, argptr);
+    va_copy (argptr2, argptr);
     {
       int written = vfprintf (console, format, argptr2);
       va_end (argptr2);
@@ -552,7 +552,7 @@ _Check_return_opt_ int (scrvfwprintf) (_Inout_ FILE * const stream, _In_z_ _Prin
 
   if ((console=GetConsoleFile (stream, &print_twice)) != NULL)
   {
-    gl_va_copy (argptr2, argptr);
+    va_copy (argptr2, argptr);
     {
       int written = vfwprintf (console, format, argptr2);
       va_end (argptr2);
@@ -604,7 +604,7 @@ _Check_return_opt_ int (scrvprintf) (_In_z_ _Printf_format_string_ char const* c
 
   if ((console=GetConsoleFile (stdout, &print_twice)) != NULL)
   {
-    gl_va_copy (argptr2, argptr);
+    va_copy (argptr2, argptr);
     {
       int written = vfprintf (console, format, argptr2);
       va_end (argptr2);
@@ -627,7 +627,7 @@ _Check_return_opt_ int (scrvwprintf) (_In_z_ _Printf_format_string_ wchar_t cons
 
   if ((console=GetConsoleFile (stdout, &print_twice)) != NULL)
   {
-    gl_va_copy (argptr2, argptr);
+    va_copy (argptr2, argptr);
     {
       int written = vfwprintf (console, format, argptr2);
       va_end (argptr2);

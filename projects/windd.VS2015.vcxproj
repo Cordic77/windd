@@ -190,6 +190,10 @@
       <SubSystem>Console</SubSystem>
       <TargetMachine>MachineX86</TargetMachine>
     </Link>
+    <ResourceCompile>
+      <PreprocessorDefinitions>NDEBUG</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\compat\win32</AdditionalIncludeDirectories>
+    </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='lib-ansi-release|x64'">
     <Midl>
@@ -219,6 +223,10 @@
       <SubSystem>Console</SubSystem>
       <TargetMachine>MachineX64</TargetMachine>
     </Link>
+    <ResourceCompile>
+      <PreprocessorDefinitions>NDEBUG</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\compat\win32</AdditionalIncludeDirectories>
+    </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='lib-ansi-debug|Win32'">
     <ClCompile>
@@ -246,6 +254,10 @@
       <LinkTimeCodeGeneration />
       <TargetMachine>MachineX86</TargetMachine>
     </Link>
+    <ResourceCompile>
+      <PreprocessorDefinitions>_DEBUG</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\compat\win32</AdditionalIncludeDirectories>
+    </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='lib-ansi-debug|x64'">
     <Midl>
@@ -276,6 +288,10 @@
       <LinkTimeCodeGeneration />
       <TargetMachine>MachineX64</TargetMachine>
     </Link>
+    <ResourceCompile>
+      <PreprocessorDefinitions>_DEBUG</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\compat\win32</AdditionalIncludeDirectories>
+    </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='dll-ansi-release|Win32'">
     <ClCompile>
@@ -302,6 +318,10 @@
       <SubSystem>Console</SubSystem>
       <TargetMachine>MachineX86</TargetMachine>
     </Link>
+    <ResourceCompile>
+      <PreprocessorDefinitions>NDEBUG</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\compat\win32</AdditionalIncludeDirectories>
+    </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='dll-ansi-release|x64'">
     <Midl>
@@ -331,6 +351,10 @@
       <SubSystem>Console</SubSystem>
       <TargetMachine>MachineX64</TargetMachine>
     </Link>
+    <ResourceCompile>
+      <PreprocessorDefinitions>NDEBUG</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\compat\win32</AdditionalIncludeDirectories>
+    </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='dll-ansi-debug|Win32'">
     <ClCompile>
@@ -358,6 +382,10 @@
       <LinkTimeCodeGeneration />
       <TargetMachine>MachineX86</TargetMachine>
     </Link>
+    <ResourceCompile>
+      <PreprocessorDefinitions>_DEBUG</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\compat\win32</AdditionalIncludeDirectories>
+    </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='dll-ansi-debug|x64'">
     <Midl>
@@ -388,6 +416,10 @@
       <LinkTimeCodeGeneration />
       <TargetMachine>MachineX64</TargetMachine>
     </Link>
+    <ResourceCompile>
+      <PreprocessorDefinitions>_DEBUG</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\compat\win32</AdditionalIncludeDirectories>
+    </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\compat\posix\asprintf\msvc\vasprintf-msvc.c" />
@@ -523,7 +555,7 @@
   <ItemGroup>
     <ClInclude Include="..\compat\compat_post.h" />
     <ClInclude Include="..\compat\compat_pre.h" />
-    <ClInclude Include="..\compat\posix\asprintf\asprintf.h" />
+    <ClInclude Include="..\compat\posix\asprintf\msvc\asprintf.h" />
     <ClInclude Include="..\compat\posix\msvc\clock_gettime.h" />
     <ClInclude Include="..\compat\posix\msvc\fcntl_win32.h" />
     <ClInclude Include="..\compat\posix\posix_win32.h" />
@@ -546,6 +578,7 @@
     <ClInclude Include="..\compat\win32\path_win32.h" />
     <ClInclude Include="..\compat\win32\raw_win32.h" />
     <ClInclude Include="..\compat\win32\suppart_win32.h" />
+    <ClInclude Include="..\compat\win32\targetver.h" />
     <ClInclude Include="..\compat\win32\windows_api.h" />
     <ClInclude Include="..\compat\win32\wmi_supp.h" />
     <ClInclude Include="..\coreutils\lib\include\assure.h" />
@@ -593,6 +626,10 @@
     <ClInclude Include="..\coreutils\src\include\system.h" />
     <ClInclude Include="..\coreutils\src\include\version.h" />
     <ClInclude Include="..\include\config.h" />
+    <ClInclude Include="resource.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="version.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -3,8 +3,8 @@
 #include <config.h>
 
 
-/*                                // Thread-local storage: CoInitializeEx() must */
-extern __declspec(thread) bool /* // be called exactly once for each thread! */
+/* Thread-local storage: CoInitializeEx() must be called exactly once for each thread! */
+extern __declspec(thread) bool
   initialized_com = false;
 
 

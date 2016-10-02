@@ -1,17 +1,17 @@
 #ifndef WINDD_UNISTR_H_
 #define WINDD_UNISTR_H_
 
-//
+/* */
 #ifndef UTF8_T_DEFINED
   typedef char utf8_t;
   #define UTF8_T_DEFINED
 #endif
 
-//
+/* */
 extern bool
   FormatInt64 (int64_t const number, wchar_t str [], size_t count);
 
-//
+/* */
 extern char * __cdecl
   stristr (char str [], char const substr []); /*strcasecmpA*/
 extern wchar_t * __cdecl
@@ -45,7 +45,7 @@ extern void
 #define TrimRight TrimRightA
 #endif
 
-//
+/* */
 utf8_t *
   utf16_to_utf8_ex (__in const wchar_t utf16 [], __in int const additional_bytes);
 utf8_t *

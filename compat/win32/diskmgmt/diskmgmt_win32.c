@@ -2,7 +2,12 @@
 
 #include <config.h>
 
-#include "assure.h"               /* assure() */
+#include "diskmgmt_win32.h"
+#include "win32\com_supp.h"       /* CoReleaseObject(), COM_OBJ(), COM_OBJ_THIS_(), VAR2TCHAR(), GUID2TCHAR() */
+#include "win32\suppart_win32.h"  /* MBR/GPTRecognizedByWindows(), mbr_lookup_parttype(), gpt_lookup_partguid() */
+#include "win32\raw_win32.h"      /* OpenVolume(), <winioctl.h>: PARTITION_INFORMATION_EX */
+#include "win32\path_win32.h"     /* Add/RemoveTrailingBackslash(), PathEquals(), PathPrefix(), NTDeviceName() */
+#include "win32\objmgr_win32.h"   /* ENUM_ENTRIES_XXX, EqualXxx(), NormalizeNTDevicePath() */
 
 /* Windows Management Instrumentation: */
 #include <wbemcli.h>              /* CLSID_WbemLocator, IID_IWbemLocator */
@@ -461,29 +466,30 @@ static bool IsSolidStateDisk (struct DiskInfo const *disk)
     id_query.header.Length             = sizeof(id_query.header);
     id_query.header.AtaFlags           = ATA_FLAGS_DATA_IN;
     id_query.header.DataTransferLength = sizeof(id_query.data);
-    id_query.header.TimeOutValue       = 5;     // Timeout in seconds
+    id_query.header.TimeOutValue       = 5;     /* Timeout in seconds */
     id_query.header.DataBufferOffset   = offsetof(ATAIdentifyDeviceQuery, data[0]);
-    id_query.header.CurrentTaskFile[6] = 0xEC;  // ATA IDENTIFY DEVICE
+    id_query.header.CurrentTaskFile[6] = 0xEC;  /* ATA IDENTIFY DEVICE */
 
-    if (DeviceIoControl (vol_handle,            // device to be queried
-          IOCTL_ATA_PASS_THROUGH,               // operation to perform
-          &id_query, sizeof(id_query),          // input buffer
-          &id_query, sizeof(id_query),          // output buffer
-          &dwBytesReturned,                     // # bytes returned
-          (LPOVERLAPPED)NULL))                  // no overlapped I/O
+    if (DeviceIoControl (vol_handle,            /* device to be queried */
+          IOCTL_ATA_PASS_THROUGH,               /* operation to perform */
+          &id_query, sizeof(id_query),          /* input buffer */
+          &id_query, sizeof(id_query),          /* output buffer */
+          &dwBytesReturned,                     /* # bytes returned */
+          (LPOVERLAPPED)NULL))                  /* no overlapped I/O */
     {
-      //Index of nominal media rotation rate
-      //SOURCE: http://www.t13.org/documents/UploadedDocuments/docs2009/d2015r1a-ATAATAPI_Command_Set_-_2_ACS-2.pdf
-      //          7.18.7.81 Word 217
-      //QUOTE: Word 217 indicates the nominal media rotation rate of the device and is defined in table:
-      //          Value           Description
-      //          --------------------------------
-      //          0000h           Rate not reported
-      //          0001h           Non-rotating media (e.g., solid state device)
-      //          0002h-0400h     Reserved
-      //          0401h-FFFEh     Nominal media rotation rate in rotations per minute (rpm)
-      //                                  (e.g., 7 200 rpm = 1C20h)
-      //          FFFFh           Reserved
+      /* Index of nominal media rotation rate
+      // SOURCE: http://www.t13.org/documents/UploadedDocuments/docs2009/d2015r1a-ATAATAPI_Command_Set_-_2_ACS-2.pdf
+      //         7.18.7.81 Word 217
+      // QUOTE:  Word 217 indicates the nominal media rotation rate of the device and is defined in table:
+      //           Value           Description
+      //           --------------------------------
+      //           0000h           Rate not reported
+      //           0001h           Non-rotating media (e.g., solid state device)
+      //           0002h-0400h     Reserved
+      //           0401h-FFFEh     Nominal media rotation rate in rotations per minute (rpm)
+      //                                   (e.g., 7 200 rpm = 1C20h)
+      //           FFFFh           Reserved
+      */
       #define kNominalMediaRotRateWordIndex 217
       is_ssd = (id_query.data[kNominalMediaRotRateWordIndex] == 0x0001);
       #undef kNominalMediaRotRateWordIndex
@@ -1967,6 +1973,8 @@ extern enum EDriveType get_drive_type (void)
 
 
 /* Dismount drives: */
+#include "win32\handles_win32.h"        /* Enumerate open file HANDLE's */
+
 static bool
   open_file_handles; /*= false; */
 
@@ -2150,7 +2158,7 @@ extern bool dismount_selected_volumes (struct VolumeDesc const *vol, TCHAR const
 
     /* Any open handles on the selected drive? */
     if (not force_operations && not warn_system_drive
-        #ifndef EXPERIMENTAL_OPEN_HANDLES_CHECK
+        #ifndef DETECT_OPEN_HANDLES
      && false
         #endif
        )

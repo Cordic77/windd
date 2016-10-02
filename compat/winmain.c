@@ -6,14 +6,15 @@
 #undef main                       /* This is the real `main()'! */
 #endif
 
-/*#define EXECUTE_WINDD_AS_CHILD_PROCESS*/
+#include "win32\com_supp.h"       /* InitializeCOM(), UninitializeCOM() */
+#include "win32/wmi_supp.h"       /* InitializeWMI() */
+#include "win32\diskmgmt\diskmgmt_win32.h"  /* diskmgmt_initialize(), WMIEnumDrives(), diskmgmt_free() */
 
+/* Additional _WIN32 headers: */
 #include <process.h>              /* _execv() */
 #include <shellapi.h>             /* CommandLineToArgvW() */
 
-#include "win32/wmi_supp.h"       /* InitializeWMI() */
-
-#include "assure.h"               /* assert() */
+/*#define EXECUTE_WINDD_AS_CHILD_PROCESS*/
 
 
 /* */
@@ -101,22 +102,22 @@ extern int __cdecl main (void)
       /*status = (int)_wexecv (szArglist [0], szArglist);*/
       command_line = EncodeCommandLineBase64 (nArgs, szArglist);
 
-      if (not CreateProcessW (NULL,           // No module name (use command line)
-                              command_line,   // Command line
-                              NULL,           // Process handle not inheritable
-                              NULL,           // Thread handle not inheritable
-                              FALSE,          // Set handle inheritance to FALSE
-                              0,              // No creation flags
-                              NULL,           // Use parent's environment block
-                              NULL,           // Use parent's starting directory
-                              &si,            // Pointer to STARTUPINFO structure
-                              &pi))           // Pointer to PROCESS_INFORMATION structure
+      if (not CreateProcessW (NULL,           /* No module name (use command line) */
+                              command_line,   /* Command line */
+                              NULL,           /* Process handle not inheritable */
+                              NULL,           /* Thread handle not inheritable */
+                              FALSE,          /* Set handle inheritance to FALSE */
+                              0,              /* No creation flags */
+                              NULL,           /* Use parent's environment block */
+                              NULL,           /* Use parent's starting directory */
+                              &si,            /* Pointer to STARTUPINFO structure */
+                              &pi))           /* Pointer to PROCESS_INFORMATION structure */
       {
         printf ("CreateProcess failed (%d).\n", GetLastError ());
         return (252);
       }
 
-      // In order to provide more robust error handling the idea is to establish
+      /* In order to provide more robust error handling the idea is to establish
       // the initial `windd' process as a debugger for the above child process.
       // While the main scaffolding (BASE-64 encoding/decoding of all command
       // line arguments) is in place, all the necessary calls into the "Win32
@@ -125,15 +126,16 @@ extern int __cdecl main (void)
       // 1. "http://win32assembly.programminghorizon.com/tut28.html"
       // 2. Inside Windows Debugging: A Practical Guide to Debugging and Tracing
       //    Strategies in Windows, Tarik Soulami
+      */
 
-      // Wait until child process exits.
+      /* Wait until child process exits: */
       WaitForSingleObject (pi.hProcess, INFINITE);
 
-      // Get exit code:
+      /* Get exit code: */
       if (not GetExitCodeProcess (pi.hProcess, (DWORD *)&nArgs))
         exit (252);
 
-      // Close process and thread handles.
+      /* Close process and thread handles: */
       CloseHandle (pi.hProcess);
       CloseHandle (pi.hThread);
 
@@ -235,13 +237,13 @@ Failed:
 
 /* From Windows 8.1 onwards GetVersion() and GetVersionEx()
    have been deprecated! */
-typedef LONG/*NTSTATUS*/ (WINAPI *RtlGetVersionFunc) (LPOSVERSIONINFOEX lpVersionInformation);
+typedef NTSTATUS (WINAPI * PFN_RTLGETVERSIONEX) (LPOSVERSIONINFOEX lpVersionInformation);
 
 static LONG GetWindowsVer (void)
 { LONG
     os_version = -1L;
 
-  { RtlGetVersionFunc
+  { PFN_RTLGETVERSIONEX
       RtlGetVersionPtr;
 
     HMODULE hNtdll = LoadLibrary (TEXT("ntdll.dll"));
@@ -249,7 +251,7 @@ static LONG GetWindowsVer (void)
     if (not hNtdll)
       goto LoadLibraryFailed;
 
-    RtlGetVersionPtr = (RtlGetVersionFunc)GetProcAddress (hNtdll, "RtlGetVersion");
+    RtlGetVersionPtr = (PFN_RTLGETVERSIONEX)GetProcAddress (hNtdll, "RtlGetVersion");
 
     if (RtlGetVersionPtr == NULL)
       goto GetProcFailed;
@@ -258,7 +260,7 @@ static LONG GetWindowsVer (void)
         os_info;
 
       os_info.dwOSVersionInfoSize = sizeof(os_info);
-      if ((*RtlGetVersionPtr) (&os_info) != 0L/*STATUS_SUCCESS*/)
+      if ((*RtlGetVersionPtr) (&os_info) != STATUS_SUCCESS)
         goto GetVersionFailed;
 
       os_version = PACKVERSION(os_info.dwMajorVersion, os_info.dwMinorVersion);
@@ -276,34 +278,35 @@ LoadLibraryFailed:
 
 static char const *GetCompilerVersion (void)
 {
-//#if _MSC_VER >= 2000  /* VS2016 */
+/*#if _MSC_VER >= 2000*/  /* VS2016 */
     #define VS15_2016_RTM     200000000
-//#elif _MSC_VER >= 1900  /* VS2015 */
-    #define VS14_2015_RTM     190023026   // RTM
-    #define VS14_2015_U1      190023506   // Update 1 [2015-11-30]
-    #define VS14_2015_U2      190023918   // Update 2 [2016-03-30]
-    #define VS14_2015_U3      190024210   // Update 3 [2016-07-27]
-//#elif _MSC_VER >= 1800  /* VS2013 */
-    #define VS12_2013_RTM     180021005   // RTM
-    #define VS12_2013_U1      180021005   // Update 1 [2014-02-20]: Microsoft apparently neglected to update _MSC_FULL_VER for VS2013 update 1 - Doh!
-    #define VS12_2013_U2      180030501   // Update 2 [2014-05-12]
-    #define VS12_2013_U3      180030723   // Update 3 [2014-08-04]
-    #define VS12_2013_U4      180031101   // Update 4 [2014-11-06]
-    #define VS12_2013_U5      180040629   // Update 5 [2015-07-20]
-//#elif _MSC_VER >= 1700  /* VS2012 */
-    #define VS11_2012_RTM     170050727   // RTM
-    #define VS11_2012_U1      170051106   // Update 1 [2012-11-26]
-    #define VS11_2012_U2      170060315   // Update 2 [2013-04-04]
-    #define VS11_2012_U3      170060610   // Update 3 [2013-06-26]
-    #define VS11_2012_U4      170061030   // Update 4 [2013-11-13]
-    #define VS11_2012_U5      170061030   // Update 5 [2015-08-21]: Microsoft apparently neglected to update _MSC_FULL_VER for VS2012 update 5 - Doh!
-//#elif _MSC_VER >= 1600  /* VS2010 */
-    #define VS10_2010_RTM     160030319   // RTM
-    #define VS10_2010_SP1     160040219   // SP1
-//#elif _MSC_VER >= 1500  /* VS2008 */
-    #define VS9_2008_RTM      150021022   // RTM
-    #define VS9_2008_SP1      150030729   // SP1
-//#endif
+/*#elif _MSC_VER >= 1900*/  /* VS2015 */
+    #define VS14_2015_RTM     190023026   /* RTM */
+    #define VS14_2015_U1      190023506   /* Update 1 [2015-11-30] */
+    #define VS14_2015_U2      190023918   /* Update 2 [2016-03-30] */
+    #define VS14_2015_U3      190024210   /* Update 3 [2016-07-27] */
+/*#elif _MSC_VER >= 1800*/  /* VS2013 */
+    #define VS12_2013_RTM     180021005   /* RTM */
+    #define VS12_2013_U1      180021005   /* Update 1 [2014-02-20] (1) */
+    #define VS12_2013_U2      180030501   /* Update 2 [2014-05-12] */
+    #define VS12_2013_U3      180030723   /* Update 3 [2014-08-04] */
+    #define VS12_2013_U4      180031101   /* Update 4 [2014-11-06] */
+    #define VS12_2013_U5      180040629   /* Update 5 [2015-07-20] */
+/*#elif _MSC_VER >= 1700*/  /* VS2012 */
+    #define VS11_2012_RTM     170050727   /* RTM */
+    #define VS11_2012_U1      170051106   /* Update 1 [2012-11-26] */
+    #define VS11_2012_U2      170060315   /* Update 2 [2013-04-04] */
+    #define VS11_2012_U3      170060610   /* Update 3 [2013-06-26] */
+    #define VS11_2012_U4      170061030   /* Update 4 [2013-11-13] */
+    #define VS11_2012_U5      170061030   /* Update 5 [2015-08-21] (1) */
+/*#elif _MSC_VER >= 1600*/  /* VS2010 */
+    #define VS10_2010_RTM     160030319   /* RTM */
+    #define VS10_2010_SP1     160040219   /* SP1 */
+/*#elif _MSC_VER >= 1500*/  /* VS2008 */
+    #define VS9_2008_RTM      150021022   /* RTM */
+    #define VS9_2008_SP1      150030729   /* SP1 */
+/*#endif*/
+/*(1) Microsoft apparently neglected to update _MSC_FULL_VER for this release - Doh! */
 
   #if _MSC_VER >= 2100 || _MSC_VER < 1500
     #error "Unsupported VC++ compiler."
@@ -363,7 +366,7 @@ static void SetWinddVersion (void)
 { static char
     windd_ver [63+1];
 
-  _snprintf (windd_ver, _countof(windd_ver), "%s -- %s build v0.13 [%s]",
+  _snprintf (windd_ver, _countof(windd_ver), "%s -- %s build v0.14 [%s]",
              Version, GetCompilerVersion (),
   #if defined(_WIN64) || defined(_M_X64) || defined(_M_AMD64)
              "x64"

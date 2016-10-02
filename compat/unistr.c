@@ -8,19 +8,15 @@
 #endif
 
 #include <stdio.h>                /* fprintf() */
-#include <stdlib.h>               /* exit() */
+#include <stdlib.h>               /* exit(), _countof() */
 #include <stdbool.h>              /* bool */
-#include <stdint.h>               /* int64_t */
-
 #include <ctype.h>                /* toupper() */
-#include <tchar.h>                /* TCHAR, TEXT() */
-
+#include <stdint.h>               /* int64_t */
 #include <iso646.h>               /* not, and, or, xor */
 
 #include "unistr.h"
 
 #include "safe_malloc.h"
-
 
 
 /* */

@@ -12,7 +12,7 @@ enum EDriveType
   DTYPE_REMOTE      = DRIVE_REMOTE,       /* The drive is a remote (network) drive. */
   DTYPE_CDROM       = DRIVE_CDROM,        /* The drive is a CD/DVD/BD drive. */
   DTYPE_RAMDISK     = DRIVE_RAMDISK,      /* The drive is a RAM disk. */
-  //windd - added:
+  /*windd - added*/
   DTYPE_FIXED_SSD   = 15,
   DTYPE_BIT_MASK    = 15,
   DTYPE_LOC_DISK    = 16,
@@ -23,22 +23,22 @@ enum EDriveType
 #define IsSolidStateDrive(drive_type) (((drive_type)!=DTYPE_INVALID)? (((drive_type) & DTYPE_BIT_MASK) == DTYPE_FIXED_SSD) : (exit(244), false))
 #define IsOpticalDisk(drive_type)     (((drive_type)!=DTYPE_INVALID)? (((drive_type) & DTYPE_OPT_DISK) == DTYPE_OPT_DISK) : (exit(244), false))
 
-//
+/* */
 #define INT64_UNKNOWN     ((intmax_t)-1)
 
-//
+/* */
 #define DEVFILE_ZERO      "/dev/zero"
 #define DEVFILE_URANDOM   "/dev/urandom"
 #define DEVFILE_RANDOM    "/dev/random"
 #define DEVFILE_NULL      "/dev/null"
 
-//
+/* */
 struct DismountStatistics
 {
   size_t  total_count;            /* Total number of volumes we tried to lock */
   size_t  failed_count;           /* DismountVolume() was unsuccessful: volume is only readable */
-  size_t  failed_to_lock;         /* Volume is only dismounted, but not locked */
-  size_t  failed_to_dismount;     /* Volume is locked but not dismounted (this should probably never happen) */
+  size_t  failed_to_lock;         /* Volume is only dismounted (but not locked) */
+  size_t  failed_to_dismount;     /* Volume is locked but not dismounted (this should never happen) */
 
   bool    skipped_sysdrive;       /* Can't lock "%SystemDrive%", the Operation systems drive */
   size_t  skipped_pagefile;       /* Can't lock drives where a `pagefile.sys' is stored */
@@ -49,16 +49,16 @@ struct DismountStatistics
   bool    continue_op;            /* Did the user decide to abort `dismount_selected_volumes()'? */
 };
 
-//
+/* */
 typedef char    wdx_t  [19 + 1];
 typedef wchar_t wdxw_t [19 + 1];
 
-//
+/* */
 extern bool
   force_operations,
   always_confirm;
 
-//
+/* */
 extern bool
   dskmgmt_initialize (void);
 extern void

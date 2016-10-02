@@ -110,7 +110,7 @@
 #define MAX_BLOCKSIZE(slop) MIN (SIZE_MAX - (slop), MIN (SSIZE_MAX, OFF_T_MAX))
 
 /* Conversions bit masks. */
-#if ! defined _WIN32  /*windd: moved to `raw_win32.h' */
+#if ! defined _WIN32  /*windd: moved to `compat.h' */
 enum
   {
     C_ASCII = 01,
@@ -986,7 +986,7 @@ cleanup (void)
 static void
 process_signals (void)
 {
-  #if defined _WIN32 && defined IO_STATISTICS_HIDDEN_MESSAGE_ONLY_WINDOW
+  #if defined _WIN32
   static bool
     prev_key_up_state = false,
     curr_key_up_state;

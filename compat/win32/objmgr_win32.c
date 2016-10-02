@@ -3,8 +3,9 @@
 #include <config.h>
 
 #include "objmgr_win32.h"
+#include "win32\path_win32.h"     /* GetVolumePath() */
 
-#include <Winternl.h>             /* NTSTATUS, NtQuerySystemInformation() */
+#include <winternl.h>             /* NTSTATUS, NtQuerySystemInformation() */
 
 
 /* See ReactOS:lean-explorer/reactos/subsys/system/explorer/shell/shellfs.cpp */

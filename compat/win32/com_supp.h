@@ -40,7 +40,7 @@
   }
 #else
   /* DONBOX_43: */
-  #define FACILITY_ITF_RESERVED  0x200  /* values>=0x200: avoid collisions with existing HRESULTS */
+  #define FACILITY_ITF_RESERVED  0x200  /* values>=0x200: avoid collisions with existing HRESULTs */
 
   /* ANSI C COM interface definitions: */
   #define COM_CPP_INTERFACE 0
@@ -62,7 +62,7 @@
   /* DONBOX_56: void SafeRelease (IUnknown * &rpUnk) */
   #define CoReleaseObject(pcom_obj) (CoReleaseObject) (&(IUnknown *)pcom_obj)
 
-  inline void (CoReleaseObject) (IUnknown **com_obj)
+  static inline void (CoReleaseObject) (IUnknown **com_obj)
   {
     if (com_obj && *com_obj)
     {
@@ -81,7 +81,7 @@
   /* */
   #define CoReleaseString(bstr) (CoReleaseString) (&bstr)
 
-  inline void (CoReleaseString) (BSTR *bstr)
+  static inline void (CoReleaseString) (BSTR *bstr)
   {
     if (bstr && *bstr)
     {

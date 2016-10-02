@@ -1,7 +1,7 @@
 #ifndef WINDD_POSIX_H_
 #define WINDD_POSIX_H_
 
-//
+/* fd <-> HANDLE: */
 extern int
   newfd_ex (HANDLE handle, bool from_end);
 extern int
@@ -13,7 +13,7 @@ extern int
 extern HANDLE
   fd2handle (int fd);
 
-//
+/* fd classification: */
 extern bool
   is_std_file (int fd);
 extern bool
@@ -23,9 +23,9 @@ extern bool
 extern bool
   is_volume_access (int fd);
 extern uint32_t
-  is_pipe_handle (int fd);
+  get_pipe_buffsize (int fd);
 
-//
+/* Ported POSIX functions: */
 extern int
   set_direct_io (int fd, bool direct);
 /* http://pubs.opengroup.org/onlinepubs/9699919799/functions/dup.html */
@@ -41,7 +41,7 @@ extern int
 /* http://pubs.opengroup.org/onlinepubs/9699919799/functions/lseek.html */
 extern off_t
   lseek_win32_setfilepointer (int fd, off_t offset, int whence);
-/* pubs.opengroup.org/onlinepubs/9699919799/functions/read.html */
+/* http://pubs.opengroup.org/onlinepubs/9699919799/functions/read.html */
 extern ssize_t
   read_win32_readfile (int fd, void *buf, size_t count);
 /* http://pubs.opengroup.org/onlinepubs/9699919799/functions/write.html */

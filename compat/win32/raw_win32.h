@@ -2,45 +2,15 @@
 #define WINDD_RAW_H_
 
 /* NOTE:
-   Currently, this module is only used for local storage devices, in order
-   to gain (read-only) access to the MBR and GPT on-disk structures.
-
-   All read() and write() calls as performed by `dd.c' are actually
-   implemented in `posix_win32.c'!
+   Currently, this module is mostly used to gain information about local
+   storage volumes. All read() and write() calls as performed by `dd.c'
+   are actually implemented in `posix_win32.c'!
 */
 
 #include <winioctl.h>             /* STORAGE_ACCESS_ALIGNMENT_DESCRIPTOR */
 
 /* */
 #define LOGICAL_SECTOR_SIZE  512
-
-/* */
-enum
-  {
-    C_ASCII = 01,
-
-    C_EBCDIC = 02,
-    C_IBM = 04,
-    C_BLOCK = 010,
-    C_UNBLOCK = 020,
-    C_LCASE = 040,
-    C_UCASE = 0100,
-    C_SWAB = 0200,
-    C_NOERROR = 0400,
-    C_NOTRUNC = 01000,
-    C_SYNC = 02000,
-
-    /* Use separate input and output buffers, and combine partial
-       input blocks. */
-    C_TWOBUFS = 04000,
-
-    C_NOCREAT = 010000,
-    C_EXCL = 020000,
-    C_FDATASYNC = 040000,
-    C_FSYNC = 0100000,
-
-    C_SPARSE = 0200000
-  };
 
 /* */
 struct VolumeDesc;

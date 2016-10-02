@@ -1,4 +1,4 @@
-// Displaying Volume Paths
+/* Displaying Volume Paths
 // https://msdn.microsoft.com/en-us/library/windows/desktop/cc542456(v=vs.85).aspx
 
 // Direct Drive Access Under Win32
@@ -42,15 +42,18 @@
 //
 // An application running at a sufficient privilege level can define, redefine,
 // or delete Win32 device mappings by calling the DefineDosDevice() API.
-
+*/
 #include "win32utf16.h"           /* switch to UTF-16 in this file! */
 
 #include <config.h>
 
-#include <stddef.h>               /* offsetof() macro */
+#include "raw_win32.h"
+#include "path_win32.h"           /* GetVolumePath() */
+#include "objmgr_win32.h"         /* IsPhysicalDrive() */
+#include "diskmgmt\physical_disks.h"  /* drives_optdisk_selected() */
 
 
-//
+/* */
 struct VolumeDesc
 {
   int                                   posix_fd;
@@ -64,11 +67,11 @@ struct VolumeDesc
 };
 
 
-//
+/* */
 static bool GetVolumeInfo (struct VolumeDesc *vol);
 
 
-//===  _WIN32 raw disk access  ===
+/*===  _WIN32 raw disk access  ===*/
 extern struct VolumeDesc *OpenVolumeEx (int desired_fd, TCHAR const device_id [], DWORD dwDesiredAccess)
 { struct VolumeDesc *
     vol = (struct VolumeDesc *)MemAlloc (1, sizeof(*vol));
@@ -76,19 +79,19 @@ extern struct VolumeDesc *OpenVolumeEx (int desired_fd, TCHAR const device_id []
   memset (vol, 0, sizeof(*vol));
 
   vol->dwFlagsAndAttributes =
-                      FILE_FLAG_NO_BUFFERING   // disable caching, but allow
-                    | FILE_FLAG_RANDOM_ACCESS; // sectors to be accessed randomly
+                      FILE_FLAG_NO_BUFFERING   /* disable caching, but allow */
+                    | FILE_FLAG_RANDOM_ACCESS; /* sectors to be accessed randomly */
   vol->dwDesiredAccess = dwDesiredAccess;
 
 
   { HANDLE handle = CreateFile (
-                      device_id,               // file to open
-                      vol->dwDesiredAccess,    // n.b.: specify only GENERIC_READ, even for write access
-                      FILE_SHARE_READ | FILE_SHARE_WRITE,  // allow both reads and writes
-                      NULL,                    // default security
-                      OPEN_EXISTING,           // existing file only
+                      device_id,               /* file to open */
+                      vol->dwDesiredAccess,    /* n.b.: specify only GENERIC_READ, even for write access */
+                      FILE_SHARE_READ | FILE_SHARE_WRITE,  /* allow both reads and writes */
+                      NULL,                    /* default security */
+                      OPEN_EXISTING,           /* existing file only */
                       vol->dwFlagsAndAttributes,
-                      NULL);                   // no attr. template
+                      NULL);                   /* no attr. template */
 
     if (not IsValidHandle (handle))
     {
@@ -98,7 +101,7 @@ extern struct VolumeDesc *OpenVolumeEx (int desired_fd, TCHAR const device_id []
 
     vol->is_physical_drive = (IsPhysicalDrive (device_id) > 0);
 
-    // Reserve a file descriptor representing this volume HANDLE:
+    /* Reserve a file descriptor representing this volume HANDLE: */
     if (desired_fd >= 0)
     {
       vol->posix_fd = newfd (handle);
@@ -117,10 +120,10 @@ extern struct VolumeDesc *OpenVolumeEx (int desired_fd, TCHAR const device_id []
     else
       vol->posix_fd = newfd_ex (handle, true);  /* 65533, 65532, ... */
 
-    // Volume properties? (Retrieve only, if we'll actually be reading/writing sectors.)
+    /* Volume properties? (Retrieve only, if we'll actually be reading/writing sectors.) */
   /*if (dwDesiredAccess != 0)*/
     {
-      (void)GetVolumeInfo (vol);  /* Ignore! */
+      (void)GetVolumeInfo (vol);  /* Ignore any errors! */
     }
   }
 
@@ -175,12 +178,12 @@ extern bool LockCdromDriveEx (HANDLE hCdrom, BOOL fLock)
 
   media_removal.PreventMediaRemoval = fLock;
 
-  if (not DeviceIoControl (hCdrom,              // cd rom drive
-        IOCTL_CDROM_MEDIA_REMOVAL,              // operation to perform
-        &media_removal, sizeof(media_removal),  // input buffer
-        NULL, 0,                                // no output buffer
-        &dwBytesReturned,                       // unused
-        (LPOVERLAPPED)NULL))                    // no overlapped I/O
+  if (not DeviceIoControl (hCdrom,              /* cd rom drive */
+        IOCTL_CDROM_MEDIA_REMOVAL,              /* operation to perform */
+        &media_removal, sizeof(media_removal),  /* input buffer */
+        NULL, 0,                                /* no output buffer */
+        &dwBytesReturned,                       /* unused */
+        (LPOVERLAPPED)NULL))                    /* no overlapped I/O */
     return (false);
 
   return (true);
@@ -356,7 +359,7 @@ extern ssize_t WriteSector (struct VolumeDesc const *vol, void *buf, off_t start
 }
 
 
-//===  Volume metadata  ===
+/*===  Volume metadata  ===*/
 static bool GetVolumeInfo (struct VolumeDesc *vol)
 { DWORD
     dwBytesReturned;
@@ -366,16 +369,16 @@ static bool GetVolumeInfo (struct VolumeDesc *vol)
   if ((vol_handle=GetVolumeHandle (vol)) == INVALID_HANDLE_VALUE)
     return (false);
 
-  //
+  /* */
   { DISK_GEOMETRY
       disk_geom;
 
-    if (DeviceIoControl (vol_handle,          // device to be queried
-          IOCTL_DISK_GET_DRIVE_GEOMETRY,      // operation to perform
-          NULL, 0,                            // no input buffer
-          &disk_geom, sizeof(disk_geom),      // output buffer
-          &dwBytesReturned,                   // # bytes returned
-          (LPOVERLAPPED)NULL))                // no overlapped I/O
+    if (DeviceIoControl (vol_handle,          /* device to be queried */
+          IOCTL_DISK_GET_DRIVE_GEOMETRY,      /* operation to perform */
+          NULL, 0,                            /* no input buffer */
+          &disk_geom, sizeof(disk_geom),      /* output buffer */
+          &dwBytesReturned,                   /* # bytes returned */
+          (LPOVERLAPPED)NULL))                /* no overlapped I/O */
     {
       vol->disk_geom = (DISK_GEOMETRY *)MemAlloc (sizeof(disk_geom), 1);
       memcpy (vol->disk_geom, &disk_geom, sizeof(disk_geom));
@@ -384,16 +387,16 @@ static bool GetVolumeInfo (struct VolumeDesc *vol)
       vol->disk_geom = NULL;
   }
 
-  //
+  /* */
   { GET_LENGTH_INFORMATION
       length_info;
 
-    if (DeviceIoControl (vol_handle,          // device to be queried
-          IOCTL_DISK_GET_LENGTH_INFO,         // operation to perform
-          NULL, 0,                            // no input buffer
-          &length_info, sizeof(length_info),  // output buffer
-          &dwBytesReturned,                   // # bytes returned
-          (LPOVERLAPPED)NULL))                // no overlapped I/O
+    if (DeviceIoControl (vol_handle,          /* device to be queried */
+          IOCTL_DISK_GET_LENGTH_INFO,         /* operation to perform */
+          NULL, 0,                            /* no input buffer */
+          &length_info, sizeof(length_info),  /* output buffer */
+          &dwBytesReturned,                   /* # bytes returned */
+          (LPOVERLAPPED)NULL))                /* no overlapped I/O */
     {
       vol->length_info = (GET_LENGTH_INFORMATION *)MemAlloc (sizeof(length_info), 1);
       memcpy (vol->length_info, &length_info, sizeof(length_info));
@@ -402,7 +405,7 @@ static bool GetVolumeInfo (struct VolumeDesc *vol)
       vol->length_info = NULL;
   }
 
-  //
+  /* */
   { STORAGE_ACCESS_ALIGNMENT_DESCRIPTOR
       align_desc;
     STORAGE_PROPERTY_QUERY
@@ -412,12 +415,12 @@ static bool GetVolumeInfo (struct VolumeDesc *vol)
     query.QueryType  = PropertyStandardQuery;
     query.PropertyId = StorageAccessAlignmentProperty;
 
-    if (DeviceIoControl (vol_handle,          // device to be queried
-          IOCTL_STORAGE_QUERY_PROPERTY,       // operation to perform
-          &query, sizeof(query),              // input buffer
-          &align_desc, sizeof(align_desc),    // output buffer
-          &dwBytesReturned,                   // # bytes returned
-          (LPOVERLAPPED)NULL))                // no overlapped I/O
+    if (DeviceIoControl (vol_handle,          /* device to be queried */
+          IOCTL_STORAGE_QUERY_PROPERTY,       /* operation to perform */
+          &query, sizeof(query),              /* input buffer */
+          &align_desc, sizeof(align_desc),    /* output buffer */
+          &dwBytesReturned,                   /* # bytes returned */
+          (LPOVERLAPPED)NULL))                /* no overlapped I/O */
     {
       vol->align_desc = (STORAGE_ACCESS_ALIGNMENT_DESCRIPTOR *)MemAlloc (sizeof(align_desc), 1);
       memcpy (vol->align_desc, &align_desc, sizeof(align_desc));
@@ -494,7 +497,7 @@ extern int GetVolumeExtents (struct VolumeDesc const *vol, VOLUME_DISK_EXTENTS *
   if (volume_disk_extents == NULL)
     ErrnoReturn (EINVAL, 0);
 
-  //
+  /* */
   { int
       ret;
     VOLUME_DISK_EXTENTS
@@ -506,12 +509,12 @@ extern int GetVolumeExtents (struct VolumeDesc const *vol, VOLUME_DISK_EXTENTS *
     memset (vde, 0, sizeof_vde);
 
 TryAgain:
-    if ((ret=DeviceIoControl (vol_handle,             // device to be queried
-                IOCTL_VOLUME_GET_VOLUME_DISK_EXTENTS, // operation to perform
-                NULL, 0,                              // no input buffer
-                vde, (DWORD)sizeof_vde,               // output buffer
-                &dwBytesReturned,                     // # bytes returned
-                (LPOVERLAPPED)NULL)) == 0)            // no overlapped I/O
+    if ((ret=DeviceIoControl (vol_handle,             /* device to be queried */
+                IOCTL_VOLUME_GET_VOLUME_DISK_EXTENTS, /* operation to perform */
+                NULL, 0,                              /* no input buffer */
+                vde, (DWORD)sizeof_vde,               /* output buffer */
+                &dwBytesReturned,                     /* # bytes returned */
+                (LPOVERLAPPED)NULL)) == 0)            /* no overlapped I/O */
     {
       if ((GetLastError() != ERROR_MORE_DATA
         && GetLastError() != ERROR_INSUFFICIENT_BUFFER) || sizeof_vde > sizeof(*vde))
@@ -556,8 +559,8 @@ extern DWORD PhysicalSectorSize (struct VolumeDesc const *vol)
 
 
 extern DWORD PhysicalSectorSizeEx (TCHAR const path [])
-{ static TCHAR             // = TEXT("\\\\.\\PhysicalDrive0"); // Device path
-    devpath [MAX_PATH + 1];// = TEXT("\\\\.\\C:");             // Volume device path
+{ static TCHAR             /* = TEXT("\\\\.\\PhysicalDrive0"); // Device path */
+    devpath [MAX_PATH + 1];/* = TEXT("\\\\.\\C:");             // Volume device path */
 
   if (not GetVolumePath (path, devpath, _countof(devpath)))
     return (0);

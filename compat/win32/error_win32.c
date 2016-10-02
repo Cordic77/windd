@@ -2,6 +2,8 @@
 
 #include <config.h>
 
+#include "win32\com_supp.h"       /* CoReleaseObject(), COM_OBJ(), COM_OBJ_THIS_() */
+
 
 /* */
 static LPTSTR
@@ -128,8 +130,8 @@ extern void SystemErrorEx (int status, char const user_msg [], va_list args)
         fprintf (stderr, "\n[%s] Unknown Win32 error (GetLastError=%" PRId32 ")\n",
                              PROGRAM_NAME, last_gle);
     }
-    // COM HRESULT?
-    else// if (errno == EWINHRESULT)
+    /* COM HRESULT? */
+    else/* if (errno == EWINHRESULT) */
     {
       LPTSTR pMessage = COMErrorMessage (last_hr);
       TrimRight (pMessage);
@@ -138,7 +140,7 @@ extern void SystemErrorEx (int status, char const user_msg [], va_list args)
       free (pMessage);
     }
   }
-  // <or> a POSIX error code?
+  /* <or> a POSIX error code? */
   else
   {
     _ftprintf (stderr, TEXT("\n[%s] %s\n"),
