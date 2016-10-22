@@ -87,7 +87,7 @@ extern struct VolumeDesc *OpenVolumeEx (int desired_fd, TCHAR const device_id []
   { HANDLE handle = CreateFile (
                       device_id,               /* file to open */
                       vol->dwDesiredAccess,    /* n.b.: specify only GENERIC_READ, even for write access */
-                      FILE_SHARE_READ | FILE_SHARE_WRITE,  /* allow both reads and writes */
+                      FILE_SHARE_READ | FILE_SHARE_WRITE,  /* shared for read and write access */
                       NULL,                    /* default security */
                       OPEN_EXISTING,           /* existing file only */
                       vol->dwFlagsAndAttributes,
@@ -228,13 +228,24 @@ extern bool CloseVolumeEx (struct VolumeDesc const **vol, bool close_handle)
     if (not close_handle)
     {
       remfd (fd);
+      Free (*vol);
       return (true);
     }
 
+    Free (*vol);
     return (close (fd) == 0);
   }
 }
 
+
+extern bool SetVolumeHandle (struct VolumeDesc *vol, HANDLE handle)
+{
+  if (vol == NULL)
+    ErrnoReturn (EINVAL, false);
+
+  vol->posix_fd = handle2fd (handle);
+  return (true);
+}
 
 extern HANDLE GetVolumeHandle (struct VolumeDesc const *vol)
 { HANDLE
@@ -343,8 +354,10 @@ extern LONGLONG GetFilePointerEx (HANDLE handle)
 /* Right now, these two functions are not really used: */
 extern ssize_t ReadSector (struct VolumeDesc const *vol, void *buf, off_t start_sector, size_t sector_count)
 {
-  size_t offset = (size_t)(start_sector * LOGICAL_SECTOR_SIZE);
-  size_t bytes  = (size_t)(sector_count * LOGICAL_SECTOR_SIZE);
+  off_t offset = (off_t)start_sector * LOGICAL_SECTOR_SIZE;
+  off_t bytes  = (off_t)sector_count * LOGICAL_SECTOR_SIZE;
+
+  (void)offset; (void)bytes;
 
   return (read (vol->posix_fd, buf, sector_count));
 }
@@ -352,8 +365,10 @@ extern ssize_t ReadSector (struct VolumeDesc const *vol, void *buf, off_t start_
 
 extern ssize_t WriteSector (struct VolumeDesc const *vol, void *buf, off_t start_sector, size_t sector_count)
 {
-  size_t offset = (size_t)(start_sector * LOGICAL_SECTOR_SIZE);
-  size_t bytes  = (size_t)(sector_count * LOGICAL_SECTOR_SIZE);
+  off_t offset = (off_t)start_sector * LOGICAL_SECTOR_SIZE;
+  off_t bytes  = (off_t)sector_count * LOGICAL_SECTOR_SIZE;
+
+  (void)offset; (void)bytes;
 
   return (write (vol->posix_fd, buf, sector_count));
 }
@@ -536,25 +551,18 @@ TryAgain:
 
 
 extern DWORD PhysicalSectorSize (struct VolumeDesc const *vol)
-{
-  if (drives_optdisk_selected ())
-  { DISK_GEOMETRY
-      disk_geom = {0};
+{ STORAGE_ACCESS_ALIGNMENT_DESCRIPTOR
+    align_desc = {0};
+  DISK_GEOMETRY
+    disk_geom = {0};
 
-    if (not GetDiskGeometry (vol, &disk_geom))
-      return (0);
-
-    return (disk_geom.BytesPerSector);
-  }
-  else
-  { STORAGE_ACCESS_ALIGNMENT_DESCRIPTOR
-      align_desc = {0};
-
-    if (not GetVolumeAlignment (vol, &align_desc))
-      return (0);
-
+  if (not drives_optdisk_selected () && GetVolumeAlignment (vol, &align_desc))
     return (align_desc.BytesPerPhysicalSector);
-  }
+  else
+  if (GetDiskGeometry (vol, &disk_geom))
+    return (disk_geom.BytesPerSector);
+
+  return (0);
 }
 
 

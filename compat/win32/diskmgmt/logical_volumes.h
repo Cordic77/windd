@@ -47,6 +47,8 @@ extern off_t
   get_volume_offset (void);
 extern off_t
   get_volume_size (void);
+extern struct VolumeInfo const *
+  get_system_volume(void);
 extern bool
   is_system_drive (void);
 

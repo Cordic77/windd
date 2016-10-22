@@ -55,6 +55,7 @@ typedef wchar_t wdxw_t [19 + 1];
 
 /* */
 extern bool
+  lock_volumes,
   force_operations,
   always_confirm;
 
@@ -107,6 +108,7 @@ extern enum EDriveType
 extern bool
   dismount_selected_volumes (struct VolumeDesc const *vol, TCHAR const display_name [],
                              bool force_wdx_logdrive, bool const read_only,
+                             off_t volume_offset, off_t volume_length,
                              struct DismountStatistics *statistics);
 
 #endif

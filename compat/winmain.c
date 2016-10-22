@@ -366,7 +366,7 @@ static void SetWinddVersion (void)
 { static char
     windd_ver [63+1];
 
-  _snprintf (windd_ver, _countof(windd_ver), "%s -- %s build v0.14 [%s]",
+  _snprintf (windd_ver, _countof(windd_ver), "%s -- %s build v0.15 [%s]",
              Version, GetCompilerVersion (),
   #if defined(_WIN64) || defined(_M_X64) || defined(_M_AMD64)
              "x64"

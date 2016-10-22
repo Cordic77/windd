@@ -12,7 +12,7 @@ extern bool
   drives_physdisk_selected (void);
 extern bool
   get_physdisk_path (TCHAR physdisk_path []);
-extern long long
+extern off_t
   get_physdisk_size (void);
 extern bool
   disk_contains_system_drive (void);

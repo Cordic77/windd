@@ -280,41 +280,65 @@ extern size_t NormalizeNTDevicePath (wchar_t nt_device_path [])
 }
 
 
-extern size_t IsDeviceObjectA (char const file [], char const device_prefix [])
-{
-  if (file != NULL && _memicmp (file, "\\Device\\", 8) == 0)
-    if (_memicmp (file+8, device_prefix, strlen(device_prefix)) == 0)
-    { char const *
-        chr = file+8+strlen(device_prefix);
+extern size_t IsDeviceObjectA (char const file [], char const device_prefix [], int *prefix_length)
+{ static char const
+    global_root [12 + 1] = "GLOBALROOT\\";
 
-      do {
-        if (not isdigit (*chr))
-          return (false);
-        ++chr;
-      } while (chr[0] != '\0');
+  int path_prefix = PathPrefixA (file);
 
-      return (chr-file);
-    }
+  if (file != NULL)
+  {
+    if (_memicmp (file+path_prefix, global_root, strlen(global_root)) == 0)
+      path_prefix += (int)strlen(global_root)-1;
+
+    if (_memicmp (file+path_prefix, "\\Device\\", 8) == 0)
+      if (_memicmp (file+path_prefix+8, device_prefix, strlen(device_prefix)) == 0)
+      { char const *
+          chr = file+path_prefix+8+strlen(device_prefix);
+
+        do {
+          if (not isdigit (*chr))
+            return (false);
+          ++chr;
+        } while (chr[0] != '\0');
+
+        if (prefix_length != NULL)
+         *prefix_length = path_prefix;
+        return (chr-file-path_prefix);
+      }
+  }
 
   return (0);
 }
 
 
-extern size_t IsDeviceObjectW (wchar_t const file [], wchar_t const device_prefix [])
-{
-  if (file != NULL && _memicmp (file, L"\\Device\\", 8*sizeof(wchar_t)) == 0)
-    if (_memicmp (file+8, device_prefix, wcslen(device_prefix)*sizeof(wchar_t)) == 0)
-    { wchar_t const *
-        chr = file+8+wcslen(device_prefix);
+extern size_t IsDeviceObjectW (wchar_t const file [], wchar_t const device_prefix [], int *prefix_length)
+{ static wchar_t const
+    global_root [12 + 1] = L"GLOBALROOT\\";
 
-      do {
-        if (not iswdigit (*chr))
-          return (false);
-        ++chr;
-      } while (chr[0] != L'\0');
+  int path_prefix = PathPrefixW (file);
 
-      return (chr-file);
-    }
+  if (file != NULL)
+  {
+    if (_memicmp (file+path_prefix, global_root, wcslen(global_root)*sizeof(wchar_t)) == 0)
+      path_prefix += (int)wcslen(global_root)-1;
+
+    if (_memicmp (file+path_prefix, L"\\Device\\", 8*sizeof(wchar_t)) == 0)
+      if (_memicmp (file+path_prefix+8, device_prefix, wcslen(device_prefix)*sizeof(wchar_t)) == 0)
+      { wchar_t const *
+          chr = file+path_prefix+8+wcslen(device_prefix);
+
+        do {
+          if (not iswdigit (*chr))
+            return (false);
+          ++chr;
+        } while (chr[0] != L'\0');
+
+        if (prefix_length != NULL)
+         *prefix_length = path_prefix;
+        return (chr-file-path_prefix);
+      }
+  }
 
   return (0);
 }
@@ -323,17 +347,19 @@ extern size_t IsDeviceObjectW (wchar_t const file [], wchar_t const device_prefi
 extern bool EqualDeviceObjectA (char const device_path_1 [], char const device_path_2 [], char const device_prefix [])
 {
   if (device_path_1 != NULL && device_path_2 != NULL)
-  { size_t
+  { int
+      prefix1, prefix2;
+    size_t
       length1, length2;
 
-    if ((length1=IsDeviceObjectA (device_path_1, device_prefix)) == 0
-     || (length2=IsDeviceObjectA (device_path_2, device_prefix)) == 0)
+    if ((length1=IsDeviceObjectA (device_path_1, device_prefix, &prefix1)) == 0
+     || (length2=IsDeviceObjectA (device_path_2, device_prefix, &prefix2)) == 0)
       return (false);
 
     if (length1 != length2)
       return (false);
 
-    return (_memicmp (device_path_1, device_path_2, length1) == 0);
+    return (_memicmp (device_path_1+prefix1, device_path_2+prefix2, length1) == 0);
   }
 
   return (false);
@@ -343,17 +369,19 @@ extern bool EqualDeviceObjectA (char const device_path_1 [], char const device_p
 extern bool EqualDeviceObjectW (wchar_t const device_path_1 [], wchar_t const device_path_2 [], wchar_t const device_prefix [])
 {
   if (device_path_1 != NULL && device_path_2 != NULL)
-  { size_t
+  { int
+      prefix1, prefix2;
+    size_t
       length1, length2;
 
-    if ((length1=IsDeviceObjectW (device_path_1, device_prefix)) == 0
-     || (length2=IsDeviceObjectW (device_path_2, device_prefix)) == 0)
+    if ((length1=IsDeviceObjectW (device_path_1, device_prefix, &prefix1)) == 0
+     || (length2=IsDeviceObjectW (device_path_2, device_prefix, &prefix2)) == 0)
       return (false);
 
     if (length1 != length2)
       return (false);
 
-    return (_memicmp (device_path_1, device_path_2, length1*sizeof(wchar_t)) == 0);
+    return (_memicmp (device_path_1+prefix1, device_path_2+prefix2, length1*sizeof(wchar_t)) == 0);
   }
 
   return (false);
@@ -363,13 +391,13 @@ extern bool EqualDeviceObjectW (wchar_t const device_path_1 [], wchar_t const de
 /* "\Device\CdRom0" */
 extern size_t IsCdromDriveA (char const file [])
 {
-  return (IsDeviceObjectA (file, "CdRom"));
+  return (IsDeviceObjectA (file, "CdRom", NULL));
 }
 
 
 extern size_t IsCdromDriveW (wchar_t const file [])
 {
-  return (IsDeviceObjectW (file, L"CdRom"));
+  return (IsDeviceObjectW (file, L"CdRom", NULL));
 }
 
 
@@ -477,13 +505,13 @@ extern bool EqualPhysicalDriveW (wchar_t const device_path_1 [], wchar_t const d
 /* "\Device\HarddiskVolume1" */
 extern size_t IsHarddiskVolumeA (char const file [])
 {
-  return (IsDeviceObjectA (file, "HarddiskVolume"));
+  return (IsDeviceObjectA (file, "HarddiskVolume", NULL));
 }
 
 
 extern size_t IsHarddiskVolumeW (wchar_t const file [])
 {
-  return (IsDeviceObjectW (file, L"HarddiskVolume"));
+  return (IsDeviceObjectW (file, L"HarddiskVolume", NULL));
 }
 
 

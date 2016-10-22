@@ -91,9 +91,18 @@ struct VolumeInfo
 static BSTR
   wql; /* = SysAllocString (L"WQL"); */
 bool
+  lock_volumes = true;            /* Lock & dismount all affected volumes? */
+bool
   force_operations; /*= false;*/  /* Force operations, ignore any open handles? */
 bool
-  always_confirm; /* = false; */      /* Always ask back before doing anything critical */
+  always_confirm; /* = false; */  /* Always ask back before doing anything critical */
+enum EDriveType
+  dump_dtype;                     /* DumpDrivesAndPartitions(): limit to drive type? */
+uint32_t
+  dump_dindex;                    /* DumpDrivesAndPartitions(): limit to disk index? */
+
+wdx_t
+  dump_wdx_id; /* = ""; */        /* Limit DumpDrivesAndPartitions() to a specific drive? */
 
 /* Local storage: */
 static bool
@@ -1244,6 +1253,8 @@ extern void DumpDrivesAndPartitions (void)
     mount_color = LIGHTCYAN,
     part_type_color = WHITE,
     part_label_color = WHITE;
+  int
+    header_printed = 0;
   TCHAR
     volume_name [MAX_PATH+1];
   wchar_t
@@ -1262,12 +1273,42 @@ extern void DumpDrivesAndPartitions (void)
       TCHAR const
        *cur_mount_point;
 
-      fprintf (stdout,
-"LOGICAL VOLUMES:                        offset [byte]             length [byte]\n"
-"===============================================================================\n");
+      header_printed = 0;
 
       for (v=0; logical_volume[v].valid; ++v)
       {
+        /* Limit to `dump_dindex'? */
+        if (dump_dindex != INVALID_DISK)
+        {
+          e = INVALID_EXTENT;
+          do {
+            if (logical_volume[v].extent_count > 0)
+              ++e;
+
+            if (VolumeToDiskPartition (logical_volume + v, e, &d, &p))
+            {
+              /* /dev/wdx identifer: */
+              if (physical_disk[d].DiskNumber == dump_dindex)
+                if (IsLocalDisk (physical_disk[d].type) == IsLocalDisk (dump_dtype))
+                {
+                  e = logical_volume[v].extent_count;
+                  break;
+                }
+            }
+          } while (e + 1 < logical_volume[v].extent_count);
+
+          if (e != logical_volume[v].extent_count)
+            continue;
+        }
+
+        if (header_printed != 1)
+        {
+          fprintf (stdout,
+"LOGICAL VOLUMES:                        offset [byte]             length [byte]\n"
+"===============================================================================\n");
+          header_printed = 1;
+        }
+
         /* e.g. "/dev/wda" */
         textcolor (drive_color);
         fprintf (stdout, "Volume %-3d ", v+1);
@@ -1360,18 +1401,30 @@ extern void DumpDrivesAndPartitions (void)
         _ftprintf (stdout, TEXT("\n"));
       }
 
-      fprintf (stdout,
-"\nPHYSICAL DISKS:");
-
       for (d=0; physical_disk[d].type != DTYPE_INVALID; ++d)
         if (IsLocalDisk (physical_disk[d].type))
         {
-          if (d > 0)
-            fprintf (stdout, "               ");
+          /* Limit to `dump_dindex'? */
+          if (dump_dtype != DTYPE_INVALID)
+          {
+            if (not IsLocalDisk (dump_dtype) || physical_disk[d].DiskNumber != dump_dindex)
+              continue;
+          }
+
+          if (header_printed < 2)
+          {
+            if (header_printed == 1)
+              fprintf (stdout, "\n");
+            fprintf (stdout, "PHYSICAL DISKS:");
+            header_printed = 2;
+          }
+          else
+            fprintf(stdout, "\n               ");
 
           fprintf (stdout,
 "                         offset [byte]             length [byte]\n"
 "===============================================================================\n");
+
           /* e.g. "/dev/wda" */
           textcolor (drive_color);
         /*_sntprintf (buffer, _countof(buffer), TEXT("/dev/wd%c"), TEXT('a') + local_storage[d].disk_index);*/
@@ -1517,19 +1570,34 @@ extern void DumpDrivesAndPartitions (void)
             }
           }
 
-          _ftprintf (stdout, TEXT("\n"));
+          /*_ftprintf (stdout, TEXT("\n"));*/
         }
     }
 
     /* CD/DVD/BD drives? */
     if (number_of_optical_disks () > 0)
     {
-      fprintf (stdout, "CD/DVD/BD DRIVES:\n"
-"===============================================================================\n");
-
       for (d=0; physical_disk[d].type != DTYPE_INVALID; ++d)
         if (IsOpticalDisk (physical_disk[d].type))
         {
+          /* Limit to `dump_dindex'? */
+          if (dump_dtype != DTYPE_INVALID)
+          {
+            if (not IsOpticalDisk (dump_dtype) || physical_disk[d].DiskNumber != dump_dindex)
+              continue;
+          }
+
+          if (header_printed != 3)
+          {
+            if (header_printed == 1 || header_printed == 2)
+              fprintf (stdout, "\n");
+
+            fprintf (stdout,
+"CD/DVD/BD DRIVES:\n"
+"===============================================================================\n");
+            header_printed = 3;
+          }
+
           textcolor (cdrom_color);
         /*_sntprintf (buffer, _countof(buffer), TEXT("/dev/wr%") TEXT(PRId32) TEXT("), local_storage[d].disk_index);*/
           cdrom2wdx (physical_disk[d].DiskNumber, wdx_id);
@@ -2114,6 +2182,7 @@ QueryTypeFailed:
 */
 extern bool dismount_selected_volumes (struct VolumeDesc const *vol, TCHAR const display_name [],
                                        bool force_wdx_logdrive, bool const read_only,
+                                       off_t volume_offset, off_t volume_length,
                                        struct DismountStatistics *statistics)
 { TCHAR
     volume_name [MAX_PATH + 1];
@@ -2123,7 +2192,6 @@ extern bool dismount_selected_volumes (struct VolumeDesc const *vol, TCHAR const
     windd_drive_letter = TEXT('\0');
 
   assert (statistics != NULL);
-  memset (statistics, 0, sizeof(*statistics));
   statistics->continue_op = true;
 
   /* Determine drive letter of the currently executing process: */
@@ -2153,10 +2221,10 @@ extern bool dismount_selected_volumes (struct VolumeDesc const *vol, TCHAR const
   if (drives_physdisk_selected () && disk_contains_system_drive ())
     warn_system_drive = true;
 
+  /* Any open handles on the selected drive? */
   { char
       key;
 
-    /* Any open handles on the selected drive? */
     if (not force_operations && not warn_system_drive
         #ifndef DETECT_OPEN_HANDLES
      && false
@@ -2196,31 +2264,6 @@ TEXT("BE INVALID. Would you like to force a dismount on this volume? (Y/N) "),
           force_operations = true;*/
       }
     }
-
-    /* Would this operation involve %SystemDrive%? */
-    if (warn_system_drive && not read_only)
-    {
-      _ftprintf (stdout,
-TEXT("The selected disk contains your %%SystemDrive%%. You may proceed, but please\n")
-TEXT("be aware that all physical sectors within this volume will only be readable,\n")
-TEXT("not writable. Would you like to continue nonetheless? (Y/N) "));
-
-      if (not force_operations)
-        key = PromptUserYesNo ();
-      else
-        key = 'Y';
-
-      if (not IsFileRedirected (stdin))
-      {
-        _ftprintf (stdout, TEXT("%c\n\n"), key);
-        FlushStdout ();
-      }
-      if (key == 'N')
-      {
-        statistics->continue_op = false;
-        return (false);
-      }
-    }
   }
 
   /* Dismount drives: */
@@ -2231,8 +2274,9 @@ TEXT("not writable. Would you like to continue nonetheless? (Y/N) "));
       step, p, m = (uint32_t)-1;
     bool
       first_iteration = true,
+      is_logical_volume = true,
       is_windows_part = true,
-      dismount_multipe = false;
+      physdisk_selected = false;
 
     /* First and last selected partition? */
     first_part = drives_partition_selected ()? sel_part : 0;
@@ -2244,12 +2288,58 @@ TEXT("not writable. Would you like to continue nonetheless? (Y/N) "));
     {
       last_part = 1 + min (sel_part, physical_disk[sel_disk].part_count-1);
       if (sel_part == INVALID_PART || force_wdx_logdrive)
+      {
+        is_logical_volume = false;
         --first_part;                 /* Lock `vol' as well as selected partition */
-      dismount_multipe = true;
+      }
+      physdisk_selected = true;
     }
     else
   /*if (sel_nt_devname || drives_optdisk_selected ())*/
       last_part = first_part+1;       /* Simply lock/dismount passed `vol'! */
+
+    /* Will this operation involve %SystemDrive%? */
+    if (warn_system_drive) /* && not read_only // not tested because if src_eq_dst==true, this test would be skipped alltogether! */
+      for (p=first_part; p != last_part; ++p)
+      {
+        if (sel_disk!=INVALID_DISK && IsExtendedPartitionIndex (sel_disk, p) || p == (uint32_t)-1)
+          continue;  /* Skip extended partition! */
+
+        if (physical_disk[sel_disk].part[p].volume->is_system_drive)
+          if (is_logical_volume || PartitionsOverlap (
+                                       physical_disk[sel_disk].part[p].PartitionEntry.StartingOffset.QuadPart,
+                                         physical_disk[sel_disk].part[p].PartitionEntry.PartitionLength.QuadPart,
+                                       volume_offset, volume_length))
+          { char
+              key;
+
+            _ftprintf (stdout,
+TEXT("The selected disk contains your %%SystemDrive%%. You may proceed, but please\n")
+TEXT("be aware that all physical sectors within this volume will only be readable,\n")
+TEXT("not writable. Would you like to continue nonetheless? (Y/N) "));
+
+            if (not force_operations)
+              key = PromptUserYesNo ();
+            else
+              key = 'Y';
+
+            if (not IsFileRedirected (stdin))
+            {
+              _ftprintf (stdout, TEXT("%c\n\n"), key);
+              FlushStdout ();
+            }
+            if (key == 'N')
+            {
+              statistics->continue_op = false;
+              return (false);
+            }
+            else
+            {
+              p = last_part;
+              break;
+            }
+          }
+      }
 
     /* Lock and dismount: */
     step = (last_part != first_part+1)? 2 : 1;  /* Step 2: lock directory mount points
@@ -2327,123 +2417,131 @@ LockDriveLetters:
         { TCHAR *
             colon;
 
-          _ftprintf (stdout, TEXT("%-39s ... "), volume_name);
-          ++statistics->total_count;
+          /* Really affected by the selected operation? */
+          if ((PhysicalDriveOpened(vol) && first_part == (uint32_t)-1)
+              || is_logical_volume || PartitionsOverlap (
+                                        physical_disk[sel_disk].part[p].PartitionEntry.StartingOffset.QuadPart,
+                                          physical_disk[sel_disk].part[p].PartitionEntry.PartitionLength.QuadPart,
+                                        volume_offset, volume_length))
+          {
+            _ftprintf (stdout, TEXT("%-39s ... "), volume_name);
+            ++statistics->total_count;
 
-          /* (1) Can't lock the system drive: */
-          if (warn_system_drive && p!=INVALID_PART
-           && physical_disk[sel_disk].part[p].volume->is_system_drive)  /*is_system_drive ()*/
-          {
-            _ftprintf (stdout, TEXT("failed  (system drive)\n"));
-            statistics->skipped_sysdrive = true;
-          }
-          /* (2) Can't lock if there is a pagefile: */
-          else
-          if (IsDriveLetter (volume_name, false, &colon, NULL)
-              && IsPagefileDrive (colon-1))
-          {
-            _ftprintf (stdout, TEXT("failed  (has pagefile.sys)\n"));
-            ++statistics->skipped_pagefile;
-          }
-          /* (3) No need to lock Non-Windows partitions: */
-          else
-          if (not is_windows_part)
-          {
-            _ftprintf (stdout, TEXT("skipped (non-Windows partition)\n"));
-            ++statistics->skipped_non_windows;
-          }
-          else
-          /* (4) Try to lock and dismount: */
-          { bool
-              locked;             /* Volume lock successful? */
-            bool
-              dismounted;         /* Volume also dismounted? */
-
-            if (not first_iteration)
+            /* (1) Can't lock the system drive: */
+            if (warn_system_drive && p!=INVALID_PART
+             && physical_disk[sel_disk].part[p].volume->is_system_drive)  /*is_system_drive ()*/
             {
-              if ((vol=OpenVolumeRW (-1, volume_name)) == NULL)
-                return (false);
-
-              /* Store partition HANDLE; at the end of execution it will be released through `close();' */
-              statistics->volume_handles = (HANDLE *)MemRealloc (statistics->volume_handles,
-                                                                 statistics->handle_count + 2, sizeof(HANDLE));
-              statistics->volume_handles [statistics->handle_count]   = GetVolumeHandle (vol);
-              statistics->volume_handles [++statistics->handle_count] = NULL;
+              _ftprintf (stdout, TEXT("failed  (system drive)\n"));
+              statistics->skipped_sysdrive = true;
             }
-
-            /* volume_name = L"\\\\.\\PHYSICALDRIVE" or L"/dev/wdX"? */
-            if (PhysicalDriveOpened (vol))
-              _ftprintf (stdout, TEXT("OK\n"));  /* No need to do anything! */
+            /* (2) Can't lock if there is a pagefile: */
             else
+            if (IsDriveLetter (volume_name, false, &colon, NULL)
+                && IsPagefileDrive (colon-1))
             {
-              /* (4) Shouldn't lock the drive from which `windd' is executing: */
-              TCHAR const *dismount_drive_letter = _tcsrchr (volume_name, TEXT(':'));
+              _ftprintf (stdout, TEXT("failed  (has pagefile.sys)\n"));
+              ++statistics->skipped_pagefile;
+            }
+            /* (3) No need to lock Non-Windows partitions: */
+            else
+            if (not is_windows_part)
+            {
+              _ftprintf (stdout, TEXT("skipped (non-Windows partition)\n"));
+              ++statistics->skipped_non_windows;
+            }
+            else
+            /* (4) Try to lock and dismount: */
+            { bool
+                locked;             /* Volume lock successful? */
+              bool
+                dismounted;         /* Volume also dismounted? */
 
-              if (dismount_drive_letter && IsSameDriveLetter (windd_drive_letter, dismount_drive_letter-1))
+              if (not first_iteration)
               {
-                textcolor (LIGHTRED);
-                _ftprintf (stdout, TEXT("\nWarning:"));
-                textcolor (DEFAULT_COLOR);
-                _ftprintf (stdout,
+                if ((vol=OpenVolumeRW (-1, volume_name)) == NULL)
+                  return (false);
+
+                /* Store partition HANDLE; at the end of execution it will be released through `close();' */
+                statistics->volume_handles = (HANDLE *)MemRealloc (statistics->volume_handles,
+                                                                   statistics->handle_count + 2, sizeof(HANDLE));
+                statistics->volume_handles [statistics->handle_count]   = GetVolumeHandle (vol);
+                statistics->volume_handles [++statistics->handle_count] = NULL;
+              }
+
+              /* volume_name = L"\\\\.\\PHYSICALDRIVE" or L"/dev/wdX"? */
+              if (PhysicalDriveOpened (vol))
+                _ftprintf (stdout, TEXT("OK\n"));  /* No need to do anything! */
+              else
+              {
+                /* (4) Shouldn't lock the drive from which `windd' is executing: */
+                TCHAR const *dismount_drive_letter = _tcsrchr (volume_name, TEXT(':'));
+
+                if (dismount_drive_letter && IsSameDriveLetter (windd_drive_letter, dismount_drive_letter-1))
+                {
+                  textcolor (LIGHTRED);
+                  _ftprintf (stdout, TEXT("\nWarning:"));
+                  textcolor (DEFAULT_COLOR);
+                  _ftprintf (stdout,
 TEXT(" you're executing %s from a drive that will now be dismounted;\n")
 TEXT("this is not recommended. While the operation you initiated may be able to\n")
 TEXT("run to completion, you'll probably receive the following exception as soon\n")
 TEXT("as control is returned back to the operating system:\n"),
-                  TEXT(PROGRAM_NAME));
-                textcolor (WHITE);
-                _ftprintf (stdout,
+                    TEXT(PROGRAM_NAME));
+                  textcolor (WHITE);
+                  _ftprintf (stdout,
 TEXT("Faulting module ntdll.dll: \"In-page I/O error c000009c – code c0000006\"\n"));
-                textcolor (DEFAULT_COLOR);
-                _ftprintf (stdout,
+                  textcolor (DEFAULT_COLOR);
+                  _ftprintf (stdout,
 TEXT("Would you like to continue nonetheless? (Y/N) "));
-                { char
-                    key = PromptUserYesNo ();
-                  if (not IsFileRedirected (stdin))
-                  {
-                    _ftprintf (stdout, TEXT("%c\n\n"), key);
-                    FlushStdout ();
+                  { char
+                      key = PromptUserYesNo ();
+                    if (not IsFileRedirected (stdin))
+                    {
+                      _ftprintf (stdout, TEXT("%c\n\n"), key);
+                      FlushStdout ();
+                    }
+                    if (key == 'N')
+                    {
+                      statistics->continue_op = false;
+                      return (false);
+                    }
                   }
-                  if (key == 'N')
-                  {
-                    statistics->continue_op = false;
-                    return (false);
-                  }
+                  _ftprintf (stdout, TEXT("%-39s ... "), volume_name);
                 }
-                _ftprintf (stdout, TEXT("%-39s ... "), volume_name);
-              }
 
-              /* Lock and dismount: */
-              DismountVolume (vol, &locked, &dismounted);
-              if (not locked)
-                ++statistics->failed_to_lock;
-              if (not dismounted)
-                ++statistics->failed_to_dismount;
+                /* Lock and dismount: */
+                DismountVolume (vol, &locked, &dismounted);
+                if (not locked)
+                  ++statistics->failed_to_lock;
+                if (not dismounted)
+                  ++statistics->failed_to_dismount;
 
-              /* Success/failed messages: */
-              if (locked && dismounted)
-              {
-                _ftprintf (stdout, TEXT("locked & dismounted\n"));
-                if (sel_disk != INVALID_DISK)
-                  physical_disk[sel_disk].part[p].locked_dismounted = true;
+                /* Success/failed messages: */
+                if (locked && dismounted)
+                {
+                  _ftprintf (stdout, TEXT("locked & dismounted\n"));
+                  if (sel_disk != INVALID_DISK)
+                    physical_disk[sel_disk].part[p].locked_dismounted = true;
+                }
+                else
+                if (locked || dismounted)
+                {
+                  _ftprintf (stdout, TEXT("dismounted only\n"));
+                  if (sel_disk != INVALID_DISK)
+                    physical_disk[sel_disk].part[p].locked_dismounted = true;
+                }
+                else
+                {
+                  _ftprintf (stdout, TEXT("failed (read only)\n"));
+                  ++statistics->failed_count;
+                }
               }
-              else
-              if (locked || dismounted)
-              {
-                _ftprintf (stdout, TEXT("dismounted only\n"));
-                if (sel_disk != INVALID_DISK)
-                  physical_disk[sel_disk].part[p].locked_dismounted = true;
-              }
-              else
-              {
-                _ftprintf (stdout, TEXT("failed (read only)\n"));
-                ++statistics->failed_count;
-              }
+              FlushStdout ();
+
+              /* Free `VolumeDesc' structure, but keep partition HANDLE: */
+              if (not first_iteration)
+                CloseVolumeEx (&vol, false);
             }
-            FlushStdout ();
-
-            /* Free `VolumeDesc' structure, but keep partition HANDLE: */
-            if (not first_iteration)
-              CloseVolumeEx (&vol, false);
           }
         }
       } while (not sel_nt_devname && not first_iteration
@@ -2452,7 +2550,7 @@ TEXT("Would you like to continue nonetheless? (Y/N) "));
       first_iteration = false;
     }
 
-    if (--step == 1 && dismount_multipe)
+    if (--step == 1 && physdisk_selected)
     {
       ++first_part;
       goto LockDriveLetters;

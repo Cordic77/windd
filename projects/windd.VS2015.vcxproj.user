@@ -18,7 +18,7 @@
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='lib-ansi-debug|Win32'">
-    <LocalDebuggerCommandArguments>if=!/dev/wda6 of=con: bs=512 count=1</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>-c if=/dev/wda of=/dev/wda ibs=4096 skip=36621093 obs=1M seek=700000 count=1</LocalDebuggerCommandArguments>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='dll-ansi-debug|Win32'">

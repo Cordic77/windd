@@ -31,9 +31,9 @@ extern bool
 extern size_t
   NormalizeNTDevicePath (wchar_t nt_device_path []);
 extern size_t
-  IsDeviceObjectA (char const file [], char const device_prefix []);
+  IsDeviceObjectA (char const file [], char const device_prefix [], int *prefix_length);
 extern size_t
-  IsDeviceObjectW (wchar_t const file [], wchar_t const device_prefix []);
+  IsDeviceObjectW (wchar_t const file [], wchar_t const device_prefix [], int *prefix_length);
 
 #ifdef UNICODE
 #define IsDeviceObject IsDeviceObjectW

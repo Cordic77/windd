@@ -84,13 +84,13 @@
 # define fdatasync(fd) (errno = ENOSYS, -1)
 #endif
 
-#define output_char(c)				\
-  do						\
-    {						\
-      obuf[oc++] = (c);				\
-      if (oc >= output_blocksize)		\
-        write_output ();			\
-    }						\
+#define output_char(c)        \
+  do            \
+    {           \
+      obuf[oc++] = (c);       \
+      if (oc >= output_blocksize)   \
+        write_output ();      \
+    }           \
   while (0)
 
 /* Default input and output blocksize. */
@@ -289,22 +289,22 @@ struct symbol_value
 /* Conversion symbols, for conv="...".  */
 static struct symbol_value const conversions[] =
 {
-  {"ascii", C_ASCII | C_UNBLOCK | C_TWOBUFS},	/* EBCDIC to ASCII. */
-  {"ebcdic", C_EBCDIC | C_BLOCK | C_TWOBUFS},	/* ASCII to EBCDIC. */
-  {"ibm", C_IBM | C_BLOCK | C_TWOBUFS},	/* Different ASCII to EBCDIC. */
-  {"block", C_BLOCK | C_TWOBUFS},	/* Variable to fixed length records. */
-  {"unblock", C_UNBLOCK | C_TWOBUFS},	/* Fixed to variable length records. */
-  {"lcase", C_LCASE | C_TWOBUFS},	/* Translate upper to lower case. */
-  {"ucase", C_UCASE | C_TWOBUFS},	/* Translate lower to upper case. */
-  {"sparse", C_SPARSE},		/* Try to sparsely write output. */
-  {"swab", C_SWAB | C_TWOBUFS},	/* Swap bytes of input. */
-  {"noerror", C_NOERROR},	/* Ignore i/o errors. */
-  {"nocreat", C_NOCREAT},	/* Do not create output file.  */
-  {"excl", C_EXCL},		/* Fail if the output file already exists.  */
-  {"notrunc", C_NOTRUNC},	/* Do not truncate output file. */
-  {"sync", C_SYNC},		/* Pad input records to ibs with NULs. */
-  {"fdatasync", C_FDATASYNC},	/* Synchronize output data before finishing.  */
-  {"fsync", C_FSYNC},		/* Also synchronize output metadata.  */
+  {"ascii", C_ASCII | C_UNBLOCK | C_TWOBUFS}, /* EBCDIC to ASCII. */
+  {"ebcdic", C_EBCDIC | C_BLOCK | C_TWOBUFS}, /* ASCII to EBCDIC. */
+  {"ibm", C_IBM | C_BLOCK | C_TWOBUFS}, /* Different ASCII to EBCDIC. */
+  {"block", C_BLOCK | C_TWOBUFS}, /* Variable to fixed length records. */
+  {"unblock", C_UNBLOCK | C_TWOBUFS}, /* Fixed to variable length records. */
+  {"lcase", C_LCASE | C_TWOBUFS}, /* Translate upper to lower case. */
+  {"ucase", C_UCASE | C_TWOBUFS}, /* Translate lower to upper case. */
+  {"sparse", C_SPARSE},   /* Try to sparsely write output. */
+  {"swab", C_SWAB | C_TWOBUFS}, /* Swap bytes of input. */
+  {"noerror", C_NOERROR}, /* Ignore i/o errors. */
+  {"nocreat", C_NOCREAT}, /* Do not create output file.  */
+  {"excl", C_EXCL},   /* Fail if the output file already exists.  */
+  {"notrunc", C_NOTRUNC}, /* Do not truncate output file. */
+  {"sync", C_SYNC},   /* Pad input records to ibs with NULs. */
+  {"fdatasync", C_FDATASYNC}, /* Synchronize output data before finishing.  */
+  {"fsync", C_FSYNC},   /* Also synchronize output metadata.  */
   {"", 0}
 };
 
@@ -364,34 +364,34 @@ verify ( ! MULTIPLE_BITS_SET (O_SEEK_BYTES));
 /* Flags, for iflag="..." and oflag="...".  */
 static struct symbol_value const flags[] =
 {
-  {"append",	  O_APPEND},
-  {"binary",	  O_BINARY},
-  {"cio",	  O_CIO},
-  {"direct",	  O_DIRECT},
+  {"append",    O_APPEND},
+  {"binary",    O_BINARY},
+  {"cio",   O_CIO},
+  {"direct",    O_DIRECT},
   {"directory",   O_DIRECTORY},
-  {"dsync",	  O_DSYNC},
-  {"noatime",	  O_NOATIME},
-  {"nocache",	  O_NOCACHE},   /* Discard cache.  */
-  {"noctty",	  O_NOCTTY},
-  {"nofollow",	  HAVE_WORKING_O_NOFOLLOW ? O_NOFOLLOW : 0},
-  {"nolinks",	  O_NOLINKS},
-  {"nonblock",	  O_NONBLOCK},
-  {"sync",	  O_SYNC},
-  {"text",	  O_TEXT},
+  {"dsync",   O_DSYNC},
+  {"noatime",   O_NOATIME},
+  {"nocache",   O_NOCACHE},   /* Discard cache.  */
+  {"noctty",    O_NOCTTY},
+  {"nofollow",    HAVE_WORKING_O_NOFOLLOW ? O_NOFOLLOW : 0},
+  {"nolinks",   O_NOLINKS},
+  {"nonblock",    O_NONBLOCK},
+  {"sync",    O_SYNC},
+  {"text",    O_TEXT},
   {"fullblock",   O_FULLBLOCK}, /* Accumulate full blocks from input.  */
   {"count_bytes", O_COUNT_BYTES},
   {"skip_bytes",  O_SKIP_BYTES},
   {"seek_bytes",  O_SEEK_BYTES},
-  {"",		0}
+  {"",    0}
 };
 
 /* Status, for status="...".  */
 static struct symbol_value const statuses[] =
 {
-  {"none",	STATUS_NONE},
-  {"noxfer",	STATUS_NOXFER},
-  {"progress",	STATUS_PROGRESS},
-  {"",		0}
+  {"none",  STATUS_NONE},
+  {"noxfer",  STATUS_NOXFER},
+  {"progress",  STATUS_PROGRESS},
+  {"",    0}
 };
 
 /* Translation table formed by applying successive transformations. */
@@ -694,6 +694,7 @@ Options are:\n\
       #if defined _WIN32
       fputs ("\nWindows only:\n", stdout);
       fputs (LIST_OPTION_DESCRIPTION, stdout);
+      fputs (NOLCK_OPTION_DESCRIPTION, stdout);
       fputs (NOOPT_OPTION_DESCRIPTION, stdout);
       fputs (FORCE_OPTION_DESCRIPTION, stdout);
       fputs (CONFIRM_OPTION_DESCRIPTION, stdout);
@@ -730,7 +731,7 @@ alloc_ibuf (void)
                              human_opts | human_base_1024, 1, 1));
     }
 
-  real_buf += SWAB_ALIGN_OFFSET;	/* allow space for swab */
+  real_buf += SWAB_ALIGN_OFFSET;  /* allow space for swab */
 
   ibuf = ptr_align (real_buf, page_size);
   }
@@ -1703,7 +1704,7 @@ swab_buffer (char *buf, size_t *nread)
      positions toward the end, working from the end of the buffer
      toward the beginning.  This way we only move half of the data.  */
 
-  cp = bufstart + *nread;	/* Start one char past the last.  */
+  cp = bufstart + *nread; /* Start one char past the last.  */
   for (i = *nread / 2; i; i--, cp -= 2)
     *cp = *(cp - 2);
 
@@ -1953,7 +1954,7 @@ advance_input_after_read_error (size_t nbytes)
 static void
 copy_simple (char const *buf, size_t nread)
 {
-  const char *start = buf;	/* First uncopied char in BUF.  */
+  const char *start = buf;  /* First uncopied char in BUF.  */
 
   do
     {
@@ -1961,7 +1962,7 @@ copy_simple (char const *buf, size_t nread)
 
       memcpy (obuf + oc, start, nfree);
 
-      nread -= nfree;		/* Update the number of bytes left to copy. */
+      nread -= nfree;   /* Update the number of bytes left to copy. */
       start += nfree;
       oc += nfree;
       if (oc >= output_blocksize)
@@ -2020,7 +2021,7 @@ copy_with_unblock (char const *buf, size_t nread)
       if (col++ >= conversion_blocksize)
         {
           col = pending_spaces = 0; /* Wipe out any pending spaces.  */
-          i--;			/* Push the char back; get it later. */
+          i--;      /* Push the char back; get it later. */
           output_char (newline_character);
         }
       else if (c == space_character)
@@ -2098,8 +2099,8 @@ set_fd_flags (int fd, int add_flags, char const *name)
 static int
 dd_copy (void)
 {
-  char *bufstart;		/* Input buffer. */
-  ssize_t nread;		/* Bytes read in the current block.  */
+  char *bufstart;   /* Input buffer. */
+  ssize_t nread;    /* Bytes read in the current block.  */
 
   /* If nonzero, then the previously read block was partial and
      PARTREAD was its size.  */
@@ -2213,7 +2214,7 @@ dd_copy (void)
         invalidate_cache (STDIN_FILENO, nread);
 
       if (nread == 0)
-        break;			/* EOF.  */
+        break;      /* EOF.  */
 
       if (nread < 0)
         {
@@ -2278,7 +2279,7 @@ dd_copy (void)
           partread = 0;
         }
 
-      if (ibuf == obuf)		/* If not C_TWOBUFS. */
+      if (ibuf == obuf)   /* If not C_TWOBUFS. */
         {
           size_t nwritten = iwrite (STDOUT_FILENO, obuf, n_bytes_read);
           w_bytes += nwritten;

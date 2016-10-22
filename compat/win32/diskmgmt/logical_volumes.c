@@ -886,6 +886,20 @@ extern off_t get_volume_size (void)
   return ((off_t)physical_disk[sel_disk].part[sel_part].PartitionEntry.PartitionLength.QuadPart);
 }
 
+extern struct VolumeInfo const *get_system_volume (void)
+{ uint32_t
+    v;
+
+  if (number_of_local_disks() == 0)
+  {
+    for (v = 0; logical_volume[v].valid; ++v)
+      if (logical_volume[v].is_system_drive)
+        return (logical_volume + v);
+  }
+
+  return (NULL);
+}
+
 extern bool is_system_drive (void)
 {
   if (drives_partition_selected ())

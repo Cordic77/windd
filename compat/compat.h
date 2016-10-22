@@ -1,5 +1,5 @@
 /* Compatibility headers: */
-#if defined _DEBUG
+#if defined _DEBUG && defined _WIN64
 #define ENABLE_EXPERIMENTAL_FEATURES
 #endif
 
@@ -329,6 +329,8 @@
     _("  -v, --version  output version information and exit\n")
   #define LIST_OPTION_DESCRIPTION \
     _("  -l, --list     list all physical and logical drives\n")
+  #define NOLCK_OPTION_DESCRIPTION \
+    _("  -k, --nolock   don't lock (or dismount) any drives\n")
   #define NOOPT_OPTION_DESCRIPTION \
     _("  -n, --nopt     disables all (programmatically chosen) optimizations\n")
   #define FORCE_OPTION_DESCRIPTION \
@@ -363,6 +365,9 @@
 
     C_SPARSE = 0200000
   };
+
+  /* Some bittwiddling tricks: */
+  #define IsPower2(n) ((n & ~(n-1))==n)
 
   /* Call dd's main() from our (Windows) main() function: */
   extern bool

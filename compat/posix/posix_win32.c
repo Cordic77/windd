@@ -10,13 +10,21 @@
 
 
 /* `dd.c' global variables: */
+extern char const
+ *input_file,
+ *output_file;
 extern size_t
   page_size;
 extern size_t
   input_blocksize,
   output_blocksize;
 extern uintmax_t
+  skip_records,
+  seek_records;
+extern uintmax_t
   max_records;
+extern size_t
+  max_bytes;
 extern int
   conversions_mask;
 extern int
@@ -359,64 +367,88 @@ extern int set_direct_io (int fd, bool direct)
     fildes->pipe_buffer_size = get_pipe_buffsize (real_fd);
   }
 
-  /* Disable caching? */
-  if (fd == STDIN_FILENO)  /* fd != real_fd? Only change flags! */
+  /* Disable caching: */
+  if (fildes->disk_access)  /* Volume access? */
   {
-    /* r_partial records can't be read with FILE_FLAG_NO_BUFFERING enabled: */
-    if (fildes->valid && direct != ((fildes->dwFlagsAndAttributes & FILE_FLAG_NO_BUFFERING)!=0))
-    {
-      if (direct)
-        fildes->dwFlagsAndAttributes |= FILE_FLAG_NO_BUFFERING;
-      else
-        fildes->dwFlagsAndAttributes &= ~FILE_FLAG_NO_BUFFERING;
-
-      #if defined(_DEBUG)
-      _ftprintf (stdout, TEXT("DEBUG: reopening %s for input.\n"), fildes->file);
-      FlushStdout ();
-      #endif
-
-      /*TODO: use ReOpenFile() instead? */
-      FlushFileBuffers (fdhandle [real_fd]);
-      CloseHandle (fdhandle [real_fd]);
-      fdhandle [real_fd] = CreateFile (fildes->file,  /* file to open */
-                              fildes->dwDesiredAccess,
-                              FILE_SHARE_READ,        /* share for reading */
-                              NULL,                   /* default security */
-                              OPEN_EXISTING,          /* existing file only */
-                              fildes->dwFlagsAndAttributes,
-                              NULL);                  /* no attr. template */
-      if (not IsValidHandle (fdhandle[real_fd]))
-        WinErrReturn (-1);
-    }
+    /* Do nothing: writes <> sector size are handled in `write_win32_writefile()'! */
   }
   else
-  if (fd == STDOUT_FILENO)  /* fd != real_fd? Only change flags! */
   {
-    /* r_partial records can't be written with FILE_FLAG_NO_BUFFERING enabled: */
-    if (fildes->valid && direct != ((fildes->dwFlagsAndAttributes & FILE_FLAG_NO_BUFFERING)!=0))
+    if (fd == STDIN_FILENO)  /* fd != real_fd? Only change flags! */
     {
-      if (direct)
-        fildes->dwFlagsAndAttributes |= FILE_FLAG_NO_BUFFERING;
-      else
-        fildes->dwFlagsAndAttributes &= ~FILE_FLAG_NO_BUFFERING;
+      /* r_partial records can't be read with FILE_FLAG_NO_BUFFERING enabled: */
+      if (fildes->valid && direct != ((fildes->dwFlagsAndAttributes & FILE_FLAG_NO_BUFFERING)!=0))
+      {
+        if (direct)
+          fildes->dwFlagsAndAttributes |= FILE_FLAG_NO_BUFFERING;
+        else
+          fildes->dwFlagsAndAttributes &= ~FILE_FLAG_NO_BUFFERING;
 
-      #if defined(_DEBUG)
-      _ftprintf (stdout, TEXT("DEBUG: reopening %s for output.\n"), fildes->file);
-      FlushStdout ();
-      #endif
+        #if defined(_DEBUG)
+        _ftprintf (stdout, TEXT("DEBUG: reopening %s for input: %s\n"), fildes->file,
+                           ((fildes->dwFlagsAndAttributes & FILE_FLAG_NO_BUFFERING)?
+                            TEXT("O_DIRECT == 1") : TEXT("O_DIRECT == 0")));
+        FlushStdout ();
+        #endif
 
-      /*TODO: use ReOpenFile() instead? */
-      FlushFileBuffers (fdhandle [real_fd]);
-      CloseHandle (fdhandle [real_fd]);
-      fdhandle [real_fd] = CreateFile (fildes->file,  /* file to open */
-                              fildes->dwDesiredAccess,
-                              0,                      /* do not share */
-                              NULL,                   /* default security */
-                              OPEN_EXISTING,          /* existing file only */
-                              fildes->dwFlagsAndAttributes,
-                              NULL);                  /* no attr. template */
-      if (not IsValidHandle (fdhandle[real_fd]))
-        WinErrReturn (-1);
+        FlushFileBuffers (fdhandle [real_fd]);
+        #if 0  /* Use `ReOpenFile()' instead? */
+        CloseHandle (fdhandle [real_fd]);
+        fdhandle [real_fd] = CreateFile (fildes->file,  /* file to open */
+                                fildes->dwDesiredAccess,
+                                FILE_SHARE_READ,        /* share for reading */
+                                NULL,                   /* default security */
+                                OPEN_EXISTING,          /* existing file only */
+                                fildes->dwFlagsAndAttributes,
+                                NULL);                  /* no attr. template */
+        #else
+        fdhandle [real_fd] = ReOpenFile (fdhandle[real_fd],
+                                fildes->dwDesiredAccess,
+                                FILE_SHARE_READ,        /* share for reading */
+                                fildes->dwFlagsAndAttributes);
+        if (not IsValidHandle (fdhandle[real_fd]))
+          WinErrReturn (-1);
+        #endif
+      }
+    }
+    else
+    if (fd == STDOUT_FILENO)  /* fd != real_fd? Only change flags! */
+    {
+      /* r_partial records can't be written with FILE_FLAG_NO_BUFFERING enabled: */
+      if (fildes->valid && direct != ((fildes->dwFlagsAndAttributes & FILE_FLAG_NO_BUFFERING)!=0))
+      {
+        if (direct)
+          fildes->dwFlagsAndAttributes |= FILE_FLAG_NO_BUFFERING;
+        else
+          fildes->dwFlagsAndAttributes &= ~FILE_FLAG_NO_BUFFERING;
+
+        #if defined(_DEBUG)
+        _ftprintf (stdout, TEXT("DEBUG: reopening %s for output: %s\n"), fildes->file,
+                           ((fildes->dwFlagsAndAttributes & FILE_FLAG_NO_BUFFERING)?
+                            TEXT("O_DIRECT == 1") : TEXT("O_DIRECT == 0")));
+        FlushStdout ();
+        #endif
+
+        FlushFileBuffers (fdhandle [real_fd]);
+        #if 1  /* Use `ReOpenFile()' instead? */
+        CloseHandle (fdhandle [real_fd]);
+        fdhandle [real_fd] = CreateFile (fildes->file,  /* file to open */
+                                fildes->dwDesiredAccess,
+                                0,                      /* do not share */
+                                NULL,                   /* default security */
+                                OPEN_EXISTING,          /* existing file only */
+                                fildes->dwFlagsAndAttributes,
+                                NULL);                  /* no attr. template */
+        #else
+        /* ERROR_SHARING_VIOLATION : The process cannot access the file because it is being used by another process. (?) */
+        fdhandle [real_fd] = ReOpenFile (fdhandle[real_fd],
+                                fildes->dwDesiredAccess,
+                                0,                      /* do not share */
+                                fildes->dwFlagsAndAttributes);
+        #endif
+        if (not IsValidHandle (fdhandle[real_fd]))
+          WinErrReturn (-1);
+      }
     }
   }
 
@@ -599,8 +631,8 @@ extern ssize_t read_win32_readfile (int fd, void *buf, size_t count)
     read_fd = get_file_desc (fd);
 
   if (is_volume_access_ex (read_fd) && read_fd->last_byte_index > 0)
-  { off_t remaining = (size_t)(read_fd->last_byte_index
-                             - read_fd->absolute_offset.QuadPart + (off_t)1);
+  { off_t remaining = (read_fd->last_byte_index
+                       - read_fd->absolute_offset.QuadPart + (off_t)1);
 
     if (remaining < (off_t)count)
     {
@@ -615,10 +647,10 @@ extern ssize_t read_win32_readfile (int fd, void *buf, size_t count)
      || read_fd->absolute_offset.QuadPart > read_fd->last_byte_index)
     {
       fprintf (stderr, "\n[%s] win32_readfile(): absolute offset %" PRIdMAX " not with-\n"
-                           "in expected partition bounds [%25" PRIdMAX ", %20" PRIdMAX "]\n"
-                           "... aborting!\n",
-                           PROGRAM_NAME, (intmax_t)read_fd->absolute_offset.QuadPart,
-                           (intmax_t)read_fd->first_byte_index, (intmax_t)read_fd->last_byte_index);
+                       "in expected partition bounds [%25" PRIdMAX ", %20" PRIdMAX "]\n"
+                       "... aborting!\n",
+                       PROGRAM_NAME, (intmax_t)read_fd->absolute_offset.QuadPart,
+                       (intmax_t)read_fd->first_byte_index, (intmax_t)read_fd->last_byte_index);
       exit (249);
     }
   /*#endif*/
@@ -640,29 +672,44 @@ extern ssize_t read_win32_readfile (int fd, void *buf, size_t count)
     do {
       DWORD bytes = (DWORD)left;
 
-      /* multiple of 2**32? */
+      /* Multiple of 2**32? */
       if (bytes == 0)
         bytes = (DWORD)page_size;
 
-      /* pipes have a limited input buffer size: */
+      /* Pipes have a limited input buffer size: */
       if (read_fd->pipe_buffer_size)
         bytes = min (bytes, read_fd->pipe_buffer_size);
+      else
+      /* Unbuffered I/O - case 1: can't be turned off for volumes */
+      if (read_fd->disk_access)
+      {
+        /* When reading, rounding up to the next sector size doesn't really
+           make any sense. The ReadFile() call will just fail in this case.
 
-      /* read next block: */
+           This approach is also consistent with direct volume access, as
+           every volume will have to have a size that is a multiple of the
+           physical sector size (of the corresponding mass storage device).
+        */
+      }
+
+      /* Read next block: */
       if (not ReadFile (handle, buf, bytes, &read, NULL))
       {
         if (GetLastError () != ERROR_BROKEN_PIPE)
         {
-          /* r_partial records can't be read with FILE_FLAG_NO_BUFFERING enabled: */
+          /* Unbuffered I/O - case 2: turn off DIRECT_IO for r_partial records */
           if (GetLastError()==ERROR_INVALID_PARAMETER && read_fd->direct_io)
           {
-            int old_flags = fcntl (STDIN_FILENO, F_GETFL);
-            if (fcntl (STDIN_FILENO, F_SETFL, old_flags & ~O_DIRECT) == 0)
+            if (not read_fd->disk_access)
             {
-              read_fd->direct_io = false;
-              /* Prevent write_win32_writefile() callback because of `attempt_write_opt': */
-              read_fd->valid = false;
-              return (read (fd, buf, count));
+              int old_flags = fcntl (fd, F_GETFL);
+              if (fcntl (fd, F_SETFL, old_flags & ~O_DIRECT) == 0)
+              {
+                read_fd->direct_io = false;
+                /* Prevent write_win32_writefile() callback because of `attempt_write_opt': */
+                read_fd->valid = false;
+                return (read (fd, buf, count));
+              }
             }
           }
 
@@ -678,7 +725,7 @@ extern ssize_t read_win32_readfile (int fd, void *buf, size_t count)
       }
 
       buf = (char *)buf + read;
-      left = left - read;
+      left = (read <= left)? (left - read) : 0;
     } while (left > 0);
 
     if (left == 0)
@@ -712,8 +759,8 @@ extern ssize_t write_win32_writefile (int fd, const void *buf, size_t count)
     write_fd = get_file_desc (fd);
 
   if (is_volume_access_ex (write_fd) && write_fd->last_byte_index > 0)
-  { off_t remaining = (size_t)(write_fd->last_byte_index
-                             - write_fd->absolute_offset.QuadPart + (off_t)1);
+  { off_t remaining = (write_fd->last_byte_index
+                       - write_fd->absolute_offset.QuadPart + (off_t)1);
 
     if (remaining < (off_t)count)
     {
@@ -728,10 +775,10 @@ extern ssize_t write_win32_writefile (int fd, const void *buf, size_t count)
      || write_fd->absolute_offset.QuadPart > write_fd->last_byte_index)
     {
       fprintf (stderr, "\n[%s] win32_writefile(): absolute offset %" PRIdMAX " not with-\n"
-                           "in expected partition bounds [%25" PRIdMAX ", %20" PRIdMAX "]\n"
-                           "... aborting!\n",
-                           PROGRAM_NAME, (intmax_t)write_fd->absolute_offset.QuadPart,
-                           (intmax_t)write_fd->first_byte_index, (intmax_t)write_fd->last_byte_index);
+                       "in expected partition bounds [%25" PRIdMAX ", %20" PRIdMAX "]\n"
+                       "... aborting!\n",
+                       PROGRAM_NAME, (intmax_t)write_fd->absolute_offset.QuadPart,
+                       (intmax_t)write_fd->first_byte_index, (intmax_t)write_fd->last_byte_index);
       exit (249);
     }
   /*#endif*/
@@ -741,6 +788,7 @@ extern ssize_t write_win32_writefile (int fd, const void *buf, size_t count)
   { HANDLE
       handle = GetWinHandle (fd);
     size_t
+      reqested = count,
       left = count;
     DWORD
       written;
@@ -762,8 +810,8 @@ extern ssize_t write_win32_writefile (int fd, const void *buf, size_t count)
       write_fd->r_total         = write_r_total;
 
       /* Ignore any read errors! */
-    /*if (read < 0)
-        return (read);*/
+      if (read < 0)
+        SetLastError (ERROR_SUCCESS);
 
       /* Compare data (if read() completed successfully): */
       if (read == count)
@@ -783,29 +831,48 @@ extern ssize_t write_win32_writefile (int fd, const void *buf, size_t count)
     do {
       DWORD bytes = (DWORD)left;
 
-      /* multiple of 2**32? */
+      /* Multiple of 2**32? */
       if (bytes == 0)
         bytes = (DWORD)page_size;
 
-      /* pipes have a limited output buffer size: */
+      /* Pipes have a limited output buffer size: */
       if (write_fd->pipe_buffer_size)
         bytes = min (bytes, write_fd->pipe_buffer_size);
+      else
+      /* Unbuffered I/O case 1 - can't be turned off for volumes: */
+      if (write_fd->disk_access)
+      {
+        if ((write_fd->dwFlagsAndAttributes & FILE_FLAG_NO_BUFFERING) != 0 && (bytes % write_fd->phys_sect_size) != 0)
+        {
+          if (IsPower2 (write_fd->phys_sect_size))
+            bytes = (bytes + write_fd->phys_sect_size-1) & ~(write_fd->phys_sect_size-1);
+          else
+            bytes = ((bytes + write_fd->phys_sect_size-1) / write_fd->phys_sect_size) * write_fd->phys_sect_size;
 
-      /* write next block:*/
+          /* Remaining bytes will contain whatever data is in `buf': */
+          count = count + (bytes - reqested);
+        /*memset ((char *)buf + req_bytes, 0, bytes - req_bytes);*/
+        }
+      }
+
+      /* Write next block:*/
       if (not WriteFile (handle, buf, bytes, &written, NULL)
           || (written == 0 && GetLastError() != ERROR_SUCCESS))
       {
         if (GetLastError () != ERROR_BROKEN_PIPE)
         {
-          /* r_partial records can't be written with FILE_FLAG_NO_BUFFERING enabled: */
+          /* Unbuffered I/O case 2 - turn off DIRECT_IO for r_partial records: */
           if (GetLastError()==ERROR_INVALID_PARAMETER && write_fd->direct_io)
           {
-            int old_flags = fcntl (STDOUT_FILENO, F_GETFL);
-            if (fcntl (STDOUT_FILENO, F_SETFL, old_flags & ~O_DIRECT) == 0)
+            if (not write_fd->disk_access)
             {
-              write_fd->direct_io = false;
-            /*write_fd->valid = false;*/    /* see `close (STDOUT_FILENO)'! */
-              return (write (fd, buf, count));
+              int old_flags = fcntl (fd, F_GETFL);
+              if (fcntl (fd, F_SETFL, old_flags & ~O_DIRECT) == 0)
+              {
+                write_fd->direct_io = false;
+              /*write_fd->valid = false;*/    /* see `close (STDOUT_FILENO)'! */
+                return (write (fd, buf, count));
+              }
             }
           }
 
@@ -821,7 +888,7 @@ extern ssize_t write_win32_writefile (int fd, const void *buf, size_t count)
       }
 
       buf = (char *)buf + written;
-      left = left - written;
+      left = (written <= left)? (left - written) : 0;
     } while (left > 0);
 
     if (left == 0)
@@ -847,7 +914,7 @@ write_win32_lseek:;
     #endif
     /*lseek }*/
 
-    return ((ssize_t)count);
+    return ((ssize_t)reqested);  /*return ((ssize_t)count);*/
   }
   else
     ErrnoReturn (EINVAL, -1);
@@ -926,16 +993,16 @@ extern int fsync (int fd)
   if (of_fd.device_file == DEV_NONE)  /* special device file? => do nothing! */
   {
     if (is_std_file (fd))
-  {
+    {
       return (crt_commit (fd));
-  }
+    }
     else
     if (is_regular_file (fd))
-  {
+    {
       HANDLE hfile = GetWinHandle (fd);
-    if (not FlushFileBuffers (hfile))
-    WinErrReturn (-1);
-  }
+      if (not FlushFileBuffers (hfile))
+        WinErrReturn (-1);
+    }
     else
       ErrnoReturn (EBADF, -1);
   }

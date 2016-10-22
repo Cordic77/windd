@@ -38,6 +38,7 @@ static struct option const long_options[] =
   {"version", no_argument, NULL, 'v'},
   #if defined(_WIN32)  /*windd*/
   {"list", no_argument, NULL, 'l'},
+  {"nolock", no_argument, NULL, 'k'},
   {"nopt", no_argument, NULL, 'n' },
   {"force", no_argument, NULL, 'f'},
   {"confirm", no_argument, NULL, 'c'},
@@ -60,6 +61,7 @@ parse_long_options (int argc,
   int c;
   int saved_opterr;
   bool list_partitions = false;  /*windd*/
+  bool windd_opt = false;
 
   saved_opterr = opterr;
 
@@ -67,9 +69,9 @@ parse_long_options (int argc,
   opterr = 0;
 
 NextArgument:;
-  if ((argc == 2 && (c = getopt_long (argc, argv, "+hvl", long_options, NULL)) != -1)
+  if ((argc == 2 && (c = getopt_long (argc, argv, "+lhv", long_options, NULL)) != -1)
    #if defined _WIN32
-   || (argc >= 2 && (c = getopt_long (argc, argv, "+nfc", long_options, NULL)) != -1)
+   || (argc >= 2 && (c = getopt_long (argc, argv, "+lknfc", long_options, NULL)) != -1)
    #endif
      )
     {
@@ -87,9 +89,53 @@ NextArgument:;
           }
 
         case 'l':  /*windd*/
-          fprintf (stdout, "%s (%s) %s%s\n\n", command_name, package, version,
-                           (elevated_process? " [elevated execution]" : ""));
-          fprintf (stdout,
+          #define INVALID_DISK    (uint32_t)-1
+          { int
+              index;
+            extern enum EDriveType
+              dump_dtype;
+            extern uint32_t
+              dump_dindex;
+            bool
+              drive_partition;
+
+            fprintf (stdout, "%s (%s) %s%s\n\n", command_name, package, version,
+                             (elevated_process? " [elevated execution]" : ""));
+
+            /* "Parsing command line options with multiple arguments [getopt?]"
+               http://stackoverflow.com/questions/15466782/parsing-command-line-options-with-multiple-arguments-getopt#answer-15467257
+            */
+            index = optind;
+            dump_dtype = DTYPE_INVALID;
+            dump_dindex = INVALID_DISK;
+
+            if (index < argc)
+            {
+              if (not is_wdx_id (argv [index], &dump_dtype, &drive_partition))
+              {
+                fprintf (stderr, "\n[%s] Invalid identifer '%s' specified ... aborting!\n",
+                                  PROGRAM_NAME, argv [index]);
+                exit (241);
+              }
+
+              if (dump_dtype == DTYPE_LOC_DISK && drive_partition)
+              {
+                fprintf (stderr, "\n[%s] Specifying a partition id with `--list' isn't supported ... aborting!\n",
+                                  PROGRAM_NAME);
+                exit (241);
+              }
+
+              if (IsLocalDisk (dump_dtype))
+                wdx2disk (argv [index], &dump_dindex);
+              else
+                wdx2cdrom (argv [index], &dump_dindex);
+
+              optind = index;
+            }
+
+            if (dump_dindex == INVALID_DISK)
+            {
+              fprintf (stdout,
 "Emulated data sources:\n"
 DEVFILE_ZERO "         infinite stream of null characters (ASCII NUL, 0x00)\n"
 DEVFILE_URANDOM "      std. CSPRNG of Microsofts CAPI (as prov. by CryptGenRandom())\n"
@@ -107,18 +153,30 @@ DEVFILE_NULL "         black hole that discards all data written to it\n\n"
 "A: - Z:           Drive letters (logical volumes)\n"
 "COM1: - COM255:   Serial communications port\n"
 "LPT1: - LPT255:   Parallel printer port\n\n");
-          DumpDrivesAndPartitions ();
+            }
+
+            DumpDrivesAndPartitions ();
+          }
+          #undef INVALID_DISK
           exit (0);
 
+        case 'k':
+          windd_opt = true;
+          lock_volumes = false;
+          break;
+
         case 'n':
+          windd_opt = true;
           disable_optimizations = true;
           break;
 
         case 'f':
+          windd_opt = true;
           force_operations = true;
           break;
 
         case 'c':
+          windd_opt = true;
           always_confirm = true;
           break;
 
@@ -127,7 +185,7 @@ DEVFILE_NULL "         black hole that discards all data written to it\n\n"
           break;
         }
 
-	  goto NextArgument;
+    goto NextArgument;
     }
 
   if (force_operations && always_confirm)
@@ -140,10 +198,9 @@ DEVFILE_NULL "         black hole that discards all data written to it\n\n"
   /* Restore previous value.  */
   opterr = saved_opterr;
 
-  /* Reset this to zero so that getopt internals get initialized from
-     the probably-new parameters when/if getopt is called later.  */
+  /* Reset this to zero only if we didn't encounter any windd-specific options: */
   #if defined _WIN32
-  if (not disable_optimizations && not force_operations && not always_confirm)
+  if (not windd_opt)
   #endif /* ! defined _WIN32 */
   optind = 0;
 }

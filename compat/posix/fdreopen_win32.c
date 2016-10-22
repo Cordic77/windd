@@ -32,12 +32,17 @@ static enum EReopenHandler
 static void
   ThrowClassificationException (TCHAR const reopen_file [],
                                 enum EReopenHandler const reopen_handler);
-static bool UserConfirmOperation (void);
+static bool
+  ProceedDespiteFailedLocks (void);
+static bool
+  UserConfirmOperation (void);
 
 
 /* */
 static int
   reopen_recursion_depth; /* = 0; */
+static struct DismountStatistics
+  dismount_statistics; /* = 0; */
 
 /* Either definition is working, but the second one is a bit
    simpler (albeit not as robust) */
@@ -54,6 +59,8 @@ extern int fd_reopen (int desired_fd, char const *file, int flags, mode_t mode)
   off_t
     volume_offset = (off_t)0,     /* FDREOPEN_WDX_*, FDREOPEN_DRIVE_LETTER: 0 <or> StartingOffset */
     volume_length = (off_t)-1;    /* FDREOPEN_WDX_*, FDREOPEN_DRIVE_LETTER: DiskInfo::size_bytes <or> PartitionLength */
+  bool
+    is_logical_volume = true;     /* Are we accesssing a single logical volume? */
 
   /* Reopen handler: */
   enum EDeviceFile
@@ -289,8 +296,8 @@ DetermineReopenHandler:
   reopen_fd->phys_sect_size            =  0;
 /*reopen_fd->first_byte_index          =  0;*/
 /*reopen_fd->absolute_offset.QuadPart  =  0;*/
-/*reopen_fd->logical_offset            =  0;*/  /* initial value anyway */
-  reopen_fd->last_byte_index           = -1;    /* no limitation at all */
+/*reopen_fd->logical_offset            =  0;*/        /* initial value anyway */
+  reopen_fd->last_byte_index           = (off_t)-1;   /* no limitation at all */
   reopen_fd->seekable                  = (reopen_handler > (FDREOPEN_WDX_PHYCDR  /* CD/DVD/BD are seekable when read, but */
                                                           - INPUT_FILE_FD));     /* not if we're trying to burn a new CD */
 
@@ -361,7 +368,7 @@ DetermineReopenHandler:
           set_fd_flags (STDIN_FILENO, input_flags, file/*input_file*/);  /* eventually calls back into `set_direct_io()' */
           assert (desired_fd == STDIN_FILENO);
           reopen_fd->valid = true;
-          if (not INPUT_FILE_FD && always_confirm)
+          if (output_file==NULL && always_confirm)
           {
             if (not UserConfirmOperation ())
               return (-1);
@@ -378,7 +385,12 @@ DetermineReopenHandler:
           set_fd_flags (STDOUT_FILENO, output_flags, file/*output_file*/);  /* eventually calls back into `set_direct_io()' */
           assert (desired_fd == STDOUT_FILENO);
           reopen_fd->valid = true;
-          if (not INPUT_FILE_FD && always_confirm)
+          if (dismount_statistics.failed_to_lock || dismount_statistics.skipped_sysdrive || dismount_statistics.skipped_pagefile)
+          {
+            if (not ProceedDespiteFailedLocks ())
+              return (-1);
+          }
+          if (always_confirm)
           {
             if (not UserConfirmOperation ())
               return (-1);
@@ -453,10 +465,52 @@ DetermineReopenHandler:
           volume_length = get_volume_size ();
         }
         else
-        {
-          /* Offsett 0 and DiskInfo::size_bytes */
+        { off_t
+            max_length;
+
+          /* User-specified offset? */
           volume_offset = (off_t)0;
-          volume_length = get_physdisk_size ();
+          is_logical_volume = false;
+
+          if (INPUT_FILE_FD)
+          {
+            if (skip_records)
+              volume_offset = skip_records * input_blocksize;
+          }
+          else
+          {
+            if (seek_records != 0)
+              volume_offset = seek_records * output_blocksize;
+          }
+
+          /* How many bytes will be output? (Max. DiskInfo::size_bytes!) */
+          volume_length = max_length = get_physdisk_size() - volume_offset;
+
+          if (0 < max_records && max_records != (uintmax_t)-1)  /* Did user specify a count? */
+          {
+            volume_length = max_records * input_blocksize;
+            if (max_bytes != 0)
+              volume_length += input_blocksize;
+          }
+          else
+          if (not INPUT_FILE_FD)
+          {
+            if (if_fd.disk_access)  /* Input volume with definite size? */
+            {
+              if (if_fd.last_byte_index != (off_t)-1)
+                volume_length = if_fd.last_byte_index-if_fd.first_byte_index+1;
+            }
+            else  /* Input file whose file size can be queried successfully? */
+            { LARGE_INTEGER
+                file_size;
+
+              if (if_fd.valid && GetFileSizeEx(fdhandle[STDIN_FILENO], &file_size))
+                volume_length = file_size.QuadPart;
+            }
+          }
+
+          if (volume_length > max_length)
+            volume_length = max_length;
         }
       }
       else
@@ -497,56 +551,48 @@ DetermineReopenHandler:
         _tcscat (reopen_fd->display_name, reopen_fd->file);
       }
 
-      /* Source equal to destination (if==of)? */
+      if ((vol=OpenVolumeRW (desired_fd, reopen_fd->file)) == NULL)
+        return (-1);
       reopen_fd->disk_access = true;
+      reopen_fd->dwFlagsAndAttributes |= FILE_FLAG_NO_BUFFERING;
+      unbuf_io_supp = true;  /* OpenVolume() always sets FILE_FLAG_NO_BUFFERING */
 
+      /* Source equal to destination (if==of)? */
       if (not INPUT_FILE_FD && if_fd.disk_access
           && (reopen_fd->disk_index == if_fd.disk_index
            && reopen_fd->part_index == if_fd.part_index))
       {
-        volume_handle             = GetWinHandle (STDIN_FILENO);
-        reopen_fd->phys_sect_size = if_fd.phys_sect_size;
-        src_eq_dst                = true;  /* Use `if_fd.handle' for of_fd as well! */
-      }
-      else
-      {
-        if ((vol=OpenVolumeRW (desired_fd, reopen_fd->file)) == NULL)
+        volume_handle = GetWinHandle (STDIN_FILENO);
+        src_eq_dst    = true;  /* Use `if_fd.handle' for of_fd as well! */
+
+        /* Unnecessary, because the volume handle is ignored by `dismount_selected_volumes()': */
+        /*
+        if (not SetVolumeHandle ((struct VolumeDesc *)vol, volume_handle))
           return (-1);
+        */
+      }
 
-        /* Dismount affected drives: */
-        { struct DismountStatistics
-            statistics;
-          char
-            key;
+      /* Dismount affected drives: */
+      if (lock_volumes)
+      {
+        bool successful = dismount_selected_volumes (vol,
+                              reopen_fd->display_name,
+                              reopen_handler == FDREOPEN_WDX_LOGDRV,  /* force_wdx_logdrive? */
+                              INPUT_FILE_FD,                          /* read_only? */
+                              volume_offset, volume_length,           /* range of operation */
+                              &dismount_statistics
+                            );
+        if (not INPUT_FILE_FD && if_fd.partition_handles!=NULL)
+          if_fd.partition_handles = NULL;  /* ... will all be closed through `of_fd'! */
+        reopen_fd->partition_handles = dismount_statistics.volume_handles;
 
-          bool successful = dismount_selected_volumes (vol,
-                                reopen_fd->display_name,
-                                reopen_handler == FDREOPEN_WDX_LOGDRV,  /* force_wdx_logdrive? */
-                                INPUT_FILE_FD,                          /* read_only? */
-                                &statistics
-                              );
-          reopen_fd->partition_handles = statistics.volume_handles;
-          /* Failed or user decided not to continue? */
-          if (not successful || not statistics.continue_op)
-            ErrnoReturn (EACCES, -1);
+        /* Failed or user decided not to continue? */
+        if (not successful || not dismount_statistics.continue_op)
+          ErrnoReturn (EACCES, -1);
+      }
 
-          if (statistics.failed_to_lock || statistics.skipped_sysdrive || statistics.skipped_pagefile)
-            if (not force_operations)
-            {
-              _ftprintf (stdout,
-TEXT("\nSome of the attempted volume locks failed. Would you like to continue\n")
-TEXT("nonetheless? (Y/N) "));
-              key = PromptUserYesNo ();
-              if (not IsFileRedirected (stdin))
-              {
-                _ftprintf (stdout, TEXT("%c\n\n"), key);
-                FlushStdout ();
-              }
-              if (key == 'N')
-                ErrnoReturn (EACCES, -1);
-            }
-        }
-
+      if (not src_eq_dst)
+      {
         if ((volume_handle=GetVolumeHandle (vol)) == INVALID_HANDLE_VALUE)
         {
           CloseVolume (&vol);
@@ -563,22 +609,16 @@ TEXT("nonetheless? (Y/N) "));
 
         CloseVolumeEx (&vol, false);
       }
-    }
-
-    /* We prefer to use O_DIRECT. However, as we have a locked volume
-       which - in order to disable FILE_FLAG_NO_BUFFERING - can't (easily)
-       be re-opened later on, we do so only if we know this will never
-       result in a call to `set_direct_io(false)'. */
-    unbuf_io_supp = (reopen_fd->phys_sect_size != 0);
-
-    if (not INPUT_FILE_FD)
-    { LARGE_INTEGER
-        file_size;
-
-      if (not if_fd.valid || not GetFileSizeEx (fdhandle [STDIN_FILENO], &file_size)
-       || (file_size.QuadPart % (LONGLONG)output_blocksize) != 0)
+      else
       {
-        unbuf_io_supp = false;
+        /*O_DIRECT {*/
+        /*if ((flags & O_DIRECT) == O_DIRECT)*/
+        reopen_fd->dwDesiredAccess = if_fd.dwDesiredAccess;
+        reopen_fd->dwFlagsAndAttributes = if_fd.dwFlagsAndAttributes;
+        reopen_fd->phys_sect_size = if_fd.phys_sect_size;
+        /*O_DIRECT }*/
+
+        CloseVolume (&vol);
       }
     }
     break;
@@ -680,25 +720,25 @@ TEXT("nonetheless? (Y/N) "));
 
     if (unbuf_io_supp && (direct_io || not disable_optimizations))
     {
+      /* N.b.: reopen_fd->direct_io is set at the end of this function! */
+
       /* Data source? */
       if (INPUT_FILE_FD)
       {
-        if_fd.direct_io = true;
-
         if (if_fd.phys_sect_size > 0 && input_blocksize >= if_fd.phys_sect_size && (input_blocksize % if_fd.phys_sect_size) == 0)
         {
           if_fd.unbuf_blocksize = input_blocksize;
           reopen_fd->dwFlagsAndAttributes |= FILE_FLAG_NO_BUFFERING;
           /* Try to use direct I/O, even if not specifically selected (i.e. direct_io==false) */
-          set_fd_flags (STDIN_FILENO|CHGFLAGS_ONLY_FILENO, input_flags | O_DIRECT, file/*input_file*/);
+          set_fd_flags(STDIN_FILENO | CHGFLAGS_ONLY_FILENO, input_flags | O_DIRECT, file/*input_file*/);
           input_flags |= O_DIRECT;
         }
         else if (direct_io || volume_handle != NULL)  /* Only an error, if the user actually requested
                                                          direct I/O, or we're accessing a volume! */
         {
-          fprintf (stderr, "\n[%s] input_blocksize(%" PRIuMAX ") %% phys_sect_size(%" PRIu32 ") != 0 ... aborting!\n",
-                              PROGRAM_NAME, (uintmax_t)input_blocksize, (uint32_t)if_fd.phys_sect_size);
-          ErrnoReturn (EINVAL, -1);
+          fprintf(stderr, "\n[%s] input_blocksize(%" PRIuMAX ") %% phys_sect_size(%" PRIu32 ") != 0 ... aborting!\n",
+            PROGRAM_NAME, (uintmax_t)input_blocksize, (uint32_t)if_fd.phys_sect_size);
+          ErrnoReturn(EINVAL, -1);
         }
       }
       /* Data sink: */
@@ -721,7 +761,7 @@ TEXT("nonetheless? (Y/N) "));
               set_fd_flags (STDOUT_FILENO|CHGFLAGS_ONLY_FILENO, output_flags | O_DIRECT, file/*output_file*/);
               output_flags |= O_DIRECT;
             }
-            else if (unbuf_io_supp)  /* Only an error, if the user actually requested direct I/O! */
+            else if (direct_io)  /* Only an error, if the user actually requested direct I/O! */
             {
               fprintf (stderr, "\n[%s] lcm(input_blocksize=%" PRIuMAX ",output_blocksize=%" PRIuMAX ")\n"
                                      " != max(input_blocksize%" PRIuMAX ",output_blocksize%" PRIuMAX ") ... aborting!\n",
@@ -780,7 +820,7 @@ TEXT("nonetheless? (Y/N) "));
         {
           hfile                          = volume_handle;
           if_fd.first_byte_index         = volume_offset;
-          if_fd.absolute_offset.QuadPart = volume_offset;
+          if_fd.absolute_offset.QuadPart = is_logical_volume? volume_offset : (off_t)0;
           if_fd.last_byte_index          = (volume_offset + volume_length - (off_t)1);
         }
         else
@@ -846,15 +886,15 @@ TEXT("nonetheless? (Y/N) "));
         /* STDOUT_FILENO */
       /*of_fd.first_byte_index          =  0;*/
       /*of_fd.absolute_offset.QuadPart  =  0;*/
-      /*of_fd.logical_offset            =  0;*/  /* initial value anyway */
-        of_fd.last_byte_index           = -1;    /* no limitation at all */
+      /*of_fd.logical_offset            =  0;*/       /* initial value anyway */
+        of_fd.last_byte_index           = (off_t)-1;  /* no limitation at all */
 
         /* Use opened volume, or */
         if (volume_handle != NULL)
         {
           hfile                          = volume_handle;
           of_fd.first_byte_index         = volume_offset;
-          of_fd.absolute_offset.QuadPart = volume_offset;
+          of_fd.absolute_offset.QuadPart = is_logical_volume? volume_offset : (off_t)0;
           of_fd.last_byte_index          = (volume_offset + volume_length - (off_t)1);
         }
         else
@@ -939,11 +979,23 @@ TEXT("nonetheless? (Y/N) "));
       if (fdhandle [STDIN_FILENO] == NULL)
         fdhandle [STDIN_FILENO] = fdhandle [fd];
 
-    if (not INPUT_FILE_FD && always_confirm)
+    if (not INPUT_FILE_FD || output_file == NULL)
     {
-      if (not UserConfirmOperation ())
-        return (-1);
+      if (dismount_statistics.failed_to_lock || dismount_statistics.skipped_sysdrive || dismount_statistics.skipped_pagefile)
+      {
+        if (not ProceedDespiteFailedLocks ())
+          return (-1);
+      }
+      if (always_confirm)
+      {
+        if (not UserConfirmOperation ())
+          return (-1);
+      }
     }
+
+    /* Are we using O_DIRECT? */
+    if ((reopen_fd->dwFlagsAndAttributes & FILE_FLAG_NO_BUFFERING) != 0)
+      reopen_fd->direct_io = true;
 
     reopen_fd->valid = true;
     return (fd);
@@ -1150,23 +1202,51 @@ static void ThrowClassificationException (TCHAR const reopen_file [], enum EReop
 }
 
 
+static bool ProceedDespiteFailedLocks (void)
+{ char
+    key;
+
+  _ftprintf (stdout,
+TEXT("\nSome of the attempted volume locks failed. Would you like to continue\n")
+TEXT("nonetheless? (Y/N) "));
+  key = PromptUserYesNo ();
+  if (not IsFileRedirected (stdin))
+  {
+    _ftprintf (stdout, TEXT("%c\n\n"), key);
+    FlushStdout ();
+  }
+  if (key == 'N')
+    ErrnoReturn (EACCES, false);
+
+  return (true);
+}
+
+
 static bool UserConfirmOperation (void)
 { TCHAR
     records [32] = TEXT(""),
-    range1 [64] = TEXT(""),
-    range2 [64] = TEXT("");
+   *infile       = TEXT("<standard input>"),
+    range1 [64]  = TEXT(""),
+   *outfile      = TEXT("<standard output>"),
+    range2 [64]  = TEXT("");
   char
     key;
 
   if (max_records != (uintmax_t)-1)
     _sntprintf (records, _countof(records), TEXT("%") TEXT(PRIuMAX) TEXT(" "), max_records);
-  if (if_fd.last_byte_index > 0)
+
+  if (if_fd.file[0] != TEXT('\0'))
+    infile = if_fd.file;
+  if (0 < if_fd.last_byte_index && if_fd.last_byte_index != (off_t)-1)
     _sntprintf (range1, _countof(range1), TEXT(" (%18") TEXT(PRIuMAX) TEXT(",%18") TEXT(PRIuMAX) TEXT(")"),
-                                          (uintmax_t)if_fd.absolute_offset.QuadPart,
+                                          (uintmax_t)if_fd.first_byte_index,
                                           (uintmax_t)(if_fd.last_byte_index-if_fd.first_byte_index+1));
-  if (of_fd.last_byte_index > 0)
+
+  if (of_fd.file[0] != TEXT('\0'))
+    outfile = of_fd.file;
+  if (0 < of_fd.last_byte_index && of_fd.last_byte_index != (off_t)-1)
     _sntprintf (range2, _countof(range2), TEXT(" (%18") TEXT(PRIuMAX) TEXT(",%18") TEXT(PRIuMAX) TEXT(")"),
-                                          (uintmax_t)of_fd.absolute_offset.QuadPart,
+                                          (uintmax_t)of_fd.first_byte_index,
                                           (uintmax_t)(of_fd.last_byte_index-of_fd.first_byte_index+1));
 
   /* Ask the user, if he's happy with our choices! */
@@ -1175,13 +1255,13 @@ static bool UserConfirmOperation (void)
   textcolor (DEFAULT_COLOR);
   _ftprintf (stdout, TEXT("The operation will copy %srecord(s) from\n"), records);
   if (range1[0] != TEXT('\0'))
-    _ftprintf (stdout, TEXT("%-39.39s%s\nto\n"), if_fd.file, range1);
+    _ftprintf (stdout, TEXT("%-39.39s%s\nto\n"), infile, range1);
   else
-    _ftprintf (stdout, TEXT("%s\nto\n"), if_fd.file);
+    _ftprintf (stdout, TEXT("%s\nto\n"), infile);
   if (range2[0] != TEXT('\0'))
-    _ftprintf (stdout, TEXT("%-39.39s%s\n"), of_fd.file, range2);
+    _ftprintf (stdout, TEXT("%-39.39s%s\n"), outfile, range2);
   else
-    _ftprintf (stdout, TEXT("%s\n"), of_fd.file);
+    _ftprintf (stdout, TEXT("%s\n"), outfile);
   _ftprintf (stdout, TEXT("Are you sure you want to continue? (Y/N) "));
   key = PromptUserYesNo ();
 

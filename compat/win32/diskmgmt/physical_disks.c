@@ -109,12 +109,12 @@ extern bool get_physdisk_path (TCHAR physdisk_path [])
   return (true);
 }
 
-extern long long get_physdisk_size (void)
+extern off_t get_physdisk_size (void)
 {
   if (not drives_physdisk_selected ())
-    return (0ll);
+    return ((off_t)0);
 
-  return ((long long)physical_disk[sel_disk].size_bytes);
+  return (physical_disk[sel_disk].size_bytes);
 }
 
 extern bool disk_contains_system_drive (void)

@@ -39,6 +39,8 @@ extern bool
   CloseVolume (struct VolumeDesc const **vol);
 extern bool
   CloseVolumeEx (struct VolumeDesc const **vol, bool close_handle);
+extern bool
+  SetVolumeHandle (struct VolumeDesc *vol, HANDLE handle);
 extern HANDLE
   GetVolumeHandle (struct VolumeDesc const *vol);
 extern DWORD
