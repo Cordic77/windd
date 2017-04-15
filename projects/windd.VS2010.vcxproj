@@ -433,6 +433,7 @@
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\coreutils\lib\getprogname.c" />
     <ClCompile Include="..\src\dd.c">
       <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='dll-ansi-debug|Win32'">4018;4244;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='dll-ansi-debug|x64'">4018;4244;%(DisableSpecificWarnings)</DisableSpecificWarnings>
@@ -571,6 +572,7 @@
     <ClInclude Include="..\coreutils\lib\include\dosname.h" />
     <ClInclude Include="..\coreutils\lib\include\error.h" />
     <ClInclude Include="..\coreutils\lib\include\fd-reopen.h" />
+    <ClInclude Include="..\coreutils\lib\include\getprogname.h" />
     <ClInclude Include="..\coreutils\lib\include\human.h" />
     <ClInclude Include="..\coreutils\lib\include\intprops.h" />
     <ClInclude Include="..\coreutils\lib\include\msvc-nothrow.h" />

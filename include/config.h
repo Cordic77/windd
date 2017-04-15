@@ -59,6 +59,9 @@
 /* Define to 1 if using `alloca.c'. */
 /* #undef C_ALLOCA */
 
+/* Define to 1 if the C locale may have encoding errors. */
+#define C_LOCALE_MAYBE_EILSEQ 1
+
 /* Define as the bit index in the word where to find bit 0 of the exponent of
    'double'. */
 #define DBL_EXPBIT0_BIT 20
@@ -794,8 +797,9 @@
 /* Define to 1 if you have the `acl_create_entry_np' function. */
 /* #undef HAVE_ACL_CREATE_ENTRY_NP */
 
+#if ! defined _WIN32
 /* Define to 1 if you have the `acl_delete_def_file' function. */
-/* #undef HAVE_ACL_DELETE_DEF_FILE */
+#define HAVE_ACL_DELETE_DEF_FILE 1
 
 /* Define to 1 if you have the `acl_delete_fd_np' function. */
 /* #undef HAVE_ACL_DELETE_FD_NP */
@@ -804,40 +808,41 @@
 /* #undef HAVE_ACL_DELETE_FILE_NP */
 
 /* Define to 1 if you have the `acl_entries' function. */
-/* #undef HAVE_ACL_ENTRIES */
+#define HAVE_ACL_ENTRIES 1
 
 /* Define to 1 if you have the `acl_extended_file' function. */
-/* #undef HAVE_ACL_EXTENDED_FILE */
+#define HAVE_ACL_EXTENDED_FILE 1
 
 /* Define to 1 if the constant ACL_FIRST_ENTRY exists. */
-/* #undef HAVE_ACL_FIRST_ENTRY */
+#define HAVE_ACL_FIRST_ENTRY 1
 
 /* Define to 1 if you have the `acl_free' function. */
-/* #undef HAVE_ACL_FREE */
+#define HAVE_ACL_FREE 1
 
 /* Define to 1 if you have the `acl_free_text' function. */
 /* #undef HAVE_ACL_FREE_TEXT */
 
 /* Define to 1 if you have the `acl_from_mode' function. */
-/* #undef HAVE_ACL_FROM_MODE */
+#define HAVE_ACL_FROM_MODE 1
 
 /* Define to 1 if you have the `acl_from_text' function. */
-/* #undef HAVE_ACL_FROM_TEXT */
+#define HAVE_ACL_FROM_TEXT 1
 
 /* Define to 1 if you have the `acl_get_fd' function. */
-/* #undef HAVE_ACL_GET_FD */
+#define HAVE_ACL_GET_FD 1
 
 /* Define to 1 if you have the `acl_get_file' function. */
-/* #undef HAVE_ACL_GET_FILE */
+#define HAVE_ACL_GET_FILE 1
 
 /* Define to 1 if you have the <acl/libacl.h> header file. */
-/* #undef HAVE_ACL_LIBACL_H */
+#define HAVE_ACL_LIBACL_H 1
 
 /* Define to 1 if you have the `acl_set_fd' function. */
-/* #undef HAVE_ACL_SET_FD */
+#define HAVE_ACL_SET_FD 1
 
 /* Define to 1 if you have the `acl_set_file' function. */
-/* #undef HAVE_ACL_SET_FILE */
+#define HAVE_ACL_SET_FILE 1
+#endif /* ! defined _WIN32 */
 
 /* Define to 1 if you have the `acl_to_short_text' function. */
 /* #undef HAVE_ACL_TO_SHORT_TEXT */
@@ -862,14 +867,16 @@
 /* Define to 1 if you have the <arpa/inet.h> header file. */
 #define HAVE_ARPA_INET_H 1
 
+#if ! defined _WIN32
 /* Define to 1 if you have the `attr_copy_file' function. */
-/* #undef HAVE_ATTR_COPY_FILE */
+#define HAVE_ATTR_COPY_FILE 1
 
 /* Define to 1 if you have the <attr/error_context.h> header file. */
-/* #undef HAVE_ATTR_ERROR_CONTEXT_H */
+#define HAVE_ATTR_ERROR_CONTEXT_H 1
 
 /* Define to 1 if you have the <attr/libattr.h> header file. */
-/* #undef HAVE_ATTR_LIBATTR_H */
+#define HAVE_ATTR_LIBATTR_H 1
+#endif /* ! defined _WIN32 */
 
 /* Define to 1 if you have the <bp-sym.h> header file. */
 /* #undef HAVE_BP_SYM_H */
@@ -918,11 +925,6 @@
 
 /* Define to 1 if you have the `clock_gettime' function. */
 #define HAVE_CLOCK_GETTIME 1
-
-/* Define to 1 if you have the `microuptime' function. */
-#if defined _WIN32  /*windd -- gethrxtime.c */
-#define HAVE_MICROUPTIME 1
-#endif /* defined _WIN32 */
 
 /* Define to 1 if you have the `clock_settime' function. */
 #define HAVE_CLOCK_SETTIME 1
@@ -1240,9 +1242,16 @@
    */
 #define HAVE_DECL_STRDUP 1
 
-/* Define to 1 if you have the declaration of `strerror_r', and to 0 if you
-   don't. */
+/* Define to 1, since you should have the declaration of strerror_r. */
 #define HAVE_DECL_STRERROR_R 1
+
+/* Define to 1 if you have the declaration of 'strerror_r' in the system
+   include files, or to 0 otherwise. */
+#if ! defined _WIN32
+#define HAVE_DECL_STRERROR_R_ORIG 1
+#else
+#define HAVE_DECL_STRERROR_R_ORIG 0
+#endif /* defined _WIN32 */
 
 /* Define to 1 if you have the declaration of `strmode', and to 0 if you
    don't. */
@@ -1320,9 +1329,13 @@
    don't. */
 #define HAVE_DECL__SYS_SIGLIST 1
 
+/* Define to 1 if you have the declaration of `__argv', and to 0 if you don't.
+   */
+#define HAVE_DECL___ARGV 0
+
 /* Define to 1 if you have the declaration of `__fpending', and to 0 if you
    don't. */
-#if ! defined _WIN32  /*windd*/
+#if ! defined _WIN32
 #define HAVE_DECL___FPENDING 1
 #else
 #define HAVE_DECL___FPENDING 0
@@ -1473,6 +1486,23 @@
 /* Define to 1 if you have the `getegid' function. */
 #define HAVE_GETEGID 1
 
+/* Define to 1 if you have the `geteuid' function. */
+#if ! defined _WIN32
+#define HAVE_GETEUID 1
+#else
+#undef HAVE_GETEUID
+#endif /* ! defined _WIN32 */
+
+/* Define to 1 if you have the `getexecname' function. */
+/* #undef HAVE_GETEXECNAME */
+
+/* Define to 1 if you have the `getgid' function. */
+#if ! defined _WIN32
+#define HAVE_GETGID 1
+#else
+#undef HAVE_GETGID
+#endif /* ! defined _WIN32 */
+
 /* Define to 1 if you have the `getgrent_nomembers' function. */
 /* #undef HAVE_GETGRENT_NOMEMBERS */
 
@@ -1521,6 +1551,9 @@
 /* Define to 1 if you have the `getppriv' function. */
 /* #undef HAVE_GETPPRIV */
 
+/* Define to 1 if you have the `getprogname' function. */
+/* #undef HAVE_GETPROGNAME */
+
 /* Define to 1 if you have the `getservbyname' function. */
 #define HAVE_GETSERVBYNAME 1
 
@@ -1532,6 +1565,13 @@
 
 /* Define to 1 if you have the `gettimeofday' function. */
 #define HAVE_GETTIMEOFDAY 1
+
+/* Define to 1 if you have the `getuid' function. */
+#if ! defined _WIN32
+#define HAVE_GETUID 1
+#else
+#undef HAVE_GETUID
+#endif /* ! defined _WIN32 */
 
 /* Define to 1 if you have the `getusershell' function. */
 #define HAVE_GETUSERSHELL 1
@@ -1675,6 +1715,9 @@
 /* Define to 1 if you have the `perfstat' library (-lperfstat). */
 /* #undef HAVE_LIBPERFSTAT */
 
+/* Define to 1 if you have the <limits.h> header file. */
+#define HAVE_LIMITS_H 1
+
 /* Define to 1 if you have the `link' function. */
 #define HAVE_LINK 1
 
@@ -1683,6 +1726,13 @@
 
 /* Define to 1 if you have the <linux/falloc.h> header file. */
 #define HAVE_LINUX_FALLOC_H 1
+
+/* Define to 1 if you have the <linux/fs.h> header file. */
+#if ! defined _WIN32
+#define HAVE_LINUX_FS_H 1
+#else
+#undef HAVE_LINUX_FS_H
+#endif /* ! defined _WIN32 */
 
 /* Define to 1 if you have the `listmntent' function. */
 /* #undef HAVE_LISTMNTENT */
@@ -1944,7 +1994,7 @@
 /* #undef HAVE_SCHED_GETAFFINITY_NP */
 
 /* Define to 1 if you have the <sched.h> header file. */
-#define HAVE_SCHED_H 1
+/* #undef HAVE_SCHED_H */
 
 /* Define to 1 if you have the <search.h> header file. */
 #define HAVE_SEARCH_H 1
@@ -2040,7 +2090,7 @@
 #define HAVE_STDINT_H_WITH_UINTMAX 1
 
 /* Define to 1 if you have the <stdio_ext.h> header file. */
-#if ! defined _WIN32  /*windd*/
+#if ! defined _WIN32
 #define HAVE_STDIO_EXT_H 1
 #else
 #define HAVE_STDIO_EXT_H 0
@@ -2061,7 +2111,7 @@
 /* Define to 1 if you have the `strdup' function. */
 #define HAVE_STRDUP 1
 
-/* Define to 1 if you have the `strerror_r' function. */
+/* Define to 1, since you should have the function strerror_r. */
 #if ! defined _WIN32
 #define HAVE_STRERROR_R 1
 #else
@@ -2297,10 +2347,21 @@
 /* #undef HAVE_SYSMP */
 
 /* Define to 1 if you have the <sys/acl.h> header file. */
-/* #undef HAVE_SYS_ACL_H */
+#if ! defined _WIN32
+#define HAVE_SYS_ACL_H 1
+#else
+#undef HAVE_SYS_ACL_H
+#endif /* ! defined _WIN32 */
 
 /* Define to 1 if you have the <sys/bitypes.h> header file. */
 /* #undef HAVE_SYS_BITYPES_H */
+
+/* Define to 1 if you have the <sys/cdefs.h> header file. */
+#if ! defined _WIN32
+#define HAVE_SYS_CDEFS_H 1
+#else
+#undef HAVE_SYS_CDEFS_H
+#endif /* ! defined _WIN32 */
 
 /* Define to 1 if you have the <sys/filsys.h> header file. */
 /* #undef HAVE_SYS_FILSYS_H */
@@ -2481,6 +2542,9 @@
 /* FIXME */
 #define HAVE_UT_HOST 1
 
+/* Define if you have a global __progname variable */
+/* #undef HAVE_VAR___PROGNAME */
+
 /* Define to 1 if you have the `vasnprintf' function. */
 /* #undef HAVE_VASNPRINTF */
 
@@ -2621,10 +2685,10 @@
 
 /* Define as the bit index in the word where to find bit 0 of the exponent of
    'long double'. */
-/* #undef LDBL_EXPBIT0_BIT */
+#define LDBL_EXPBIT0_BIT 0
 
 /* Define as the word index where to find the exponent of 'long double'. */
-/* #undef LDBL_EXPBIT0_WORD */
+#define LDBL_EXPBIT0_WORD 2
 
 /* Define as the bit index in the word where to find the sign of 'long
    double'. */
@@ -2660,7 +2724,11 @@
 
 /* Define to 1 if `major', `minor', and `makedev' are declared in
    <sysmacros.h>. */
-/* #undef MAJOR_IN_SYSMACROS */
+#if ! defined _WIN32
+#define MAJOR_IN_SYSMACROS 1
+#else
+#undef MAJOR_IN_SYSMACROS
+#endif /* ! defined _WIN32 */
 
 /* If malloc(0) is != NULL, define this to 1. Otherwise define this to 0. */
 #define MALLOC_0_IS_NONNULL 1
@@ -2683,6 +2751,12 @@
 
 /* Define if the mbrtowc function returns a wrong return value. */
 /* #undef MBRTOWC_RETVAL_BUG */
+
+/* Use GNU style printf and scanf.  */
+#ifndef __USE_MINGW_ANSI_STDIO
+# define __USE_MINGW_ANSI_STDIO 1
+#endif
+
 
 /* Define to 1 if mkfifo does not reject trailing slash */
 /* #undef MKFIFO_TRAILING_SLASH_BUG */
@@ -2819,7 +2893,7 @@
 /* #undef PACKAGE_PACKAGER_VERSION */
 
 /* Define to the full name and version of this package. */
-#define PACKAGE_STRING "GNU coreutils 8.25"
+#define PACKAGE_STRING "GNU coreutils 8.26"
 
 /* Define to the one symbol short name of this package. */
 #define PACKAGE_TARNAME "coreutils"
@@ -2828,7 +2902,7 @@
 #define PACKAGE_URL "http://www.gnu.org/software/coreutils/"
 
 /* Define to the version of this package. */
-#define PACKAGE_VERSION "8.25"
+#define PACKAGE_VERSION "8.26"
 
 /* the number of pending output bytes on stream 'fp' */
 #if ! defined _WIN32  /*windd*/
@@ -2983,8 +3057,8 @@
 /* Define to 1 if you have the ANSI C header files. */
 #define STDC_HEADERS 1
 
-/* Define to 1 if strerror_r returns char *. */
-#if ! defined _WIN32  /*windd*/
+/* Define to 0, since strerror_r should not return char *. */
+#if ! defined _WIN32
 #define STRERROR_R_CHAR_P 1
 #else
 #define STRERROR_R_CHAR_P 0
@@ -3003,7 +3077,14 @@
 /* #undef TERMIOS_NEEDS_XOPEN_SOURCE */
 
 /* Define to 1 if all 'time_t' values fit in a 'long int'. */
+#if ! defined _WIN32
 #define TIME_T_FITS_IN_LONG_INT 1
+#else
+#define TIME_T_FITS_IN_LONG_INT 0
+#endif /* defined _WIN32 */
+
+/* Define to 1 if time_t is signed. */
+#define TIME_T_IS_SIGNED 1
 
 /* Define to 1 if you can safely include both <sys/time.h> and <time.h>. */
 #define TIME_WITH_SYS_TIME 1
@@ -3035,7 +3116,11 @@
 /* #undef UNLINK_PARENT_BUG */
 
 /* Define to nonzero if you want access control list support. */
-#define USE_ACL 0
+#if ! defined _WIN32
+#define USE_ACL 1
+#else
+#undef USE_ACL
+#endif /* ! defined _WIN32 */
 
 /* Define if the POSIX multithreading library can be used. */
 #define USE_POSIX_THREADS 1
@@ -3062,7 +3147,7 @@
 #ifndef _ALL_SOURCE
 # define _ALL_SOURCE 1
 #endif
-/* Enable general extensions on OS X.  */
+/* Enable general extensions on macOS.  */
 #ifndef _DARWIN_C_SOURCE
 # define _DARWIN_C_SOURCE 1
 #endif
@@ -3070,13 +3155,37 @@
 #ifndef _GNU_SOURCE
 # define _GNU_SOURCE 1
 #endif
-/* Use GNU style printf and scanf.  */
-#ifndef __USE_MINGW_ANSI_STDIO
-# define __USE_MINGW_ANSI_STDIO 1
-#endif
 /* Enable threading extensions on Solaris.  */
 #ifndef _POSIX_PTHREAD_SEMANTICS
 # define _POSIX_PTHREAD_SEMANTICS 1
+#endif
+/* Enable extensions specified by ISO/IEC TS 18661-5:2014.  */
+#ifndef __STDC_WANT_IEC_60559_ATTRIBS_EXT__
+# define __STDC_WANT_IEC_60559_ATTRIBS_EXT__ 1
+#endif
+/* Enable extensions specified by ISO/IEC TS 18661-1:2014.  */
+#ifndef __STDC_WANT_IEC_60559_BFP_EXT__
+# define __STDC_WANT_IEC_60559_BFP_EXT__ 1
+#endif
+/* Enable extensions specified by ISO/IEC TS 18661-2:2015.  */
+#ifndef __STDC_WANT_IEC_60559_DFP_EXT__
+# define __STDC_WANT_IEC_60559_DFP_EXT__ 1
+#endif
+/* Enable extensions specified by ISO/IEC TS 18661-4:2015.  */
+#ifndef __STDC_WANT_IEC_60559_FUNCS_EXT__
+# define __STDC_WANT_IEC_60559_FUNCS_EXT__ 1
+#endif
+/* Enable extensions specified by ISO/IEC TS 18661-3:2015.  */
+#ifndef __STDC_WANT_IEC_60559_TYPES_EXT__
+# define __STDC_WANT_IEC_60559_TYPES_EXT__ 1
+#endif
+/* Enable extensions specified by ISO/IEC TR 24731-2:2010.  */
+#ifndef __STDC_WANT_LIB_EXT2__
+# define __STDC_WANT_LIB_EXT2__ 1
+#endif
+/* Enable extensions specified by ISO/IEC 24747:2009.  */
+#ifndef __STDC_WANT_MATH_SPEC_FUNCS__
+# define __STDC_WANT_MATH_SPEC_FUNCS__ 1
 #endif
 /* Enable extensions on HP NonStop.  */
 #ifndef _TANDEM_SOURCE
@@ -3097,7 +3206,7 @@
 /* Define to 1 if you want getc etc. to use unlocked I/O if available.
    Unlocked I/O can improve performance in unithreaded apps, but it is not
    safe for multithreaded apps. */
-#if ! defined _WIN32  /*windd*/
+#if ! defined _WIN32
 #define USE_UNLOCKED_IO 1
 #else
 #define USE_UNLOCKED_IO 0
@@ -3107,10 +3216,14 @@
 /* #undef USE_WINDOWS_THREADS */
 
 /* Define if you want extended attribute support. */
-#define USE_XATTR 0
+#if ! defined _WIN32
+#define USE_XATTR 1
+#else
+#undef USE_XATTR
+#endif /* ! defined _WIN32 */
 
 /* Version number of package */
-#define VERSION "8.25"
+#define VERSION "8.26"
 
 /* Define to 1 if unsetenv returns void instead of int. */
 /* #undef VOID_UNSETENV */
@@ -3208,6 +3321,20 @@
    used. */
 /* #undef __GETOPT_PREFIX */
 
+/* Define to 1 if the system <stdint.h> predates C++11. */
+#if ! defined _WIN32
+/* #undef __STDC_CONSTANT_MACROS */
+#else
+#define __STDC_CONSTANT_MACROS 1
+#endif /* defined _WIN32 */
+
+/* Define to 1 if the system <stdint.h> predates C++11. */
+#if ! defined _WIN32
+/* #undef __STDC_LIMIT_MACROS */
+#else
+#define __STDC_LIMIT_MACROS 1
+#endif /* defined _WIN32 */
+
 /* Please see the Gnulib manual for how to use these macros.
 
    Suppress extern inline with HP-UX cc, as it appears to be broken; see
@@ -3254,6 +3381,7 @@
       ? defined __GNUC_STDC_INLINE__ && __GNUC_STDC_INLINE__ \
       : (199901L <= __STDC_VERSION__ \
          && !defined __HP_cc \
+         && !defined __PGI \
          && !(defined __SUNPRO_C && __STDC__))) \
      && !defined _GL_EXTERN_INLINE_STDHEADER_BUG)
 # define _GL_INLINE inline

@@ -458,6 +458,9 @@
     <ClInclude Include="..\compat\win32\targetver.h">
       <Filter>Header Files\compat\win32</Filter>
     </ClInclude>
+    <ClInclude Include="..\coreutils\src\include\die.h">
+      <Filter>Header Files\coreutils-deps\src</Filter>
+    </ClInclude>
     <ClInclude Include="..\coreutils\lib\include\getprogname.h">
       <Filter>Header Files\coreutils-deps\lib\unmodified</Filter>
     </ClInclude>

@@ -231,6 +231,9 @@
     <ClCompile Include="..\compat\posix\asprintf\msvc\vasprintf-msvc.c">
       <Filter>Source Files\compat\posix</Filter>
     </ClCompile>
+    <ClCompile Include="..\coreutils\lib\getprogname.c">
+      <Filter>Source Files\coreutils-deps\lib</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\coreutils\lib\include\closeout.h">
@@ -454,6 +457,9 @@
     </ClInclude>
     <ClInclude Include="..\compat\win32\targetver.h">
       <Filter>Header Files\compat\win32</Filter>
+    </ClInclude>
+    <ClInclude Include="..\coreutils\lib\include\getprogname.h">
+      <Filter>Header Files\coreutils-deps\lib\unmodified</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

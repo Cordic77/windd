@@ -11,7 +11,6 @@
    this leads to any warnings/errors, we know we've screwed up!
 */
 #if PRE_COMPAT_SETTINGS == 1
-  #define _MSVC_NOTHROW_H                 /* error.c: prevent `#include "msvc-nothrow.h"' */
   #define _INC_IO                         /* msvc-nothrow.h: prevent `# include <io.h>' */
 
   #define C_CTYPE_H                       /* c-strcaseeq.h: prevent `#include "c-ctype.h"' */
@@ -176,7 +175,10 @@
   /*===  clock and timer functions  ===*/
   #include "msvc/clock_gettime.h"
   void microuptime (struct timeval *tv);
-  #define microuptime(tv) (tv)->tv_sec = 0, (tv)->tv_usec = 0  /*_WIN32: unused!*/
+  #define microuptime(tv) (tv)->tv_sec = 0, (tv)->tv_usec = 0  /*_WIN32: dummy definition - unused!*/
+  #ifndef HAVE_MICROUPTIME
+  #define HAVE_MICROUPTIME 1
+  #endif
 
   /*===  fake support for signal()s  ===*/
   #include <signal.h>

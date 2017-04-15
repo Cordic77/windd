@@ -202,23 +202,23 @@ select_plural (uintmax_t n)
 #define STRNCMP_LIT(s, lit) strncmp (s, "" lit "", sizeof (lit) - 1)
 
 #if !HAVE_DECL_GETLOGIN
-char *getlogin ();
+char *getlogin (void);
 #endif
 
 #if !HAVE_DECL_TTYNAME
-char *ttyname ();
+char *ttyname (int);
 #endif
 
 #if !HAVE_DECL_GETEUID
-uid_t geteuid ();
+uid_t geteuid (void);
 #endif
 
 #if !HAVE_DECL_GETPWUID
-struct passwd *getpwuid ();
+struct passwd *getpwuid (uid_t);
 #endif
 
 #if !HAVE_DECL_GETGRGID
-struct group *getgrgid ();
+struct group *getgrgid (gid_t);
 #endif
 
 /* Interix has replacements for getgr{gid,nam,ent}, that don't
@@ -240,7 +240,7 @@ struct group *getgrgid ();
 #endif
 
 #if !HAVE_DECL_GETUID
-uid_t getuid ();
+uid_t getuid (void);
 #endif
 
 #include "xalloc.h"
@@ -520,7 +520,7 @@ is_nul (void const *buf, size_t length)
    to avoid -fsanitize=undefined warnings.
    Considering coreutils is mainly concerned with relatively
    large buffers, we'll just use the defined behavior.  */
-#if 0 && _STRING_ARCH_unaligned
+#if 0 && (_STRING_ARCH_unaligned || _STRING_INLINE_unaligned)
   unsigned long word;
 #else
   unsigned char word;
@@ -614,6 +614,24 @@ Otherwise, units default to 1024 bytes (or 512 if POSIXLY_CORRECT is set).\n\
 }
 
 static inline void
+emit_backup_suffix_note (void)
+{
+  fputs (_("\
+\n\
+The backup suffix is '~', unless set with --suffix or SIMPLE_BACKUP_SUFFIX.\n\
+The version control method may be selected via the --backup option or through\n\
+the VERSION_CONTROL environment variable.  Here are the values:\n\
+\n\
+"), stdout);
+  fputs (_("\
+  none, off       never make backups (even if --backup is given)\n\
+  numbered, t     make numbered backups\n\
+  existing, nil   numbered if numbered backups exist, simple otherwise\n\
+  simple, never   always make simple backups\n\
+"), stdout);
+}
+
+static inline void
 emit_ancillary_info (char const *program)
 {
   struct infomap { char const *program; char const *node; } const infomap[] = {
@@ -657,11 +675,17 @@ emit_ancillary_info (char const *program)
           node, node == program ? " invocation" : "");
 }
 
-static inline void
-emit_try_help (void)
-{
-  fprintf (stderr, _("Try '%s --help' for more information.\n"), program_name);
-}
+/* Use a macro rather than an inline function, as this references
+   the global program_name, which causes dynamic linking issues
+   in libstdbuf.so on some systems where unused functions
+   are not removed by the linker.  */
+#define emit_try_help() \
+  do \
+    { \
+      fprintf (stderr, _("Try '%s --help' for more information.\n"), \
+               program_name); \
+    } \
+  while (0)
 
 #include "inttostr.h"
 

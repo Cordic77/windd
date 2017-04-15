@@ -278,42 +278,42 @@ LoadLibraryFailed:
 
 static char const *GetCompilerVersion (void)
 {
-/*#if _MSC_VER >= 2000*/  /* VS2016 */
-    #define VS15_2016_RTM     200000000
+/*#if _MSC_VER >= 1910*/  /* VS2017 */
+    #define VS15_2017_RTM     191025017   /* RTM      [2017-03-08] */
 /*#elif _MSC_VER >= 1900*/  /* VS2015 */
-    #define VS14_2015_RTM     190023026   /* RTM */
+    #define VS14_2015_RTM     190023026   /* RTM      [2015-07-20] */
     #define VS14_2015_U1      190023506   /* Update 1 [2015-11-30] */
     #define VS14_2015_U2      190023918   /* Update 2 [2016-03-30] */
     #define VS14_2015_U3      190024210   /* Update 3 [2016-07-27] */
 /*#elif _MSC_VER >= 1800*/  /* VS2013 */
-    #define VS12_2013_RTM     180021005   /* RTM */
+    #define VS12_2013_RTM     180021005   /* RTM      [2013-10-17] */
     #define VS12_2013_U1      180021005   /* Update 1 [2014-02-20] (1) */
     #define VS12_2013_U2      180030501   /* Update 2 [2014-05-12] */
     #define VS12_2013_U3      180030723   /* Update 3 [2014-08-04] */
     #define VS12_2013_U4      180031101   /* Update 4 [2014-11-06] */
     #define VS12_2013_U5      180040629   /* Update 5 [2015-07-20] */
 /*#elif _MSC_VER >= 1700*/  /* VS2012 */
-    #define VS11_2012_RTM     170050727   /* RTM */
+    #define VS11_2012_RTM     170050727   /* RTM      [2012-09-12] */
     #define VS11_2012_U1      170051106   /* Update 1 [2012-11-26] */
     #define VS11_2012_U2      170060315   /* Update 2 [2013-04-04] */
     #define VS11_2012_U3      170060610   /* Update 3 [2013-06-26] */
     #define VS11_2012_U4      170061030   /* Update 4 [2013-11-13] */
     #define VS11_2012_U5      170061030   /* Update 5 [2015-08-21] (1) */
 /*#elif _MSC_VER >= 1600*/  /* VS2010 */
-    #define VS10_2010_RTM     160030319   /* RTM */
-    #define VS10_2010_SP1     160040219   /* SP1 */
+    #define VS10_2010_RTM     160030319   /* RTM      [2010-04-12] */
+    #define VS10_2010_SP1     160040219   /* SP1      [2011-03-03] */
 /*#elif _MSC_VER >= 1500*/  /* VS2008 */
-    #define VS9_2008_RTM      150021022   /* RTM */
-    #define VS9_2008_SP1      150030729   /* SP1 */
+    #define VS9_2008_RTM      150021022   /* RTM      [2007-11-19] */
+    #define VS9_2008_SP1      150030729   /* SP1      [2008-08-11] */
 /*#endif*/
 /*(1) Microsoft apparently neglected to update _MSC_FULL_VER for this release - Doh! */
 
-  #if _MSC_VER >= 2100 || _MSC_VER < 1500
+  #if _MSC_VER >= 2000 || _MSC_VER < 1500
     #error "Unsupported VC++ compiler."
   #endif
 
-  if (_MSC_FULL_VER >= VS15_2016_RTM)
-    return ("VS2016");
+  if (_MSC_FULL_VER >= VS15_2017_RTM)
+    return ("VS2017");
 
   if (_MSC_FULL_VER >= VS14_2015_U3)
     return ("VS2015.3");
@@ -366,7 +366,7 @@ static void SetWinddVersion (void)
 { static char
     windd_ver [63+1];
 
-  _snprintf (windd_ver, _countof(windd_ver), "%s -- %s build v0.15 [%s]",
+  _snprintf (windd_ver, _countof(windd_ver), "%s -- %s build v0.16 [%s]",
              Version, GetCompilerVersion (),
   #if defined(_WIN64) || defined(_M_X64) || defined(_M_AMD64)
              "x64"

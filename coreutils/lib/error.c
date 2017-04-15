@@ -42,6 +42,8 @@
 # define USE_UNLOCKED_IO 0
 # define _GL_ATTRIBUTE_FORMAT_PRINTF(a, b)
 # define _GL_ARG_NONNULL(a)
+#else
+# include "getprogname.h"
 #endif
 
 #if USE_UNLOCKED_IO
@@ -96,7 +98,12 @@ extern void __error_at_line (int status, int errnum, const char *file_name,
 #  define WIN32_LEAN_AND_MEAN
 #  include <windows.h>
 /* Get _get_osfhandle.  */
+#  if 0  /*windd*/
 #  include "msvc-nothrow.h"
+#  else
+extern intptr_t crt_get_osfhandle (int fd);  /*msvcr_fileops.h*/
+#  define _get_osfhandle crt_get_osfhandle
+#  endif
 # endif
 
 /* The gnulib override of fcntl is not needed in this file.  */
@@ -113,9 +120,7 @@ int strerror_r ();
 #  endif
 # endif
 
-/* The calling program should define program_name and set it to the
-   name of the executing program.  */
-extern const char *program_name;
+#define program_name getprogname ()
 
 # if HAVE_STRERROR_R || defined strerror_r
 #  define __strerror_r strerror_r
@@ -132,7 +137,7 @@ is_open (int fd)
      descriptors is that they are open but point to an INVALID_HANDLE_VALUE.
      There is no fcntl, and the gnulib replacement fcntl does not support
      F_GETFL.  */
-  return (HANDLE) crt_get_osfhandle (fd) != INVALID_HANDLE_VALUE;
+  return (HANDLE) _get_osfhandle (fd) != INVALID_HANDLE_VALUE;
 # else
 #  ifndef F_GETFL
 #   error Please port fcntl to your platform

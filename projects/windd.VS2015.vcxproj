@@ -498,6 +498,7 @@
     </ClCompile>
     <ClCompile Include="..\coreutils\lib\fpending.c" />
     <ClCompile Include="..\coreutils\lib\gethrxtime.c" />
+    <ClCompile Include="..\coreutils\lib\getprogname.c" />
     <ClCompile Include="..\coreutils\lib\human.c">
       <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='dll-ansi-debug|Win32'">4244;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='dll-ansi-debug|x64'">4244;%(DisableSpecificWarnings)</DisableSpecificWarnings>
@@ -592,6 +593,7 @@
     <ClInclude Include="..\coreutils\lib\include\fd-reopen.h" />
     <ClInclude Include="..\coreutils\lib\include\fpending.h" />
     <ClInclude Include="..\coreutils\lib\include\gethrxtime.h" />
+    <ClInclude Include="..\coreutils\lib\include\getprogname.h" />
     <ClInclude Include="..\coreutils\lib\include\human.h" />
     <ClInclude Include="..\coreutils\lib\include\intprops.h" />
     <ClInclude Include="..\coreutils\lib\include\localcharset.h" />

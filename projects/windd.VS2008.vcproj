@@ -855,6 +855,10 @@
 						>
 					</File>
 					<File
+						RelativePath="..\coreutils\lib\getprogname.c"
+						>
+					</File>
+					<File
 						RelativePath="..\coreutils\lib\human.c"
 						>
 						<FileConfiguration
@@ -1617,6 +1621,10 @@
 						</File>
 						<File
 							RelativePath="..\coreutils\lib\include\gethrxtime.h"
+							>
+						</File>
+						<File
+							RelativePath="..\coreutils\lib\include\getprogname.h"
 							>
 						</File>
 						<File

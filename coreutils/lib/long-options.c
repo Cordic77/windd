@@ -198,7 +198,9 @@ DEVFILE_NULL "         black hole that discards all data written to it\n\n"
   /* Restore previous value.  */
   opterr = saved_opterr;
 
-  /* Reset this to zero only if we didn't encounter any windd-specific options: */
+  /* Reset this to zero so that getopt internals get initialized from
+     the probably-new parameters when/if getopt is called later.  */
+  /* Remark: do this only, if we didn't encounter any windd-specific options! */
   #if defined _WIN32
   if (not windd_opt)
   #endif /* ! defined _WIN32 */
